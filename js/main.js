@@ -59,7 +59,6 @@ document.addEventListener('DOMContentLoaded', () => {
   if (siteData) {
     renderDynamicHero(siteData.heroSlides);
     renderDynamicProjects(siteData.projects);
-    renderDynamicReels(siteData.reels);
     applyDynamicSettings(siteData.settings);
   }
 
@@ -150,48 +149,6 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       `;
       grid.appendChild(card);
-    });
-  }
-
-  function renderDynamicReels(reels) {
-    if (!reels || reels.length === 0) return;
-    const reelsGrid = document.querySelector('.reels-grid');
-    if (!reelsGrid) return;
-
-    reelsGrid.innerHTML = '';
-    reels.forEach(reel => {
-      const card = document.createElement('div');
-      card.className = 'reel-card';
-      card.dataset.video = reel.videoUrl || '';
-      card.dataset.reelUrl = reel.reelUrl || 'https://instagram.com/zutereprodutora';
-
-      const media = parseMediaUrl(reel.videoUrl || reel.reelUrl);
-      let thumb = reel.thumbUrl;
-      if (media.type === 'youtube') {
-        thumb = media.thumbUrl;
-      }
-      if (!thumb) {
-        thumb = 'assets/images/reels_behind_the_scenes.png';
-      }
-
-      card.innerHTML = `
-        <div class="reel-thumb">
-          <img src="${thumb}" alt="Reel Zutere" onerror="this.onerror=null; this.src='${media.thumbUrl || 'assets/images/reels_behind_the_scenes.png'}';">
-          <div class="reel-overlay">
-            <div class="reel-play-icon"><i class="fa-solid fa-play"></i></div>
-          </div>
-          <span class="reel-badge"><i class="fa-brands fa-instagram"></i> Reel</span>
-          <div class="reel-stats">
-            <span><i class="fa-solid fa-eye"></i> ${reel.views}</span>
-            <span><i class="fa-solid fa-heart"></i> ${reel.likes}</span>
-          </div>
-        </div>
-        <div class="reel-info">
-          <span class="reel-user">${reel.user || '@zutereprodutora'}</span>
-          <h4 class="reel-caption">${reel.caption}</h4>
-        </div>
-      `;
-      reelsGrid.appendChild(card);
     });
   }
 

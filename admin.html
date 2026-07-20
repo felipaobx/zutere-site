@@ -45,9 +45,6 @@
         <button class="admin-nav-item" data-tab="portfolio">
           <i class="fa-solid fa-photo-film"></i> Portfólio & Projetos
         </button>
-        <button class="admin-nav-item" data-tab="reels">
-          <i class="fa-brands fa-instagram"></i> Reels & Vertical
-        </button>
         <button class="admin-nav-item" data-tab="settings">
           <i class="fa-solid fa-sliders"></i> Configurações & Contato
         </button>
@@ -100,13 +97,6 @@
             </div>
           </div>
           <div class="admin-stat-card">
-            <div class="admin-stat-icon"><i class="fa-brands fa-instagram"></i></div>
-            <div class="admin-stat-info">
-              <h3 id="statReelsCount">0</h3>
-              <p>Reels / Shorts Cadastrados</p>
-            </div>
-          </div>
-          <div class="admin-stat-card">
             <div class="admin-stat-icon"><i class="fa-solid fa-circle-check"></i></div>
             <div class="admin-stat-info">
               <h3 style="color:#10B981;">Ativo</h3>
@@ -125,9 +115,6 @@
             </button>
             <button class="btn-admin btn-admin-secondary" onclick="switchAdminTab('portfolio')">
               <i class="fa-solid fa-plus"></i> Adicionar Projeto ao Portfólio
-            </button>
-            <button class="btn-admin btn-admin-secondary" onclick="switchAdminTab('reels')">
-              <i class="fa-solid fa-plus"></i> Adicionar Reel
             </button>
             <button class="btn-admin btn-admin-secondary" onclick="switchAdminTab('settings')">
               <i class="fa-brands fa-whatsapp"></i> Atualizar WhatsApp
@@ -173,21 +160,6 @@
           </div>
           <div class="admin-items-grid" id="portfolioListContainer">
             <!-- Dynamic Projects List -->
-          </div>
-        </div>
-      </section>
-
-      <!-- TAB 4: REELS MANAGEMENT -->
-      <section class="admin-tab-panel" id="tab-reels">
-        <div class="admin-panel-card">
-          <div class="admin-panel-header">
-            <h2 class="admin-panel-title"><i class="fa-brands fa-instagram"></i> Reels & Vídeos Verticais</h2>
-            <button class="btn-admin btn-admin-primary btn-admin-sm" id="btnAddReel">
-              <i class="fa-solid fa-plus"></i> Novo Reel
-            </button>
-          </div>
-          <div class="admin-items-grid" id="reelsListContainer">
-            <!-- Dynamic Reels List -->
           </div>
         </div>
       </section>
@@ -393,49 +365,6 @@
         <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 20px;">
           <button type="button" class="btn-admin btn-admin-secondary" onclick="closeAdminModal('modalProject')">Cancelar</button>
           <button type="submit" class="btn-admin btn-admin-primary">Salvar Projeto</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- MODAL EDIT REEL -->
-  <div class="admin-modal-backdrop" id="modalReel">
-    <div class="admin-modal-box">
-      <div class="admin-modal-header">
-        <h3 class="admin-modal-title" id="modalReelTitle">Editar Reel</h3>
-        <button class="admin-modal-close" onclick="closeAdminModal('modalReel')"><i class="fa-solid fa-xmark"></i></button>
-      </div>
-      <form id="formReel">
-        <input type="hidden" id="reelId">
-        <div class="form-group">
-          <label class="form-label">URL do Vídeo (MP4, YouTube Shorts ou Reel)</label>
-          <input type="url" id="reelVideoUrlText" class="form-input" placeholder="https://...">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Link do Post no Instagram (Opcional)</label>
-          <input type="url" id="reelUrlText" class="form-input" placeholder="https://instagram.com/reel/...">
-        </div>
-        <div class="form-group">
-          <label class="form-label">URL da Miniatura (Thumb)</label>
-          <input type="url" id="reelThumbUrlText" class="form-input" placeholder="assets/images/...">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Legenda / Título</label>
-          <input type="text" id="reelCaptionText" class="form-input" required placeholder="ex: Bastidores de comercial com RED V-Raptor">
-        </div>
-        <div class="admin-form-grid">
-          <div class="form-group">
-            <label class="form-label">Visualizações (Views)</label>
-            <input type="text" id="reelViewsText" class="form-input" placeholder="ex: 128K">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Curtidas (Likes)</label>
-            <input type="text" id="reelLikesText" class="form-input" placeholder="ex: 14.2K">
-          </div>
-        </div>
-        <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 20px;">
-          <button type="button" class="btn-admin btn-admin-secondary" onclick="closeAdminModal('modalReel')">Cancelar</button>
-          <button type="submit" class="btn-admin btn-admin-primary">Salvar Reel</button>
         </div>
       </form>
     </div>

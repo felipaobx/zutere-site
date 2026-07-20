@@ -255,9 +255,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // OVERVIEW STATS UPDATE
   function updateOverviewStats() {
-    document.getElementById('statHeroCount').textContent = siteData.heroSlides ? siteData.heroSlides.length : 0;
-    document.getElementById('statProjectCount').textContent = siteData.projects ? siteData.projects.length : 0;
-    document.getElementById('statReelsCount').textContent = siteData.reels ? siteData.reels.length : 0;
+    if (document.getElementById('statHeroCount')) document.getElementById('statHeroCount').textContent = siteData.heroSlides ? siteData.heroSlides.length : 0;
+    if (document.getElementById('statProjectCount')) document.getElementById('statProjectCount').textContent = siteData.projects ? siteData.projects.length : 0;
   }
 
   // ------------------------------------------------------------------------
@@ -352,49 +351,8 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ------------------------------------------------------------------------
-  // REELS RENDER & ACTIONS
+  // SITE SETTINGS & CONTACT HANDLERS
   // ------------------------------------------------------------------------
-  function renderReels() {
-    const container = document.getElementById('reelsListContainer');
-    if (!container) return;
-
-    container.innerHTML = '';
-    siteData.reels.forEach(reel => {
-      const mediaInfo = parseMedia(reel.videoUrl || reel.reelUrl);
-      let thumb = reel.thumbUrl;
-      if (mediaInfo.type === 'youtube') {
-        thumb = mediaInfo.thumb;
-      }
-      if (!thumb) thumb = 'assets/images/reels_behind_the_scenes.png';
-
-      const card = document.createElement('div');
-      card.className = 'admin-item-card';
-      card.innerHTML = `
-        <div class="admin-item-media" style="height:200px;">
-          <img src="${thumb}" alt="${reel.caption}">
-          <span class="admin-item-type-badge">
-            <i class="fa-brands fa-instagram"></i> REEL
-          </span>
-        </div>
-        <div class="admin-item-body">
-          <h3 class="admin-item-title">${reel.caption}</h3>
-          <div class="admin-item-meta">
-            <span><i class="fa-solid fa-eye"></i> ${reel.views || '0'}</span>
-            <span><i class="fa-solid fa-heart"></i> ${reel.likes || '0'}</span>
-          </div>
-          <div class="admin-item-actions">
-            <button class="btn-admin btn-admin-secondary btn-admin-sm" onclick="editReel('${reel.id}')">
-              <i class="fa-solid fa-pen"></i> Editar
-            </button>
-            <button class="btn-admin btn-admin-danger btn-admin-sm" onclick="deleteReel('${reel.id}')">
-              <i class="fa-solid fa-trash"></i> Excluir
-            </button>
-          </div>
-        </div>
-      `;
-      container.appendChild(card);
-    });
-  }
 
   // ------------------------------------------------------------------------
   // SETTINGS FORM POPULATE & BIND
@@ -563,62 +521,6 @@ document.addEventListener('DOMContentLoaded', () => {
     closeAdminModal('modalProject');
   });
 
-  // REELS MODAL & CRUD
-  document.getElementById('btnAddReel').addEventListener('click', () => {
-    document.getElementById('reelId').value = '';
-    document.getElementById('modalReelTitle').textContent = 'Novo Reel';
-    document.getElementById('formReel').reset();
-    openAdminModal('modalReel');
-  });
-
-  window.editReel = function(id) {
-    const reel = siteData.reels.find(r => r.id === id);
-    if (!reel) return;
-    document.getElementById('reelId').value = reel.id;
-    document.getElementById('modalReelTitle').textContent = 'Editar Reel';
-    document.getElementById('reelVideoUrlText').value = reel.videoUrl || '';
-    document.getElementById('reelUrlText').value = reel.reelUrl || '';
-    document.getElementById('reelThumbUrlText').value = reel.thumbUrl || '';
-    document.getElementById('reelCaptionText').value = reel.caption;
-    document.getElementById('reelViewsText').value = reel.views || '';
-    document.getElementById('reelLikesText').value = reel.likes || '';
-    openAdminModal('modalReel');
-  };
-
-  window.deleteReel = function(id) {
-    if (confirm('Tem certeza que deseja excluir este Reel?')) {
-      siteData.reels = siteData.reels.filter(r => r.id !== id);
-      saveData();
-      renderReels();
-    }
-  };
-
-  document.getElementById('formReel').addEventListener('submit', (e) => {
-    e.preventDefault();
-    const id = document.getElementById('reelId').value;
-    const reelData = {
-      id: id || `reel_${Date.now()}`,
-      videoUrl: document.getElementById('reelVideoUrlText').value,
-      reelUrl: document.getElementById('reelUrlText').value,
-      thumbUrl: document.getElementById('reelThumbUrlText').value,
-      caption: document.getElementById('reelCaptionText').value,
-      user: '@zutereprodutora',
-      views: document.getElementById('reelViewsText').value || '10K',
-      likes: document.getElementById('reelLikesText').value || '1.2K'
-    };
-
-    if (id) {
-      const idx = siteData.reels.findIndex(r => r.id === id);
-      if (idx !== -1) siteData.reels[idx] = reelData;
-    } else {
-      siteData.reels.push(reelData);
-    }
-
-    saveData();
-    renderReels();
-    closeAdminModal('modalReel');
-  });
-
   // ------------------------------------------------------------------------
   // BACKUP & RESTORE ACTIONS
   // ------------------------------------------------------------------------
@@ -672,7 +574,6 @@ document.addEventListener('DOMContentLoaded', () => {
     updateOverviewStats();
     renderHeroSlides();
     renderProjects();
-    renderReels();
     populateSettingsForm();
   }
 
