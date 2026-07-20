@@ -45,6 +45,9 @@
         <button class="admin-nav-item" data-tab="catalog">
           <i class="fa-solid fa-list-check"></i> Catálogo de Serviços
         </button>
+        <button class="admin-nav-item" data-tab="company">
+          <i class="fa-solid fa-building-user"></i> Empresa & Rodapé
+        </button>
       </nav>
 
       <div class="admin-sidebar-footer">
@@ -252,6 +255,7 @@
       </section>
 
       <!-- TAB 3: SERVICES CATALOG -->
+      <!-- TAB 3: SERVICES CATALOG -->
       <section class="admin-tab-panel" id="tab-catalog">
         <div class="admin-panel-card">
           <div class="admin-panel-header">
@@ -264,6 +268,71 @@
             <!-- Dynamic Catalog Items -->
           </div>
         </div>
+      </section>
+
+      <!-- TAB 4: COMPANY INFO & FOOTER SETTINGS -->
+      <section class="admin-tab-panel" id="tab-company">
+        <form id="formCompanySettings">
+          <div class="admin-panel-card">
+            <div class="admin-panel-header">
+              <h2 class="admin-panel-title"><i class="fa-solid fa-building-user"></i> Dados Fiscais & Comerciais da Produtora</h2>
+            </div>
+            <div class="admin-form-grid">
+              <div class="form-group">
+                <label class="form-label"><i class="fa-solid fa-building"></i> Razão Social / Nome da Empresa</label>
+                <input type="text" id="companyLegalName" class="form-input" placeholder="ex: Zutere Produção Audiovisual LTDA">
+              </div>
+              <div class="form-group">
+                <label class="form-label"><i class="fa-solid fa-id-card"></i> CNPJ</label>
+                <input type="text" id="companyCnpj" class="form-input" placeholder="ex: 00.000.000/0001-00">
+              </div>
+              <div class="form-group">
+                <label class="form-label"><i class="fa-brands fa-whatsapp"></i> Telefone / WhatsApp Comercial</label>
+                <input type="text" id="companyPhone" class="form-input" placeholder="ex: (11) 99999-8888">
+              </div>
+              <div class="form-group">
+                <label class="form-label"><i class="fa-solid fa-envelope"></i> E-mail Comercial</label>
+                <input type="email" id="companyEmail" class="form-input" placeholder="ex: contato@zutere.com.br">
+              </div>
+              <div class="form-group full-width">
+                <label class="form-label"><i class="fa-solid fa-location-dot"></i> Endereço Completo (Rua, Nº, Bairro, Cidade - UF, CEP)</label>
+                <input type="text" id="companyAddress" class="form-input" placeholder="ex: Av. Paulista, 1000 - Bela Vista, São Paulo - SP, 01310-100">
+              </div>
+            </div>
+          </div>
+
+          <div class="admin-panel-card">
+            <div class="admin-panel-header">
+              <h2 class="admin-panel-title"><i class="fa-solid fa-pix"></i> Chave PIX & Dados Bancários Padrão</h2>
+            </div>
+            <div class="admin-form-grid">
+              <div class="form-group">
+                <label class="form-label"><i class="fa-solid fa-key"></i> Chave PIX Principal (CNPJ, E-mail ou Celular)</label>
+                <input type="text" id="companyPixKey" class="form-input" placeholder="ex: 00.000.000/0001-00 ou pix@zutere.com.br">
+              </div>
+              <div class="form-group">
+                <label class="form-label"><i class="fa-solid fa-building-columns"></i> Banco / Favorecido</label>
+                <input type="text" id="companyBankInfo" class="form-input" placeholder="ex: Banco Itaú - Zutere Audiovisual">
+              </div>
+            </div>
+          </div>
+
+          <div class="admin-panel-card">
+            <div class="admin-panel-header">
+              <h2 class="admin-panel-title"><i class="fa-solid fa-scale-balanced"></i> Termos Padrão do Rodapé do Orçamento</h2>
+            </div>
+            <div class="form-group full-width">
+              <label class="form-label">Texto de Rodapé / Termos de Direitos & Condições</label>
+              <textarea id="companyFooterTerms" class="form-textarea" placeholder="ex: Os direitos autorais e de veiculação do vídeo serão cedidos após a quitação integral do projeto. Este orçamento possui validade pela quantidade de dias informada no cabeçalho."></textarea>
+            </div>
+          </div>
+
+          <div style="display: flex; justify-content: flex-end; margin-bottom: 30px;">
+            <button type="submit" class="btn-admin btn-admin-primary">
+              <i class="fa-solid fa-floppy-disk"></i> Salvar Dados da Empresa & Rodapé
+            </button>
+          </div>
+        </form>
       </section>
 
     </main>

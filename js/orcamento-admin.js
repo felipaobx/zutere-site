@@ -40,8 +40,30 @@ document.addEventListener('DOMContentLoaded', () => {
     return DEFAULT_CATALOG;
   }
 
+  // DEFAULT COMPANY INFO (CNPJ, ADDRESS, FOOTER TERMS)
+  const DEFAULT_COMPANY_INFO = {
+    legalName: 'Zutere Produção Audiovisual LTDA',
+    cnpj: '00.000.000/0001-00',
+    phone: '(11) 99999-8888',
+    email: 'contato@zutere.com.br',
+    address: 'Av. Paulista, 1000 - Bela Vista, São Paulo - SP, 01310-100',
+    pixKey: 'contato@zutere.com.br',
+    bankInfo: 'Banco Itaú - Chave PIX E-mail',
+    footerTerms: '• Os direitos autorais e de veiculação das produções serão cedidos mediante quitação integral do projeto.\n• O orçamento possui validade pela quantidade de dias informada no cabeçalho.\n• Alterações adicionais no roteiro/montagem aprovados poderão acarretar custos extras de diária/edição.'
+  };
+
+  function loadCompanyInfo() {
+    const saved = localStorage.getItem('zutere_company_info');
+    if (saved) {
+      try { return JSON.parse(saved); } catch (e) {}
+    }
+    localStorage.setItem('zutere_company_info', JSON.stringify(DEFAULT_COMPANY_INFO));
+    return DEFAULT_COMPANY_INFO;
+  }
+
   let quotesHistory = loadQuotesHistory();
   let catalogServices = loadCatalog();
+  let companyInfo = loadCompanyInfo();
 
   function saveQuotesHistory() {
     localStorage.setItem('zutere_quotes_history', JSON.stringify(quotesHistory));
@@ -53,6 +75,11 @@ document.addEventListener('DOMContentLoaded', () => {
     renderCatalog();
   }
 
+  function saveCompanyInfo() {
+    localStorage.setItem('zutere_company_info', JSON.stringify(companyInfo));
+    showToast('Dados da empresa e rodapé salvos com sucesso!', 'success');
+  }
+
   // TAB NAVIGATION
   const navButtons = document.querySelectorAll('.admin-nav button');
   const tabPanels = document.querySelectorAll('.admin-tab-panel');
@@ -62,7 +89,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const tabTitles = {
     create: { title: 'Gerador de Orçamentos', sub: 'Crie propostas comerciais profissionais, calcule valores e envie diretamente ao cliente.' },
     history: { title: 'Histórico de Propostas', sub: 'Gerencie orçamentos emitidos, acompanhe aprovações e envie relatórios.' },
-    catalog: { title: 'Catálogo de Serviços', sub: 'Configure os valores sugeridos de diárias e serviços recorrentes da produtora.' }
+    catalog: { title: 'Catálogo de Serviços', sub: 'Configure os valores sugeridos de diárias e serviços recorrentes da produtora.' },
+    company: { title: 'Dados da Empresa & Rodapé', sub: 'Configure CNPJ, endereço, telefone, chave PIX e termos contratuais para exibição no rodapé dos orçamentos.' }
   };
 
   window.switchProposalTab = function(tabId) {
@@ -284,6 +312,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function generateProposalHTML(quote) {
     const issueFormatted = quote.issueDate ? new Date(quote.issueDate).toLocaleDateString('pt-BR') : new Date().toLocaleDateString('pt-BR');
+    const comp = companyInfo || DEFAULT_COMPANY_INFO;
 
     let itemsRowsHtml = quote.items.map((item, idx) => `
       <tr style="border-bottom: 1px solid #E2E8F0; background: ${idx % 2 === 0 ? '#FFFFFF' : '#F8FAFC'};">
@@ -301,8 +330,9 @@ document.addEventListener('DOMContentLoaded', () => {
         <div style="background: #0B0E17; color: #FFFFFF; padding: 26px 30px; border-radius: 16px; margin-bottom: 26px; border: 1px solid rgba(255, 91, 0, 0.4); display: flex; justify-content: space-between; align-items: center; box-shadow: 0 10px 25px rgba(0,0,0,0.3);">
           <div>
             <img src="assets/logo.png" alt="Zutere Audiovisual" style="height: 44px; width: auto; margin-bottom: 8px; display: block;">
-            <p style="font-size: 0.82rem; color: #94A3B8; margin: 0; font-weight: 500;">Produção Cinematográfica & Vídeos de Alto Impacto</p>
-            <p style="font-size: 0.78rem; color: #CBD5E1; margin: 2px 0 0 0;">contato@zutere.com.br | www.zutere.com.br</p>
+            <h2 style="font-size: 1.05rem; font-weight: 800; color: #FFFFFF; margin: 0;">${comp.legalName || 'ZUTERE AUDIOVISUAL'}</h2>
+            ${comp.cnpj ? `<p style="font-size: 0.78rem; color: #FF5B00; margin: 2px 0 0 0; font-weight: 700;">CNPJ: ${comp.cnpj}</p>` : ''}
+            <p style="font-size: 0.78rem; color: #CBD5E1; margin: 2px 0 0 0;">${comp.phone ? comp.phone + ' | ' : ''}${comp.email || 'contato@zutere.com.br'}</p>
           </div>
           <div style="text-align: right;">
             <span style="font-size: 0.72rem; font-weight: 800; color: #FF5B00; text-transform: uppercase; letter-spacing: 1.5px; background: rgba(255,91,0,0.15); padding: 4px 10px; border-radius: 20px; border: 1px solid rgba(255,91,0,0.3);">PROPOSTA COMERCIAL</span>
@@ -346,7 +376,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         <!-- TOTALS & SUMMARY -->
         <div style="display: flex; justify-content: flex-end; margin-bottom: 26px; page-break-inside: avoid;">
-          <div style="width: 340px; background: #F8FAFC; padding: 20px; border-radius: 14px; border: 1px solid #CBD5E1;">
+          <div style="width: 360px; background: #F8FAFC; padding: 20px; border-radius: 14px; border: 1px solid #CBD5E1;">
             <div style="display: flex; justify-content: space-between; font-size: 0.92rem; color: #475569; margin-bottom: 8px;">
               <span>Subtotal dos Serviços:</span>
               <span style="font-weight: 600; color: #0F172A;">${formatBRL(quote.subtotal)}</span>
@@ -365,21 +395,27 @@ document.addEventListener('DOMContentLoaded', () => {
               <span>VALOR TOTAL:</span>
               <span style="font-size: 1.4rem;">${formatBRL(quote.grandTotal)}</span>
             </div>
+            ${comp.pixKey ? `
+            <div style="margin-top: 12px; padding-top: 10px; border-top: 1px solid #E2E8F0; font-size: 0.78rem; color: #475569;">
+              <strong>Chave PIX:</strong> ${comp.pixKey}<br>
+              <span style="color:#64748B;">${comp.bankInfo || ''}</span>
+            </div>` : ''}
           </div>
         </div>
 
         <!-- CONDITIONS & NOTES -->
-        <div style="background: #F8FAFC; border-left: 5px solid #FF5B00; padding: 20px; border-radius: 4px 14px 14px 4px; border-top: 1px solid #E2E8F0; border-right: 1px solid #E2E8F0; border-bottom: 1px solid #E2E8F0; margin-bottom: 34px; page-break-inside: avoid;">
-          <h4 style="font-size: 0.92rem; font-weight: 800; color: #0F172A; margin: 0 0 8px 0; text-transform: uppercase;">CONDIÇÕES COMERCIAIS & NOTAS</h4>
+        <div style="background: #F8FAFC; border-left: 5px solid #FF5B00; padding: 20px; border-radius: 4px 14px 14px 4px; border-top: 1px solid #E2E8F0; border-right: 1px solid #E2E8F0; border-bottom: 1px solid #E2E8F0; margin-bottom: 26px; page-break-inside: avoid;">
+          <h4 style="font-size: 0.92rem; font-weight: 800; color: #0F172A; margin: 0 0 8px 0; text-transform: uppercase;">CONDIÇÕES COMERCIAIS & TERMOS</h4>
           <p style="font-size: 0.88rem; color: #334155; margin: 0 0 6px 0;">• <strong>Forma de Pagamento:</strong> ${quote.paymentTerms}</p>
-          ${quote.notes ? `<p style="font-size: 0.88rem; color: #334155; margin: 4px 0 0 0; white-space: pre-line;">• <strong>Observações:</strong> ${quote.notes}</p>` : ''}
+          ${quote.notes ? `<p style="font-size: 0.88rem; color: #334155; margin: 4px 0 6px 0; white-space: pre-line;">• <strong>Observações:</strong> ${quote.notes}</p>` : ''}
+          ${comp.footerTerms ? `<p style="font-size: 0.82rem; color: #64748B; margin: 8px 0 0 0; white-space: pre-line; border-top: 1px dashed #CBD5E1; padding-top: 8px;">${comp.footerTerms}</p>` : ''}
         </div>
 
         <!-- SIGNATURE / APPROVAL SECTION -->
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 50px; margin-top: 40px; text-align: center; page-break-inside: avoid;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 50px; margin-top: 36px; text-align: center; page-break-inside: avoid;">
           <div>
             <div style="border-bottom: 1.5px solid #94A3B8; margin-bottom: 8px; height: 35px;"></div>
-            <span style="font-size: 0.88rem; font-weight: 800; color: #0F172A;">ZUTERE AUDIOVISUAL</span>
+            <span style="font-size: 0.88rem; font-weight: 800; color: #0F172A;">${comp.legalName || 'ZUTERE AUDIOVISUAL'}</span>
             <p style="font-size: 0.78rem; color: #64748B; margin: 2px 0 0 0;">Produtora Executiva</p>
           </div>
           <div>
@@ -387,6 +423,12 @@ document.addEventListener('DOMContentLoaded', () => {
             <span style="font-size: 0.88rem; font-weight: 800; color: #0F172A;">ACEITE DO CLIENTE</span>
             <p style="font-size: 0.78rem; color: #64748B; margin: 2px 0 0 0;">Assinatura & Data</p>
           </div>
+        </div>
+
+        <!-- FOOTER ADDRESS & CNPJ NOTE -->
+        <div style="margin-top: 30px; text-align: center; padding-top: 16px; border-top: 1px solid #E2E8F0; font-size: 0.75rem; color: #64748B; page-break-inside: avoid;">
+          <p style="margin: 0;">${comp.legalName || 'Zutere Produção Audiovisual'} ${comp.cnpj ? ' • CNPJ: ' + comp.cnpj : ''}</p>
+          ${comp.address ? `<p style="margin: 2px 0 0 0;">${comp.address}</p>` : ''}
         </div>
 
       </div>
@@ -585,13 +627,49 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
+  // ------------------------------------------------------------------------
+  // COMPANY SETTINGS FORM HANDLERS
+  // ------------------------------------------------------------------------
+  function populateCompanyForm() {
+    const c = companyInfo || DEFAULT_COMPANY_INFO;
+    if (document.getElementById('companyLegalName')) document.getElementById('companyLegalName').value = c.legalName || '';
+    if (document.getElementById('companyCnpj')) document.getElementById('companyCnpj').value = c.cnpj || '';
+    if (document.getElementById('companyPhone')) document.getElementById('companyPhone').value = c.phone || '';
+    if (document.getElementById('companyEmail')) document.getElementById('companyEmail').value = c.email || '';
+    if (document.getElementById('companyAddress')) document.getElementById('companyAddress').value = c.address || '';
+    if (document.getElementById('companyPixKey')) document.getElementById('companyPixKey').value = c.pixKey || '';
+    if (document.getElementById('companyBankInfo')) document.getElementById('companyBankInfo').value = c.bankInfo || '';
+    if (document.getElementById('companyFooterTerms')) document.getElementById('companyFooterTerms').value = c.footerTerms || '';
+  }
+
+  const formCompany = document.getElementById('formCompanySettings');
+  if (formCompany) {
+    formCompany.addEventListener('submit', (e) => {
+      e.preventDefault();
+      companyInfo = {
+        legalName: document.getElementById('companyLegalName').value,
+        cnpj: document.getElementById('companyCnpj').value,
+        phone: document.getElementById('companyPhone').value,
+        email: document.getElementById('companyEmail').value,
+        address: document.getElementById('companyAddress').value,
+        pixKey: document.getElementById('companyPixKey').value,
+        bankInfo: document.getElementById('companyBankInfo').value,
+        footerTerms: document.getElementById('companyFooterTerms').value
+      };
+      saveCompanyInfo();
+    });
+  }
+
   // INITIALIZE DEFAULT ROW ON CREATE TAB
   function initGenerator() {
     itemsTableBody.innerHTML = '';
     createItemRow();
     renderHistoryTable();
     renderCatalog();
-    document.getElementById('quoteIssueDate').value = new Date().toISOString().slice(0,10);
+    populateCompanyForm();
+    if (document.getElementById('quoteIssueDate')) {
+      document.getElementById('quoteIssueDate').value = new Date().toISOString().slice(0,10);
+    }
   }
 
   initGenerator();
