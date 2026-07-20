@@ -599,7 +599,7 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   // ------------------------------------------------------------------------
-  // CATALOG MANAGEMENT
+  // CATALOG MANAGEMENT WITH EDIT & CREATE MODAL
   // ------------------------------------------------------------------------
   function renderCatalog() {
     const container = document.getElementById('catalogListContainer');
@@ -611,10 +611,13 @@ document.addEventListener('DOMContentLoaded', () => {
       card.className = 'admin-item-card';
       card.innerHTML = `
         <div class="admin-item-body">
-          <span style="font-size:0.75rem; color:var(--admin-primary); font-weight:700;">${srv.category}</span>
-          <h3 class="admin-item-title">${srv.name}</h3>
+          <span style="font-size:0.75rem; color:var(--admin-primary); font-weight:700; text-transform:uppercase;">${srv.category || 'Geral'}</span>
+          <h3 class="admin-item-title" style="margin-top: 4px;">${srv.name}</h3>
           <h2 style="font-size:1.4rem; font-weight:800; color:#FFF; margin:10px 0;">${formatBRL(srv.defaultPrice)}</h2>
-          <div class="admin-item-actions">
+          <div class="admin-item-actions" style="display: flex; gap: 8px;">
+            <button class="btn-admin btn-admin-secondary btn-admin-sm" onclick="editCatalogItem('${srv.id}')">
+              <i class="fa-solid fa-pen-to-square"></i> Editar
+            </button>
             <button class="btn-admin btn-admin-danger btn-admin-sm" onclick="deleteCatalogItem('${srv.id}')">
               <i class="fa-solid fa-trash"></i> Excluir
             </button>
@@ -625,21 +628,78 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  document.getElementById('btnAddCatalogItem').addEventListener('click', () => {
-    const name = prompt('Nome do Serviço:');
-    if (!name) return;
-    const priceStr = prompt('Valor Sugerido (R$):', '1000');
-    const price = parseFloat(priceStr) || 1000;
-    const cat = prompt('Categoria (ex: Captação, Drone, Pós-Produção):', 'Serviço');
+  window.openCatalogModal = function(itemId = null) {
+    const modal = document.getElementById('modalCatalogItem');
+    const title = document.getElementById('modalCatalogTitle');
+    const idInput = document.getElementById('modalCatalogId');
+    const nameInput = document.getElementById('modalCatalogName');
+    const priceInput = document.getElementById('modalCatalogPrice');
+    const catInput = document.getElementById('modalCatalogCategory');
 
-    catalogServices.push({
-      id: `srv_${Date.now()}`,
-      name: name,
-      defaultPrice: price,
-      category: cat || 'Geral'
+    if (!modal) return;
+
+    if (itemId) {
+      const item = catalogServices.find(s => s.id === itemId);
+      if (item) {
+        title.innerHTML = '<i class="fa-solid fa-pen-to-square"></i> Editar Serviço do Catálogo';
+        idInput.value = item.id;
+        nameInput.value = item.name;
+        priceInput.value = item.defaultPrice;
+        catInput.value = item.category || 'Captação';
+      }
+    } else {
+      title.innerHTML = '<i class="fa-solid fa-list-check"></i> Novo Serviço do Catálogo';
+      idInput.value = '';
+      nameInput.value = '';
+      priceInput.value = '';
+      catInput.value = 'Captação';
+    }
+
+    openAdminModal('modalCatalogItem');
+  };
+
+  window.editCatalogItem = function(id) {
+    openCatalogModal(id);
+  };
+
+  const btnAddCatalog = document.getElementById('btnAddCatalogItem');
+  if (btnAddCatalog) {
+    btnAddCatalog.addEventListener('click', () => {
+      openCatalogModal(null);
     });
-    saveCatalog();
-  });
+  }
+
+  const formCatalog = document.getElementById('formCatalogItem');
+  if (formCatalog) {
+    formCatalog.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const id = document.getElementById('modalCatalogId').value;
+      const name = document.getElementById('modalCatalogName').value;
+      const price = parseFloat(document.getElementById('modalCatalogPrice').value) || 0;
+      const cat = document.getElementById('modalCatalogCategory').value || 'Geral';
+
+      if (id) {
+        const item = catalogServices.find(s => s.id === id);
+        if (item) {
+          item.name = name;
+          item.defaultPrice = price;
+          item.category = cat;
+        }
+        showToast('Serviço atualizado com sucesso!', 'success');
+      } else {
+        catalogServices.push({
+          id: `srv_${Date.now()}`,
+          name: name,
+          defaultPrice: price,
+          category: cat
+        });
+        showToast('Novo serviço adicionado ao catálogo!', 'success');
+      }
+
+      saveCatalog();
+      closeAdminModal('modalCatalogItem');
+    });
+  }
 
   window.deleteCatalogItem = function(id) {
     if (confirm('Excluir este serviço do catálogo?')) {
