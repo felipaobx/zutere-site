@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zutere Audiovisual | Produção Cinematográfica & Vídeos de Alto Impacto</title>
+  <meta name="description" content="Zutere Audiovisual - Produtora especializada em vídeos comerciais, videoclipes, eventos, imagens aéreas com drone e produções cinematográficas de alto nível.">
+  
+  <!-- Favicon / Vector Icon -->
+  <link rel="icon" type="image/svg+xml" href="assets/logo.png">
+
+  <!-- Google Fonts: Montserrat & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="dark-theme">
+
+
+
+  <!-- Header / Navigation Bar -->
+  <header class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="#hero" class="brand-logo">
+        <img src="assets/logo.png" alt="Zutere Audiovisual Logo" class="logo-img">
+      </a>
+
+      <nav class="nav-menu" id="navMenu">
+        <a href="#hero" class="nav-link active">Início</a>
+        <a href="#portfolio" class="nav-link">Portfólio</a>
+        <a href="#reels" class="nav-link">Reels Instagram</a>
+        <a href="#sobre" class="nav-link">Sobre Nós</a>
+        <a href="#orcamento" class="nav-link">Contato</a>
+      </nav>
+
+      <div class="nav-actions">
+        <button class="mobile-toggle" id="mobileToggle" aria-label="Abrir Menu">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main>
+
+    <!-- HERO SECTION WITH MIXED MEDIA SLIDER (PHOTOS & VIDEOS) -->
+    <section id="hero" class="hero-slider-section">
+      <div class="slider-wrapper" id="heroSlider">
+
+        <!-- Slide 1: Video Slide -->
+        <div class="slide slide-video active" data-type="video">
+          <div class="slide-media">
+            <video class="hero-video-bg" autoplay loop muted playsinline poster="assets/images/hero_cinema_camera.png">
+              <source src="https://assets.mixkit.co/videos/preview/mixkit-camera-operator-filming-a-scene-in-a-studio-41481-large.mp4" type="video/mp4">
+              <img src="assets/images/hero_cinema_camera.png" alt="Set de Filmagem Zutere">
+            </video>
+            <div class="slide-overlay"></div>
+          </div>
+          <div class="slide-content container">
+            <span class="slide-badge"><i class="fa-solid fa-film"></i> Cinema & Publicidade</span>
+            <h1 class="slide-title">Transformando Ideias em <span class="text-gradient">Narrativas Épicas</span></h1>
+            <p class="slide-description">Produtora audiovisual especialista em comerciais, filmes de alta definição, direção de fotografia e produções que encantam audiências.</p>
+          </div>
+        </div>
+
+        <!-- Slide 2: Photo Slide -->
+        <div class="slide slide-photo" data-type="photo">
+          <div class="slide-media">
+            <img src="assets/images/hero_concert_stage.png" alt="Cobertura de Evento e Shows" class="hero-img-bg">
+            <div class="slide-overlay"></div>
+          </div>
+          <div class="slide-content container">
+            <span class="slide-badge"><i class="fa-solid fa-bolt"></i> Eventos & Broadcast Live</span>
+            <h1 class="slide-title">A Energia do Ao Vivo em <span class="text-gradient">Qualidade Broadcast</span></h1>
+            <p class="slide-description">Captação multi-câmera com estabilização avançada para festivais, shows e coberturas institucionais de grande porte.</p>
+          </div>
+        </div>
+
+        <!-- Slide 3: Video Slide -->
+        <div class="slide slide-video" data-type="video">
+          <div class="slide-media">
+            <video class="hero-video-bg" loop muted playsinline poster="assets/images/project_commercial_car.png">
+              <source src="https://assets.mixkit.co/videos/preview/mixkit-car-driving-fast-at-night-42861-large.mp4" type="video/mp4">
+              <img src="assets/images/project_commercial_car.png" alt="Comerciais Supercar">
+            </video>
+            <div class="slide-overlay"></div>
+          </div>
+          <div class="slide-content container">
+            <span class="slide-badge"><i class="fa-solid fa-car-side"></i> Comercial de Produtos & Automotivo</span>
+            <h1 class="slide-title">Estética <span class="text-gradient">Cinematográfica</span> que Vende</h1>
+            <p class="slide-description">Iluminação de estúdio meticulosa, rigs de câmera dinâmicos e color grading de nível Hollywood para sua marca.</p>
+          </div>
+        </div>
+
+        <!-- Slide 4: Photo Slide -->
+        <div class="slide slide-photo" data-type="photo">
+          <div class="slide-media">
+            <img src="assets/images/project_drone_aerial.png" alt="Imagens Aéreas com Drone FPV" class="hero-img-bg">
+            <div class="slide-overlay"></div>
+          </div>
+          <div class="slide-content container">
+            <span class="slide-badge"><i class="fa-solid fa-helicopter"></i> Imagens Aéreas 8K / FPV</span>
+            <h1 class="slide-title">Perspectivas Sem Limites <span class="text-gradient">Acima das Nuvens</span></h1>
+            <p class="slide-description">Pilotos certificados de drones FPV e de cinema para tomadas aéreas contínuas, dinâmicas e impressionantes.</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- QUICK STATS BAR -->
+    <section class="stats-bar-section">
+      <div class="container stats-grid">
+        <div class="stat-card">
+          <div class="stat-number-wrap">
+            <span class="stat-number" data-target="180">0</span><span class="stat-plus">+</span>
+          </div>
+          <span class="stat-label">Projetos Produzidos</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-card">
+          <div class="stat-number-wrap">
+            <span class="stat-number" data-target="100">0</span><span class="stat-plus">%</span>
+          </div>
+          <span class="stat-label">Qualidade 4K / 8K HDR</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-card">
+          <div class="stat-number-wrap">
+            <span class="stat-number" data-target="50">0</span><span class="stat-plus">+</span>
+          </div>
+          <span class="stat-label">Marcas Atendidas</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-card">
+          <div class="stat-number-wrap">
+            <span class="stat-number" data-target="12">0</span><span class="stat-plus"> Anos</span>
+          </div>
+          <span class="stat-label">De Excelência no Audiovisual</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- PORTFOLIO / PROJECTS SECTION -->
+    <section id="portfolio" class="portfolio-section section-padding">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-badge"><i class="fa-solid fa-photo-film"></i> Nosso Portfólio</span>
+          <h2 class="section-title">Trabalhos em <span class="text-gradient">Destaque</span></h2>
+          <p class="section-subtitle">Navegue pelas nossas produções recentes divididas por categorias de atuacão.</p>
+        </div>
+
+        <!-- Filter Controls -->
+        <div class="filter-bar">
+          <button class="filter-btn active" data-filter="all">Todos os Projetos</button>
+          <button class="filter-btn" data-filter="comercial">Comerciais</button>
+          <button class="filter-btn" data-filter="videoclipe">Videoclipes</button>
+          <button class="filter-btn" data-filter="eventos">Eventos & Shows</button>
+          <button class="filter-btn" data-filter="aereo">Drones & Aéreo</button>
+          <button class="filter-btn" data-filter="corporativo">Corporativo</button>
+        </div>
+
+        <!-- Projects Grid -->
+        <div class="projects-grid" id="projectsGrid">
+
+          <!-- Project 1 -->
+          <article class="project-card" data-category="comercial" data-video="https://assets.mixkit.co/videos/preview/mixkit-car-driving-fast-at-night-42861-large.mp4">
+            <div class="card-thumb">
+              <img src="assets/images/project_commercial_car.png" alt="Comercial HyperSport">
+              <div class="card-overlay">
+                <div class="card-play-btn"><i class="fa-solid fa-play"></i></div>
+              </div>
+              <span class="card-badge">Comercial 4K</span>
+            </div>
+            <div class="card-content">
+              <span class="project-client">Cliente: Titan Motors</span>
+              <h3 class="project-title">Campanha Lanzamento GT Series</h3>
+              <p class="project-desc">Filme publicitário com captura noturna em alta velocidade e color grading anamórfico.</p>
+              <div class="card-footer">
+                <span class="project-tag"><i class="fa-solid fa-film"></i> Cinema Rig & VFX</span>
+                <button class="project-action-btn">Ver Projeto <i class="fa-solid fa-arrow-up-right-from-square"></i></button>
+              </div>
+            </div>
+          </article>
+
+          <!-- Project 2 -->
+          <article class="project-card" data-category="eventos" data-video="https://assets.mixkit.co/videos/preview/mixkit-party-lights-in-a-disco-club-40545-large.mp4">
+            <div class="card-thumb">
+              <img src="assets/images/hero_concert_stage.png" alt="Festival de Música Electric Beats">
+              <div class="card-overlay">
+                <div class="card-play-btn"><i class="fa-solid fa-play"></i></div>
+              </div>
+              <span class="card-badge">Live Broadcast</span>
+            </div>
+            <div class="card-content">
+              <span class="project-client">Cliente: Electric Sound Fest</span>
+              <h3 class="project-title">Aftermovie Oficial Electric Beats 2025</h3>
+              <p class="project-desc">Cobertura completa em 8 câmeras cinema com som direto masterizado.</p>
+              <div class="card-footer">
+                <span class="project-tag"><i class="fa-solid fa-music"></i> Aftermovie & Multicam</span>
+                <button class="project-action-btn">Ver Projeto <i class="fa-solid fa-arrow-up-right-from-square"></i></button>
+              </div>
+            </div>
+          </article>
+
+          <!-- Project 3 -->
+          <article class="project-card" data-category="aereo" data-video="https://assets.mixkit.co/videos/preview/mixkit-aerial-view-of-city-traffic-at-night-41548-large.mp4">
+            <div class="card-thumb">
+              <img src="assets/images/project_drone_aerial.png" alt="Filmagem Aérea Costeira">
+              <div class="card-overlay">
+                <div class="card-play-btn"><i class="fa-solid fa-play"></i></div>
+              </div>
+              <span class="card-badge">Drone FPV 8K</span>
+            </div>
+            <div class="card-content">
+              <span class="project-client">Cliente: Resort Horizons</span>
+              <h3 class="project-title">Perspectiva Aérea Coastal Horizon</h3>
+              <p class="project-desc">Tomadas acrobáticas e imersivas de drone FPV para divulgação internacional.</p>
+              <div class="card-footer">
+                <span class="project-tag"><i class="fa-solid fa-helicopter"></i> FPV Cinema Drone</span>
+                <button class="project-action-btn">Ver Projeto <i class="fa-solid fa-arrow-up-right-from-square"></i></button>
+              </div>
+            </div>
+          </article>
+
+          <!-- Project 4 -->
+          <article class="project-card" data-category="videoclipe" data-video="https://assets.mixkit.co/videos/preview/mixkit-singer-performing-on-stage-under-neon-lights-41546-large.mp4">
+            <div class="card-thumb">
+              <img src="assets/images/hero_cinema_camera.png" alt="Videoclipe Musical Neon">
+              <div class="card-overlay">
+                <div class="card-play-btn"><i class="fa-solid fa-play"></i></div>
+              </div>
+              <span class="card-badge">Videoclipe</span>
+            </div>
+            <div class="card-content">
+              <span class="project-client">Artista: Nova Sound</span>
+              <h3 class="project-title">Videoclipe Oficial - "Luzes de Neon"</h3>
+              <p class="project-desc">Direção criativa, iluminação estilizada e efeitos visuais sincronizados com a batida.</p>
+              <div class="card-footer">
+                <span class="project-tag"><i class="fa-solid fa-sliders"></i> Direção de Arte</span>
+                <button class="project-action-btn">Ver Projeto <i class="fa-solid fa-arrow-up-right-from-square"></i></button>
+              </div>
+            </div>
+          </article>
+
+          <!-- Project 5 -->
+          <article class="project-card" data-category="corporativo" data-video="https://assets.mixkit.co/videos/preview/mixkit-people-working-in-a-modern-office-4320-large.mp4">
+            <div class="card-thumb">
+              <img src="assets/images/hero_cinema_camera.png" alt="Vídeo Institucional Tecnológico">
+              <div class="card-overlay">
+                <div class="card-play-btn"><i class="fa-solid fa-play"></i></div>
+              </div>
+              <span class="card-badge">Institucional</span>
+            </div>
+            <div class="card-content">
+              <span class="project-client">Cliente: Nexus Tech Group</span>
+              <h3 class="project-title">Vídeo Manifest de Inovação Corporate</h3>
+              <p class="project-desc">Apresentação institucional com depoimentos gravados em 4K e computação gráfica.</p>
+              <div class="card-footer">
+                <span class="project-tag"><i class="fa-solid fa-building"></i> Corporate Story</span>
+                <button class="project-action-btn">Ver Projeto <i class="fa-solid fa-arrow-up-right-from-square"></i></button>
+              </div>
+            </div>
+          </article>
+
+          <!-- Project 6 -->
+          <article class="project-card" data-category="comercial" data-video="https://assets.mixkit.co/videos/preview/mixkit-hands-of-a-craftsman-working-on-wood-41551-large.mp4">
+            <div class="card-thumb">
+              <img src="assets/images/project_drone_aerial.png" alt="Documentário Artesanal">
+              <div class="card-overlay">
+                <div class="card-play-btn"><i class="fa-solid fa-play"></i></div>
+              </div>
+              <span class="card-badge">Doc Series</span>
+            </div>
+            <div class="card-content">
+              <span class="project-client">Cliente: Heritage Craft</span>
+              <h3 class="project-title">Mini Doc - "Mãos que Criam"</h3>
+              <p class="project-desc">Série de vídeos curtos documentais ressaltando a tradição e atenção aos detalhes.</p>
+              <div class="card-footer">
+                <span class="project-tag"><i class="fa-solid fa-book-open"></i> Storytelling</span>
+                <button class="project-action-btn">Ver Projeto <i class="fa-solid fa-arrow-up-right-from-square"></i></button>
+              </div>
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+
+
+    <!-- WORKFLOW PROCESS SECTION -->
+    <section class="process-section section-padding">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-badge"><i class="fa-solid fa-diagram-project"></i> Nosso Processo</span>
+          <h2 class="section-title">Como Damos <span class="text-gradient">Vida à Sua Ideia</span></h2>
+          <p class="section-subtitle">Fluxo de trabalho otimizado para garantir pontualidade, transparência e excelência em cada entrega.</p>
+        </div>
+
+        <div class="process-steps">
+          <div class="step-card">
+            <div class="step-header">
+              <span class="step-number">01</span>
+              <div class="step-icon"><i class="fa-solid fa-lightbulb"></i></div>
+            </div>
+            <h3>Briefing & Roteiro</h3>
+            <p>Alinhamento de diretrizes, elaboração do conceito, roteirização técnica e criação do storyboard do seu vídeo.</p>
+          </div>
+
+          <div class="step-card">
+            <div class="step-header">
+              <span class="step-number">02</span>
+              <div class="step-icon"><i class="fa-solid fa-camera-rotate"></i></div>
+            </div>
+            <h3>Produção & Diária</h3>
+            <p>Filmagens com equipamentos de alto nível, iluminação de precisão e equipe multidisciplinar no set.</p>
+          </div>
+
+          <div class="step-card">
+            <div class="step-header">
+              <span class="step-number">03</span>
+              <div class="step-icon"><i class="fa-solid fa-sliders"></i></div>
+            </div>
+            <h3>Edição & Color Grading</h3>
+            <p>Corte, sincronização de áudio, sound design, adição de motion graphics e colorimetria no padrão cinema.</p>
+          </div>
+
+          <div class="step-card">
+            <div class="step-header">
+              <span class="step-number">04</span>
+              <div class="step-icon"><i class="fa-solid fa-circle-check"></i></div>
+            </div>
+            <h3>Revisão & Entrega Master</h3>
+            <p>Etapa de aprovação interativa com o cliente e disponibilização dos arquivos masters em todas as resoluções.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+
+    <!-- ABOUT ZUTERE SECTION -->
+    <section id="sobre" class="about-section section-padding">
+      <div class="container about-grid">
+        <div class="about-image-stack">
+          <img src="assets/images/hero_concert_stage.png" alt="Set de filmagem Zutere" class="about-img-main">
+          <div class="about-experience-card glass-panel">
+            <span class="exp-number">12+</span>
+            <span class="exp-text">Anos Criando Histórias Impactantes</span>
+          </div>
+        </div>
+        <div class="about-text-content">
+          <span class="section-badge"><i class="fa-solid fa-crown"></i> Sobre a Zutere</span>
+          <h2 class="section-title">Paixão por Movimento, <span class="text-gradient">Obsessão por Qualidade</span></h2>
+          <p class="about-para">A <strong>Zutere Audiovisual</strong> nasceu com a missão de elevar o patamar das produções visuais no Brasil. Combinamos sensibilidade artística com o vigor da inovação tecnológica.</p>
+          <p class="about-para">Atendemos agências de publicidade, grandes marcas, artistas musicais e organizadores de eventos que buscam uma estética refinada e capaz de despertar emoções reais.</p>
+          
+          <div class="about-highlights">
+            <div class="highlight-item">
+              <i class="fa-solid fa-bullseye"></i>
+              <div>
+                <strong>Visão Artística</strong>
+                <p>Cada frame é pensado para valorizar a mensagem da sua marca.</p>
+              </div>
+            </div>
+            <div class="highlight-item">
+              <i class="fa-solid fa-stopwatch"></i>
+              <div>
+                <strong>Pontualidade Rigorosa</strong>
+                <p>Prazos de entrega garantidos e comunicação constante durante todo o projeto.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ESTIMATOR & CONTACT SECTION -->
+    <section id="orcamento" class="contact-section section-padding alt-bg">
+      <div class="container">
+        <div class="section-header center">
+          <span class="section-badge"><i class="fa-solid fa-comments"></i> Atendimento Rápido</span>
+          <h2 class="section-title">Solicite Seu <span class="text-gradient">Orçamento</span></h2>
+          <p class="section-subtitle">Entre em contato diretamente com a nossa equipe via WhatsApp para alinhar detalhes da sua produção.</p>
+        </div>
+
+        <div class="contact-single-box glass-panel text-center">
+          <div class="whatsapp-cta-content">
+            <div class="whatsapp-badge-icon"><i class="fa-brands fa-whatsapp"></i></div>
+            <a href="https://wa.me/5511999999999?text=Ol%C3%A1%20equipe%20Zutere%20Audiovisual!%20Gostaria%20de%20solicitar%20um%20or%C3%A7amento%20para%20o%20meu%20projeto." target="_blank" rel="noopener" class="btn btn-whatsapp btn-large">
+              <i class="fa-brands fa-whatsapp"></i> Chamar no WhatsApp
+            </a>
+          </div>
+        </div>
+
+        <!-- REDES SOCIAIS (INSTAGRAM, TIKTOK, YOUTUBE) -->
+        <div class="social-networks-section">
+          <div class="section-header center style-compact">
+            <h3 class="sub-section-title">Nossas Redes Sociais</h3>
+            <p class="section-subtitle">Acompanhe nossas produções diárias e conteúdos exclusivos.</p>
+          </div>
+
+          <div class="social-cards-grid">
+            <!-- Instagram -->
+            <a href="https://instagram.com/zutereprodutora" target="_blank" rel="noopener" class="social-card insta">
+              <div class="social-card-icon"><i class="fa-brands fa-instagram"></i></div>
+              <div class="social-card-info">
+                <strong>Instagram</strong>
+                <span>@zutereprodutora</span>
+              </div>
+              <i class="fa-solid fa-arrow-up-right-from-square card-arrow"></i>
+            </a>
+
+            <!-- TikTok -->
+            <a href="https://tiktok.com/@zutereprodutora" target="_blank" rel="noopener" class="social-card tiktok">
+              <div class="social-card-icon"><i class="fa-brands fa-tiktok"></i></div>
+              <div class="social-card-info">
+                <strong>TikTok</strong>
+                <span>@zutereprodutora</span>
+              </div>
+              <i class="fa-solid fa-arrow-up-right-from-square card-arrow"></i>
+            </a>
+
+            <!-- YouTube -->
+            <a href="https://youtube.com/@zutereprodutora" target="_blank" rel="noopener" class="social-card youtube">
+              <div class="social-card-icon"><i class="fa-brands fa-youtube"></i></div>
+              <div class="social-card-info">
+                <strong>YouTube</strong>
+                <span>@zutereprodutora</span>
+              </div>
+              <i class="fa-solid fa-arrow-up-right-from-square card-arrow"></i>
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- INSTAGRAM REELS SECTION (@zutereprodutora) -->
+    <section id="reels" class="reels-section section-padding">
+      <div class="container">
+        <div class="section-header center">
+          <span class="section-badge"><i class="fa-brands fa-instagram"></i> Instagram Feed & Reels</span>
+          <h2 class="section-title">Reels <span class="text-gradient">@zutereprodutora</span></h2>
+          <p class="section-subtitle">Confira bastidores, cortes rápidos de câmeras e produções mais recentes publicadas no nosso perfil.</p>
+        </div>
+
+        <div class="reels-grid">
+          <!-- Reel 1 -->
+          <div class="reel-card" data-video="https://assets.mixkit.co/videos/preview/mixkit-camera-operator-filming-a-scene-in-a-studio-41481-large.mp4" data-reel-url="https://instagram.com/zutereprodutora">
+            <div class="reel-thumb">
+              <img src="assets/images/reels_behind_the_scenes.png" alt="Reel Bastidores Filmagem">
+              <div class="reel-overlay">
+                <div class="reel-play-icon"><i class="fa-solid fa-play"></i></div>
+              </div>
+              <span class="reel-badge"><i class="fa-brands fa-instagram"></i> Reel</span>
+              <div class="reel-stats">
+                <span><i class="fa-solid fa-eye"></i> 14.8K</span>
+                <span><i class="fa-solid fa-heart"></i> 1.2K</span>
+              </div>
+            </div>
+            <div class="reel-info">
+              <span class="reel-user">@zutereprodutora</span>
+              <h4 class="reel-caption">Bastidores de filmagem comercial com iluminação de cinema 🎬🔥</h4>
+            </div>
+          </div>
+
+          <!-- Reel 2 -->
+          <div class="reel-card" data-video="https://assets.mixkit.co/videos/preview/mixkit-party-lights-in-a-disco-club-40545-large.mp4" data-reel-url="https://instagram.com/zutereprodutora">
+            <div class="reel-thumb">
+              <img src="assets/images/reels_concert_cut.png" alt="Reel Cobertura Show">
+              <div class="reel-overlay">
+                <div class="reel-play-icon"><i class="fa-solid fa-play"></i></div>
+              </div>
+              <span class="reel-badge"><i class="fa-brands fa-instagram"></i> Reel</span>
+              <div class="reel-stats">
+                <span><i class="fa-solid fa-eye"></i> 28.3K</span>
+                <span><i class="fa-solid fa-heart"></i> 3.4K</span>
+              </div>
+            </div>
+            <div class="reel-info">
+              <span class="reel-user">@zutereprodutora</span>
+              <h4 class="reel-caption">Corte rápido eletrizante do último show ao vivo ⚡🎸</h4>
+            </div>
+          </div>
+
+          <!-- Reel 3 -->
+          <div class="reel-card" data-video="https://assets.mixkit.co/videos/preview/mixkit-aerial-view-of-city-traffic-at-night-41548-large.mp4" data-reel-url="https://instagram.com/zutereprodutora">
+            <div class="reel-thumb">
+              <img src="assets/images/project_drone_aerial.png" alt="Reel Drone FPV">
+              <div class="reel-overlay">
+                <div class="reel-play-icon"><i class="fa-solid fa-play"></i></div>
+              </div>
+              <span class="reel-badge"><i class="fa-brands fa-instagram"></i> Reel</span>
+              <div class="reel-stats">
+                <span><i class="fa-solid fa-eye"></i> 42.1K</span>
+                <span><i class="fa-solid fa-heart"></i> 5.8K</span>
+              </div>
+            </div>
+            <div class="reel-info">
+              <span class="reel-user">@zutereprodutora</span>
+              <h4 class="reel-caption">Voo FPV rasante sobre as falésias em 8K HDR 🚁🌊</h4>
+            </div>
+          </div>
+
+          <!-- Reel 4 -->
+          <div class="reel-card" data-video="https://assets.mixkit.co/videos/preview/mixkit-car-driving-fast-at-night-42861-large.mp4" data-reel-url="https://instagram.com/zutereprodutora">
+            <div class="reel-thumb">
+              <img src="assets/images/project_commercial_car.png" alt="Reel Comercial Supercar">
+              <div class="reel-overlay">
+                <div class="reel-play-icon"><i class="fa-solid fa-play"></i></div>
+              </div>
+              <span class="reel-badge"><i class="fa-brands fa-instagram"></i> Reel</span>
+              <div class="reel-stats">
+                <span><i class="fa-solid fa-eye"></i> 19.5K</span>
+                <span><i class="fa-solid fa-heart"></i> 2.1K</span>
+              </div>
+            </div>
+            <div class="reel-info">
+              <span class="reel-user">@zutereprodutora</span>
+              <h4 class="reel-caption">Color grading no DaVinci Resolve para comercial automotivo 🏎️✨</h4>
+            </div>
+          </div>
+        </div>
+
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="container footer-container">
+      <div class="footer-brand">
+        <a href="#hero" class="brand-logo">
+          <img src="assets/logo.png" alt="Zutere Audiovisual Logo" class="footer-logo">
+        </a>
+        <p class="footer-tagline">Produtora de Vídeo e Soluções Audiovisuais de Alto Impacto.</p>
+      </div>
+
+      <div class="footer-nav">
+        <h4>Navegação</h4>
+        <ul>
+          <li><a href="#hero">Início</a></li>
+          <li><a href="#portfolio">Portfólio</a></li>
+          <li><a href="#reels">Reels Instagram</a></li>
+          <li><a href="#sobre">Sobre Nós</a></li>
+          <li><a href="#orcamento">Contato</a></li>
+          <li><a href="admin.html" target="_blank" style="color:var(--accent-gradient-start); font-weight:600;"><i class="fa-solid fa-lock"></i> Painel Admin</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-services">
+        <h4>Especialidades</h4>
+        <ul>
+          <li>Comerciais Publicitários</li>
+          <li>Videoclipes Musicais</li>
+          <li>Filmagens com Drone FPV</li>
+          <li>Aftermovies de Eventos</li>
+          <li>Vídeos Institucionais</li>
+        </ul>
+      </div>
+
+      <div class="footer-top-btn">
+        <a href="#hero" class="back-to-top" id="backToTop" title="Voltar ao topo">
+          <i class="fa-solid fa-arrow-up"></i>
+        </a>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div class="container bottom-flex">
+        <p>&copy; 2026 Zutere Audiovisual. Todos os direitos reservados.</p>
+        <p class="designed-by">Desenvolvido com excelência cinematográfica.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- FULLSCREEN VIDEO PLAYER MODAL -->
+  <div class="video-modal" id="videoModal" aria-hidden="true">
+    <div class="video-modal-backdrop" id="modalBackdrop"></div>
+    <div class="video-modal-container">
+      <button class="modal-close-btn" id="modalCloseBtn" aria-label="Fechar Vídeo">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="video-player-wrapper">
+        <video id="modalVideoPlayer" controls playsinline>
+          <source src="https://assets.mixkit.co/videos/preview/mixkit-camera-operator-filming-a-scene-in-a-studio-41481-large.mp4" type="video/mp4">
+          Seu navegador não suporta a exibição de vídeos.
+        </video>
+        <div class="modal-video-info">
+          <h3 id="modalVideoTitle">Showreel Oficial Zutere Audiovisual</h3>
+          <span id="modalVideoSubtitle">Produção Cinematográfica 4K/8K HDR</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Custom JavaScript -->
+  <script src="js/main.js"></script>
+</body>
+</html>

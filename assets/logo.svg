@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 90" width="100%" height="100%">
+  <!-- ZUTERE Typography -->
+  <text x="0" y="66" font-family="'Montserrat', 'Inter', sans-serif" font-size="64" font-weight="900" letter-spacing="1" fill="#FFFFFF">ZUTERE</text>
+  <!-- Rounded Play Triangle Accent -->
+  <path d="M 284,18 C 278,18 274,22 274,28 L 274,70 C 274,76 278,80 284,80 C 287,80 290,78 293,76 L 328,52 C 334,48 334,44 328,40 L 293,16 C 290,14 287,18 284,18 Z" fill="#FF5B00"/>
+</svg>

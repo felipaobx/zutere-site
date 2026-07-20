@@ -1,0 +1,598 @@
+/* ==========================================================================
+   ZUTERE AUDIOVISUAL - PROPOSAL & QUOTE GENERATOR CONTROLLER
+   ========================================================================== */
+
+document.addEventListener('DOMContentLoaded', () => {
+  'use strict';
+
+  // DEFAULT CATALOG SERVICES
+  const DEFAULT_CATALOG = [
+    { id: 'srv_1', name: 'Diária de Filmagem 4K/8K (Cinema Rig & Estabilização)', defaultPrice: 2500, category: 'Captação' },
+    { id: 'srv_2', name: 'Pilotagem de Drone FPV / Aéreo 8K Raw', defaultPrice: 1800, category: 'Drone' },
+    { id: 'srv_3', name: 'Direção de Fotografia & Iluminação de Estúdio', defaultPrice: 2000, category: 'Direção' },
+    { id: 'srv_4', name: 'Edição & Montagem Cinematográfica (Até 3 min)', defaultPrice: 1800, category: 'Pós-Produção' },
+    { id: 'srv_5', name: 'Color Grading Anamórfico / Hollywood Look', defaultPrice: 1200, category: 'Pós-Produção' },
+    { id: 'srv_6', name: 'Captura de Som Direto & Tratamento de Áudio', defaultPrice: 1000, category: 'Áudio' },
+    { id: 'srv_7', name: 'Animação Motion Graphics & Titlagem VFX', defaultPrice: 1500, category: 'Pós-Produção' },
+    { id: 'srv_8', name: 'Cobertura Multi-Câmera de Evento (Três Câmeras 4K)', defaultPrice: 4500, category: 'Eventos' }
+  ];
+
+  // HELPER FORMAT CURRENCY BRL
+  function formatBRL(amount) {
+    return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(amount || 0);
+  }
+
+  // LOCALSTORAGE MANAGEMENT FOR QUOTES AND CATALOG
+  function loadQuotesHistory() {
+    const saved = localStorage.getItem('zutere_quotes_history');
+    if (saved) {
+      try { return JSON.parse(saved); } catch (e) {}
+    }
+    return [];
+  }
+
+  function loadCatalog() {
+    const saved = localStorage.getItem('zutere_catalog_services');
+    if (saved) {
+      try { return JSON.parse(saved); } catch (e) {}
+    }
+    localStorage.setItem('zutere_catalog_services', JSON.stringify(DEFAULT_CATALOG));
+    return DEFAULT_CATALOG;
+  }
+
+  let quotesHistory = loadQuotesHistory();
+  let catalogServices = loadCatalog();
+
+  function saveQuotesHistory() {
+    localStorage.setItem('zutere_quotes_history', JSON.stringify(quotesHistory));
+    renderHistoryTable();
+  }
+
+  function saveCatalog() {
+    localStorage.setItem('zutere_catalog_services', JSON.stringify(catalogServices));
+    renderCatalog();
+  }
+
+  // TAB NAVIGATION
+  const navButtons = document.querySelectorAll('.admin-nav button');
+  const tabPanels = document.querySelectorAll('.admin-tab-panel');
+  const pageTitle = document.getElementById('proposalPageTitle');
+  const pageSubtitle = document.getElementById('proposalPageSubtitle');
+
+  const tabTitles = {
+    create: { title: 'Gerador de Orçamentos', sub: 'Crie propostas comerciais profissionais, calcule valores e envie diretamente ao cliente.' },
+    history: { title: 'Histórico de Propostas', sub: 'Gerencie orçamentos emitidos, acompanhe aprovações e envie relatórios.' },
+    catalog: { title: 'Catálogo de Serviços', sub: 'Configure os valores sugeridos de diárias e serviços recorrentes da produtora.' }
+  };
+
+  window.switchProposalTab = function(tabId) {
+    navButtons.forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.tab === tabId);
+    });
+
+    tabPanels.forEach(panel => {
+      panel.classList.toggle('active', panel.id === `tab-${tabId}`);
+    });
+
+    if (tabTitles[tabId]) {
+      pageTitle.textContent = tabTitles[tabId].title;
+      pageSubtitle.textContent = tabTitles[tabId].sub;
+    }
+  };
+
+  navButtons.forEach(btn => {
+    btn.addEventListener('click', () => switchProposalTab(btn.dataset.tab));
+  });
+
+  // TOAST SYSTEM
+  window.showToast = function(msg, type = 'success') {
+    const container = document.getElementById('toastContainer');
+    if (!container) return;
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    const icon = type === 'success' ? 'fa-circle-check' : 'fa-triangle-exclamation';
+    toast.innerHTML = `<i class="fa-solid ${icon}"></i> <span>${msg}</span>`;
+    container.appendChild(toast);
+    setTimeout(() => {
+      toast.style.opacity = '0';
+      toast.style.transform = 'translateX(100%)';
+      toast.style.transition = 'all 0.3s ease';
+      setTimeout(() => toast.remove(), 300);
+    }, 3500);
+  };
+
+  // ------------------------------------------------------------------------
+  // QUOTE ITEMS TABLE CONTROLLER
+  // ------------------------------------------------------------------------
+  const itemsTableBody = document.getElementById('quoteItemsTableBody');
+  const btnAddItem = document.getElementById('btnAddQuoteItem');
+
+  function createItemRow(itemData = {}) {
+    const tr = document.createElement('tr');
+    tr.style.borderBottom = '1px solid rgba(255,255,255,0.08)';
+
+    const description = itemData.desc || (catalogServices[0] ? catalogServices[0].name : 'Serviço Audiovisual');
+    const qty = itemData.qty || 1;
+    const price = itemData.price !== undefined ? itemData.price : (catalogServices[0] ? catalogServices[0].defaultPrice : 1000);
+
+    // Build catalog select options
+    let catalogOptions = catalogServices.map(srv => 
+      `<option value="${srv.name}" data-price="${srv.defaultPrice}">${srv.name}</option>`
+    ).join('');
+    catalogOptions += `<option value="custom">-- Digitar Outro Serviço --</option>`;
+
+    tr.innerHTML = `
+      <td style="padding: 10px;">
+        <select class="form-select item-select-catalog" style="margin-bottom: 6px;">
+          ${catalogOptions}
+        </select>
+        <input type="text" class="form-input item-desc" value="${description}" placeholder="Descrição detalhada do serviço...">
+      </td>
+      <td style="padding: 10px;">
+        <input type="number" class="form-input item-qty" value="${qty}" min="1" step="1">
+      </td>
+      <td style="padding: 10px;">
+        <input type="number" class="form-input item-price" value="${price}" min="0" step="50">
+      </td>
+      <td style="padding: 10px; font-weight: 700; color: #FF5B00;" class="item-subtotal">
+        ${formatBRL(qty * price)}
+      </td>
+      <td style="padding: 10px; text-align: center;">
+        <button type="button" class="btn-admin btn-admin-danger btn-admin-sm btn-delete-row">
+          <i class="fa-solid fa-trash"></i>
+        </button>
+      </td>
+    `;
+
+    // Event listeners for recalculating
+    const selectCat = tr.querySelector('.item-select-catalog');
+    const inputDesc = tr.querySelector('.item-desc');
+    const inputQty = tr.querySelector('.item-qty');
+    const inputPrice = tr.querySelector('.item-price');
+    const btnDelete = tr.querySelector('.btn-delete-row');
+
+    selectCat.addEventListener('change', () => {
+      if (selectCat.value !== 'custom') {
+        inputDesc.value = selectCat.value;
+        const selectedOpt = selectCat.options[selectCat.selectedIndex];
+        const defaultP = parseFloat(selectedOpt.dataset.price);
+        if (!isNaN(defaultP)) {
+          inputPrice.value = defaultP;
+        }
+      }
+      calculateTotals();
+    });
+
+    inputQty.addEventListener('input', calculateTotals);
+    inputPrice.addEventListener('input', calculateTotals);
+
+    btnDelete.addEventListener('click', () => {
+      tr.remove();
+      calculateTotals();
+    });
+
+    itemsTableBody.appendChild(tr);
+    calculateTotals();
+  }
+
+  btnAddItem.addEventListener('click', () => createItemRow());
+
+  // CALCULATE GRAND TOTAL
+  function calculateTotals() {
+    let subtotal = 0;
+    const rows = itemsTableBody.querySelectorAll('tr');
+
+    rows.forEach(tr => {
+      const qty = parseFloat(tr.querySelector('.item-qty')?.value) || 0;
+      const price = parseFloat(tr.querySelector('.item-price')?.value) || 0;
+      const rowSub = qty * price;
+      subtotal += rowSub;
+      const subEl = tr.querySelector('.item-subtotal');
+      if (subEl) subEl.textContent = formatBRL(rowSub);
+    });
+
+    const discountVal = parseFloat(document.getElementById('discountValue').value) || 0;
+    const discountType = document.getElementById('discountType').value;
+    const travelCost = parseFloat(document.getElementById('travelCost').value) || 0;
+
+    let discountAmount = 0;
+    if (discountType === 'percent') {
+      discountAmount = (subtotal * discountVal) / 100;
+    } else {
+      discountAmount = discountVal;
+    }
+
+    const grandTotal = Math.max(0, subtotal - discountAmount + travelCost);
+    document.getElementById('displayGrandTotal').textContent = formatBRL(grandTotal);
+
+    return { subtotal, discountAmount, travelCost, grandTotal };
+  }
+
+  document.getElementById('discountValue').addEventListener('input', calculateTotals);
+  document.getElementById('discountType').addEventListener('change', calculateTotals);
+  document.getElementById('travelCost').addEventListener('input', calculateTotals);
+
+  // READ QUOTE FORM DATA
+  function getQuoteFormData() {
+    const items = [];
+    itemsTableBody.querySelectorAll('tr').forEach(tr => {
+      items.push({
+        desc: tr.querySelector('.item-desc').value,
+        qty: parseFloat(tr.querySelector('.item-qty').value) || 1,
+        price: parseFloat(tr.querySelector('.item-price').value) || 0,
+        subtotal: (parseFloat(tr.querySelector('.item-qty').value) || 1) * (parseFloat(tr.querySelector('.item-price').value) || 0)
+      });
+    });
+
+    const totals = calculateTotals();
+    const id = document.getElementById('quoteId').value || `ZUT-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`;
+
+    return {
+      id: id,
+      clientName: document.getElementById('clientName').value,
+      clientCompany: document.getElementById('clientCompany').value,
+      clientWhatsapp: document.getElementById('clientWhatsapp').value,
+      clientEmail: document.getElementById('clientEmail').value,
+      projectTitle: document.getElementById('projectTitleName').value,
+      issueDate: document.getElementById('quoteIssueDate').value || new Date().toISOString().slice(0,10),
+      validityDays: document.getElementById('quoteValidityDays').value || '15',
+      deliveryTime: document.getElementById('quoteDeliveryTime').value,
+      paymentTerms: document.getElementById('quotePaymentTerms').value,
+      notes: document.getElementById('quoteNotes').value,
+      items: items,
+      subtotal: totals.subtotal,
+      discountAmount: totals.discountAmount,
+      travelCost: totals.travelCost,
+      grandTotal: totals.grandTotal,
+      status: 'Enviado',
+      createdAt: new Date().toISOString()
+    };
+  }
+
+  // SAVE QUOTE SUBMIT
+  document.getElementById('formQuoteGenerator').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const quote = getQuoteFormData();
+
+    const existingIndex = quotesHistory.findIndex(q => q.id === quote.id);
+    if (existingIndex !== -1) {
+      quotesHistory[existingIndex] = quote;
+    } else {
+      quotesHistory.unshift(quote);
+    }
+
+    saveQuotesHistory();
+    showToast(`Proposta #${quote.id} salva com sucesso!`, 'success');
+  });
+
+  document.getElementById('btnQuickSaveQuote').addEventListener('click', () => {
+    document.getElementById('formQuoteGenerator').requestSubmit();
+  });
+
+  // ------------------------------------------------------------------------
+  // PROPOSAL PREVIEW & PRINT (PDF)
+  // ------------------------------------------------------------------------
+  window.openAdminModal = function(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) modal.classList.add('active');
+  };
+
+  window.closeAdminModal = function(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) modal.classList.remove('active');
+  };
+
+  function generateProposalHTML(quote) {
+    const issueFormatted = quote.issueDate ? new Date(quote.issueDate).toLocaleDateString('pt-BR') : new Date().toLocaleDateString('pt-BR');
+
+    let itemsRowsHtml = quote.items.map((item, idx) => `
+      <tr style="border-bottom: 1px solid #E2E8F0; background: ${idx % 2 === 0 ? '#FFFFFF' : '#F8FAFC'};">
+        <td style="padding: 14px 16px; font-weight: 600; color: #0F172A; font-size: 0.92rem;">${item.desc}</td>
+        <td style="padding: 14px 16px; text-align: center; color: #334155; font-weight: 600;">${item.qty}</td>
+        <td style="padding: 14px 16px; text-align: right; color: #334155;">${formatBRL(item.price)}</td>
+        <td style="padding: 14px 16px; text-align: right; font-weight: 700; color: #FF5B00;">${formatBRL(item.subtotal)}</td>
+      </tr>
+    `).join('');
+
+    return `
+      <div style="font-family: 'Inter', sans-serif; color: #0F172A; line-height: 1.5;">
+        
+        <!-- DARK BRAND HEADER BANNER -->
+        <div style="background: #0B0E17; color: #FFFFFF; padding: 26px 30px; border-radius: 16px; margin-bottom: 26px; border: 1px solid rgba(255, 91, 0, 0.4); display: flex; justify-content: space-between; align-items: center; box-shadow: 0 10px 25px rgba(0,0,0,0.3);">
+          <div>
+            <img src="assets/logo.png" alt="Zutere Audiovisual" style="height: 44px; width: auto; margin-bottom: 8px; display: block;">
+            <p style="font-size: 0.82rem; color: #94A3B8; margin: 0; font-weight: 500;">Produção Cinematográfica & Vídeos de Alto Impacto</p>
+            <p style="font-size: 0.78rem; color: #CBD5E1; margin: 2px 0 0 0;">contato@zutere.com.br | www.zutere.com.br</p>
+          </div>
+          <div style="text-align: right;">
+            <span style="font-size: 0.72rem; font-weight: 800; color: #FF5B00; text-transform: uppercase; letter-spacing: 1.5px; background: rgba(255,91,0,0.15); padding: 4px 10px; border-radius: 20px; border: 1px solid rgba(255,91,0,0.3);">PROPOSTA COMERCIAL</span>
+            <h1 style="font-family: 'Montserrat', sans-serif; font-size: 1.9rem; font-weight: 900; color: #FFFFFF; margin: 8px 0 4px 0;">#${quote.id}</h1>
+            <p style="font-size: 0.82rem; color: #94A3B8; margin: 0;">Data de Emissão: <strong style="color: #FFF;">${issueFormatted}</strong></p>
+            <p style="font-size: 0.82rem; color: #94A3B8; margin: 2px 0 0 0;">Validade: <strong style="color: #FF5B00;">${quote.validityDays} dias</strong></p>
+          </div>
+        </div>
+
+        <!-- CLIENT & PROJECT DETAILS -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; background: #F8FAFC; padding: 22px 26px; border-radius: 16px; border: 1px solid #E2E8F0; margin-bottom: 26px;">
+          <div>
+            <span style="font-size: 0.75rem; font-weight: 800; color: #64748B; text-transform: uppercase; letter-spacing: 0.5px;">A/C DO CLIENTE</span>
+            <h3 style="font-size: 1.2rem; font-weight: 800; color: #0F172A; margin: 4px 0 2px 0;">${quote.clientName || 'Cliente'}</h3>
+            ${quote.clientCompany ? `<p style="font-size: 0.9rem; color: #475569; margin: 0; font-weight: 600;">${quote.clientCompany}</p>` : ''}
+            <p style="font-size: 0.85rem; color: #64748B; margin: 4px 0 0 0;"><i class="fa-brands fa-whatsapp" style="color:#25D366;"></i> WhatsApp: ${quote.clientWhatsapp || '-'}</p>
+          </div>
+          <div>
+            <span style="font-size: 0.75rem; font-weight: 800; color: #64748B; text-transform: uppercase; letter-spacing: 0.5px;">PROJETO AUDIOVISUAL</span>
+            <h3 style="font-size: 1.2rem; font-weight: 800; color: #FF5B00; margin: 4px 0 2px 0;">${quote.projectTitle || 'Produção Audiovisual'}</h3>
+            <p style="font-size: 0.85rem; color: #475569; margin: 4px 0 0 0;">Prazo Estimado de Entrega: <strong>${quote.deliveryTime || 'A combinar'}</strong></p>
+          </div>
+        </div>
+
+        <!-- SERVICES TABLE -->
+        <div style="border-radius: 14px; overflow: hidden; border: 1px solid #E2E8F0; margin-bottom: 26px;">
+          <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+              <tr style="background: #0F172A; color: #FFFFFF; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px;">
+                <th style="padding: 14px 16px; text-align: left;">Descrição do Serviço / Equipamento</th>
+                <th style="padding: 14px 16px; text-align: center;">Qtd / Diárias</th>
+                <th style="padding: 14px 16px; text-align: right;">Valor Unitário</th>
+                <th style="padding: 14px 16px; text-align: right;">Subtotal</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${itemsRowsHtml}
+            </tbody>
+          </table>
+        </div>
+
+        <!-- TOTALS & SUMMARY -->
+        <div style="display: flex; justify-content: flex-end; margin-bottom: 26px; page-break-inside: avoid;">
+          <div style="width: 340px; background: #F8FAFC; padding: 20px; border-radius: 14px; border: 1px solid #CBD5E1;">
+            <div style="display: flex; justify-content: space-between; font-size: 0.92rem; color: #475569; margin-bottom: 8px;">
+              <span>Subtotal dos Serviços:</span>
+              <span style="font-weight: 600; color: #0F172A;">${formatBRL(quote.subtotal)}</span>
+            </div>
+            ${quote.discountAmount > 0 ? `
+            <div style="display: flex; justify-content: space-between; font-size: 0.92rem; color: #EF4444; margin-bottom: 8px;">
+              <span>Desconto Aplicado:</span>
+              <span style="font-weight: 700;">- ${formatBRL(quote.discountAmount)}</span>
+            </div>` : ''}
+            ${quote.travelCost > 0 ? `
+            <div style="display: flex; justify-content: space-between; font-size: 0.92rem; color: #475569; margin-bottom: 8px;">
+              <span>Taxa Logística / Deslocamento:</span>
+              <span style="font-weight: 600;">+ ${formatBRL(quote.travelCost)}</span>
+            </div>` : ''}
+            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 1.25rem; font-weight: 900; color: #FF5B00; border-top: 2px dashed #CBD5E1; padding-top: 12px; margin-top: 8px;">
+              <span>VALOR TOTAL:</span>
+              <span style="font-size: 1.4rem;">${formatBRL(quote.grandTotal)}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- CONDITIONS & NOTES -->
+        <div style="background: #F8FAFC; border-left: 5px solid #FF5B00; padding: 20px; border-radius: 4px 14px 14px 4px; border-top: 1px solid #E2E8F0; border-right: 1px solid #E2E8F0; border-bottom: 1px solid #E2E8F0; margin-bottom: 34px; page-break-inside: avoid;">
+          <h4 style="font-size: 0.92rem; font-weight: 800; color: #0F172A; margin: 0 0 8px 0; text-transform: uppercase;">CONDIÇÕES COMERCIAIS & NOTAS</h4>
+          <p style="font-size: 0.88rem; color: #334155; margin: 0 0 6px 0;">• <strong>Forma de Pagamento:</strong> ${quote.paymentTerms}</p>
+          ${quote.notes ? `<p style="font-size: 0.88rem; color: #334155; margin: 4px 0 0 0; white-space: pre-line;">• <strong>Observações:</strong> ${quote.notes}</p>` : ''}
+        </div>
+
+        <!-- SIGNATURE / APPROVAL SECTION -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 50px; margin-top: 40px; text-align: center; page-break-inside: avoid;">
+          <div>
+            <div style="border-bottom: 1.5px solid #94A3B8; margin-bottom: 8px; height: 35px;"></div>
+            <span style="font-size: 0.88rem; font-weight: 800; color: #0F172A;">ZUTERE AUDIOVISUAL</span>
+            <p style="font-size: 0.78rem; color: #64748B; margin: 2px 0 0 0;">Produtora Executiva</p>
+          </div>
+          <div>
+            <div style="border-bottom: 1.5px solid #94A3B8; margin-bottom: 8px; height: 35px;"></div>
+            <span style="font-size: 0.88rem; font-weight: 800; color: #0F172A;">ACEITE DO CLIENTE</span>
+            <p style="font-size: 0.78rem; color: #64748B; margin: 2px 0 0 0;">Assinatura & Data</p>
+          </div>
+        </div>
+
+      </div>
+    `;
+  }
+
+  document.getElementById('btnPreviewProposal').addEventListener('click', () => {
+    const quote = getQuoteFormData();
+    const docContainer = document.getElementById('proposalPrintDocument');
+    docContainer.innerHTML = generateProposalHTML(quote);
+    openAdminModal('modalProposalPreview');
+  });
+
+  window.printProposalDocument = function() {
+    window.print();
+  };
+
+  // ------------------------------------------------------------------------
+  // SEND PROPOSAL VIA WHATSAPP
+  // ------------------------------------------------------------------------
+  document.getElementById('btnSendWhatsappQuote').addEventListener('click', () => {
+    const quote = getQuoteFormData();
+    if (!quote.clientWhatsapp) {
+      showToast('Por favor, informe o número de WhatsApp do cliente.', 'error');
+      return;
+    }
+
+    const cleanNum = quote.clientWhatsapp.replace(/\D/g, '');
+    let msg = `*PROPOSTA COMERCIAL ZUTERE AUDIOVISUAL* 🎬\n\n`;
+    msg += `Olá *${quote.clientName}*,\n`;
+    msg += `Apresentamos o orçamento para o projeto: *${quote.projectTitle}*\n\n`;
+    msg += `📋 *Resumo dos Serviços:*\n`;
+    quote.items.forEach(item => {
+      msg += `• ${item.desc} (${item.qty}x) - ${formatBRL(item.subtotal)}\n`;
+    });
+    msg += `\n💰 *VALOR TOTAL: ${formatBRL(quote.grandTotal)}*\n`;
+    msg += `💳 *Condição:* ${quote.paymentTerms}\n`;
+    msg += `⏱️ *Validade:* ${quote.validityDays} dias\n\n`;
+    msg += `Ficamos à disposição para dúvidas e agendamento! 🚀`;
+
+    const url = `https://wa.me/55${cleanNum}?text=${encodeURIComponent(msg)}`;
+    window.open(url, '_blank');
+  });
+
+  // ------------------------------------------------------------------------
+  // HISTORY TABLE CONTROLLER
+  // ------------------------------------------------------------------------
+  function renderHistoryTable() {
+    const tbody = document.getElementById('historyTableBody');
+    const filterStatus = document.getElementById('filterHistoryStatus')?.value || 'all';
+    if (!tbody) return;
+
+    tbody.innerHTML = '';
+    const filtered = quotesHistory.filter(q => filterStatus === 'all' || q.status === filterStatus);
+
+    if (filtered.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="7" style="padding: 24px; text-align: center; color: var(--admin-text-muted);">Nenhuma proposta encontrada.</td></tr>`;
+      return;
+    }
+
+    filtered.forEach(q => {
+      const tr = document.createElement('tr');
+      tr.style.borderBottom = '1px solid rgba(255,255,255,0.08)';
+
+      let badgeBg = '#64748B';
+      if (q.status === 'Aprovado') badgeBg = '#10B981';
+      if (q.status === 'Enviado') badgeBg = '#0EA5E9';
+      if (q.status === 'Recusado') badgeBg = '#EF4444';
+
+      tr.innerHTML = `
+        <td style="padding: 14px; font-weight: 700; color: #FF5B00;">#${q.id}</td>
+        <td style="padding: 14px; font-weight: 600;">${q.clientName} <br><span style="font-size:0.75rem; color:#94A3B8;">${q.clientCompany || ''}</span></td>
+        <td style="padding: 14px; font-size:0.9rem;">${q.projectTitle}</td>
+        <td style="padding: 14px; font-size:0.85rem; color:#94A3B8;">${new Date(q.createdAt).toLocaleDateString('pt-BR')}</td>
+        <td style="padding: 14px; font-weight: 800; color: #FFF;">${formatBRL(q.grandTotal)}</td>
+        <td style="padding: 14px;">
+          <select class="form-select status-select-change" style="width: auto; padding: 4px 8px; font-size: 0.8rem; background: ${badgeBg}; color: #FFF; border: none; border-radius: 6px;" data-id="${q.id}">
+            <option value="Rascunho" ${q.status === 'Rascunho' ? 'selected' : ''}>Rascunho</option>
+            <option value="Enviado" ${q.status === 'Enviado' ? 'selected' : ''}>Enviado</option>
+            <option value="Aprovado" ${q.status === 'Aprovado' ? 'selected' : ''}>Aprovado</option>
+            <option value="Recusado" ${q.status === 'Recusado' ? 'selected' : ''}>Recusado</option>
+          </select>
+        </td>
+        <td style="padding: 14px; text-align: right;">
+          <button class="btn-admin btn-admin-secondary btn-admin-sm" onclick="viewHistoryQuote('${q.id}')"><i class="fa-solid fa-eye"></i></button>
+          <button class="btn-admin btn-admin-secondary btn-admin-sm" onclick="loadQuoteToEdit('${q.id}')"><i class="fa-solid fa-pen"></i></button>
+          <button class="btn-admin btn-admin-danger btn-admin-sm" onclick="deleteHistoryQuote('${q.id}')"><i class="fa-solid fa-trash"></i></button>
+        </td>
+      `;
+
+      tr.querySelector('.status-select-change').addEventListener('change', (e) => {
+        const newStatus = e.target.value;
+        q.status = newStatus;
+        saveQuotesHistory();
+        showToast(`Status da proposta #${q.id} alterado para "${newStatus}".`, 'success');
+      });
+
+      tbody.appendChild(tr);
+    });
+  }
+
+  document.getElementById('filterHistoryStatus')?.addEventListener('change', renderHistoryTable);
+
+  window.viewHistoryQuote = function(id) {
+    const q = quotesHistory.find(item => item.id === id);
+    if (!q) return;
+    const docContainer = document.getElementById('proposalPrintDocument');
+    docContainer.innerHTML = generateProposalHTML(q);
+    openAdminModal('modalProposalPreview');
+  };
+
+  window.loadQuoteToEdit = function(id) {
+    const q = quotesHistory.find(item => item.id === id);
+    if (!q) return;
+
+    document.getElementById('quoteId').value = q.id;
+    document.getElementById('clientName').value = q.clientName;
+    document.getElementById('clientCompany').value = q.clientCompany || '';
+    document.getElementById('clientWhatsapp').value = q.clientWhatsapp || '';
+    document.getElementById('clientEmail').value = q.clientEmail || '';
+    document.getElementById('projectTitleName').value = q.projectTitle;
+    document.getElementById('quoteIssueDate').value = q.issueDate ? q.issueDate.slice(0,10) : '';
+    document.getElementById('quoteValidityDays').value = q.validityDays || '15';
+    document.getElementById('quoteDeliveryTime').value = q.deliveryTime || '';
+    document.getElementById('quotePaymentTerms').value = q.paymentTerms || '';
+    document.getElementById('quoteNotes').value = q.notes || '';
+    document.getElementById('travelCost').value = q.travelCost || 0;
+
+    // Clear items & populate
+    itemsTableBody.innerHTML = '';
+    if (q.items && q.items.length > 0) {
+      q.items.forEach(item => createItemRow(item));
+    } else {
+      createItemRow();
+    }
+
+    switchProposalTab('create');
+    showToast(`Proposta #${q.id} carregada para edição.`, 'success');
+  };
+
+  window.deleteHistoryQuote = function(id) {
+    if (confirm(`Deseja excluir a proposta #${id}?`)) {
+      quotesHistory = quotesHistory.filter(q => q.id !== id);
+      saveQuotesHistory();
+      showToast('Proposta excluída com sucesso.', 'success');
+    }
+  };
+
+  // ------------------------------------------------------------------------
+  // CATALOG MANAGEMENT
+  // ------------------------------------------------------------------------
+  function renderCatalog() {
+    const container = document.getElementById('catalogListContainer');
+    if (!container) return;
+    container.innerHTML = '';
+
+    catalogServices.forEach(srv => {
+      const card = document.createElement('div');
+      card.className = 'admin-item-card';
+      card.innerHTML = `
+        <div class="admin-item-body">
+          <span style="font-size:0.75rem; color:var(--admin-primary); font-weight:700;">${srv.category}</span>
+          <h3 class="admin-item-title">${srv.name}</h3>
+          <h2 style="font-size:1.4rem; font-weight:800; color:#FFF; margin:10px 0;">${formatBRL(srv.defaultPrice)}</h2>
+          <div class="admin-item-actions">
+            <button class="btn-admin btn-admin-danger btn-admin-sm" onclick="deleteCatalogItem('${srv.id}')">
+              <i class="fa-solid fa-trash"></i> Excluir
+            </button>
+          </div>
+        </div>
+      `;
+      container.appendChild(card);
+    });
+  }
+
+  document.getElementById('btnAddCatalogItem').addEventListener('click', () => {
+    const name = prompt('Nome do Serviço:');
+    if (!name) return;
+    const priceStr = prompt('Valor Sugerido (R$):', '1000');
+    const price = parseFloat(priceStr) || 1000;
+    const cat = prompt('Categoria (ex: Captação, Drone, Pós-Produção):', 'Serviço');
+
+    catalogServices.push({
+      id: `srv_${Date.now()}`,
+      name: name,
+      defaultPrice: price,
+      category: cat || 'Geral'
+    });
+    saveCatalog();
+  });
+
+  window.deleteCatalogItem = function(id) {
+    if (confirm('Excluir este serviço do catálogo?')) {
+      catalogServices = catalogServices.filter(s => s.id !== id);
+      saveCatalog();
+    }
+  };
+
+  // INITIALIZE DEFAULT ROW ON CREATE TAB
+  function initGenerator() {
+    itemsTableBody.innerHTML = '';
+    createItemRow();
+    renderHistoryTable();
+    renderCatalog();
+    document.getElementById('quoteIssueDate').value = new Date().toISOString().slice(0,10);
+  }
+
+  initGenerator();
+});

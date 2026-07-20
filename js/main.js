@@ -1,0 +1,433 @@
+/* ==========================================================================
+   ZUTERE AUDIOVISUAL - JAVASCRIPT CONTROLLER WITH YOUTUBE EMBED SUPPORT
+   ========================================================================== */
+
+document.addEventListener('DOMContentLoaded', () => {
+  'use strict';
+
+  // ------------------------------------------------------------------------
+  // SMART MEDIA URL PARSER (YOUTUBE, MP4, INSTAGRAM)
+  // ------------------------------------------------------------------------
+  function parseMediaUrl(url) {
+    if (!url) return { type: 'unknown', url: '' };
+
+    // YouTube regex (watch?v=, youtu.be/, embed/, shorts/)
+    const ytMatch = url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/|youtube\.com\/shorts\/)([^"&?\/\s]{11})/);
+    if (ytMatch && ytMatch[1]) {
+      const id = ytMatch[1];
+      return {
+        type: 'youtube',
+        id: id,
+        embedUrl: `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0`,
+        bgEmbedUrl: `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&mute=1&loop=1&playlist=${id}&controls=0&showinfo=0&rel=0&modestbranding=1`,
+        thumbUrl: `https://img.youtube.com/vi/${id}/hqdefault.jpg`,
+        maxThumbUrl: `https://img.youtube.com/vi/${id}/maxresdefault.jpg`
+      };
+    }
+
+    if (url.includes('.mp4') || url.includes('.webm')) {
+      return { type: 'video', url: url };
+    }
+
+    return { type: 'url', url: url };
+  }
+
+  // DEFAULT SHOWREEL DATA
+  const defaultShowreel = {
+    url: 'https://assets.mixkit.co/videos/preview/mixkit-camera-operator-filming-a-scene-in-a-studio-41481-large.mp4',
+    title: 'Showreel Oficial Zutere Audiovisual',
+    subtitle: 'Produção Cinematográfica 4K/8K HDR'
+  };
+
+  // ------------------------------------------------------------------------
+  // DATA LOADER FROM LOCALSTORAGE
+  // ------------------------------------------------------------------------
+  function getSiteData() {
+    const saved = localStorage.getItem('zutere_site_data');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        console.error('Error parsing site data:', e);
+      }
+    }
+    return null;
+  }
+
+  const siteData = getSiteData();
+
+  if (siteData) {
+    renderDynamicHero(siteData.heroSlides);
+    renderDynamicProjects(siteData.projects);
+    renderDynamicReels(siteData.reels);
+    applyDynamicSettings(siteData.settings);
+  }
+
+  // ------------------------------------------------------------------------
+  // DYNAMIC RENDER FUNCTIONS
+  // ------------------------------------------------------------------------
+  function renderDynamicHero(heroSlides) {
+    if (!heroSlides || heroSlides.length === 0) return;
+    const sliderWrapper = document.getElementById('heroSlider');
+    if (!sliderWrapper) return;
+
+    sliderWrapper.innerHTML = '';
+
+    heroSlides.forEach((slide, index) => {
+      const slideDiv = document.createElement('div');
+      slideDiv.className = `slide slide-${slide.type} ${index === 0 ? 'active' : ''}`;
+      slideDiv.dataset.type = slide.type;
+
+      const media = parseMediaUrl(slide.mediaUrl);
+      let mediaHtml = '';
+
+      if (media.type === 'youtube') {
+        mediaHtml = `<iframe class="hero-video-bg hero-yt-iframe" src="${media.bgEmbedUrl}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen style="width:100%; height:100%; border:none; pointer-events:none; transform:scale(1.2);"></iframe>`;
+      } else if (slide.type === 'video' || media.type === 'video') {
+        mediaHtml = `
+          <video class="hero-video-bg" loop muted playsinline poster="${slide.posterUrl || slide.mediaUrl}">
+            <source src="${slide.mediaUrl}" type="video/mp4">
+            <img src="${slide.posterUrl || slide.mediaUrl}" alt="${slide.title}">
+          </video>`;
+      } else {
+        mediaHtml = `<img src="${slide.mediaUrl}" alt="${slide.title}" class="hero-img-bg">`;
+      }
+
+      slideDiv.innerHTML = `
+        <div class="slide-media">
+          ${mediaHtml}
+          <div class="slide-overlay"></div>
+        </div>
+        <div class="slide-content container">
+          <span class="slide-badge"><i class="fa-solid fa-${slide.type === 'video' || media.type === 'youtube' ? 'film' : 'bolt'}"></i> ${slide.badge}</span>
+          <h1 class="slide-title">${slide.title}</h1>
+          <p class="slide-description">${slide.description}</p>
+        </div>
+      `;
+      sliderWrapper.appendChild(slideDiv);
+    });
+  }
+
+  function renderDynamicProjects(projects) {
+    if (!projects || projects.length === 0) return;
+    const grid = document.getElementById('projectsGrid');
+    if (!grid) return;
+
+    grid.innerHTML = '';
+    projects.forEach(proj => {
+      const card = document.createElement('article');
+      card.className = 'project-card';
+      card.dataset.category = proj.category;
+      card.dataset.video = proj.videoUrl;
+
+      const media = parseMediaUrl(proj.videoUrl || proj.thumbUrl);
+      
+      // Auto use YouTube thumbnail if YouTube video is provided
+      let thumb = proj.thumbUrl;
+      if (media.type === 'youtube') {
+        thumb = media.thumbUrl;
+      }
+      if (!thumb) {
+        thumb = 'assets/images/project_commercial_car.png';
+      }
+
+      card.innerHTML = `
+        <div class="card-thumb">
+          <img src="${thumb}" alt="${proj.title}" onerror="this.onerror=null; this.src='${media.thumbUrl || 'assets/images/project_commercial_car.png'}';">
+          <div class="card-overlay">
+            <div class="card-play-btn"><i class="fa-solid fa-play"></i></div>
+          </div>
+          <span class="card-badge">${proj.badge || '4K Ultra HD'}</span>
+        </div>
+        <div class="card-content">
+          <span class="project-client">Cliente: ${proj.client}</span>
+          <h3 class="project-title">${proj.title}</h3>
+          <p class="project-desc">${proj.desc}</p>
+          <div class="card-footer">
+            <span class="project-tag"><i class="fa-solid fa-film"></i> ${proj.tag || 'Cinema Rig'}</span>
+            <button class="project-action-btn">Ver Projeto <i class="fa-solid fa-arrow-up-right-from-square"></i></button>
+          </div>
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+  }
+
+  function renderDynamicReels(reels) {
+    if (!reels || reels.length === 0) return;
+    const reelsGrid = document.querySelector('.reels-grid');
+    if (!reelsGrid) return;
+
+    reelsGrid.innerHTML = '';
+    reels.forEach(reel => {
+      const card = document.createElement('div');
+      card.className = 'reel-card';
+      card.dataset.video = reel.videoUrl || '';
+      card.dataset.reelUrl = reel.reelUrl || 'https://instagram.com/zutereprodutora';
+
+      const media = parseMediaUrl(reel.videoUrl || reel.reelUrl);
+      let thumb = reel.thumbUrl;
+      if (media.type === 'youtube') {
+        thumb = media.thumbUrl;
+      }
+      if (!thumb) {
+        thumb = 'assets/images/reels_behind_the_scenes.png';
+      }
+
+      card.innerHTML = `
+        <div class="reel-thumb">
+          <img src="${thumb}" alt="Reel Zutere" onerror="this.onerror=null; this.src='${media.thumbUrl || 'assets/images/reels_behind_the_scenes.png'}';">
+          <div class="reel-overlay">
+            <div class="reel-play-icon"><i class="fa-solid fa-play"></i></div>
+          </div>
+          <span class="reel-badge"><i class="fa-brands fa-instagram"></i> Reel</span>
+          <div class="reel-stats">
+            <span><i class="fa-solid fa-eye"></i> ${reel.views}</span>
+            <span><i class="fa-solid fa-heart"></i> ${reel.likes}</span>
+          </div>
+        </div>
+        <div class="reel-info">
+          <span class="reel-user">${reel.user || '@zutereprodutora'}</span>
+          <h4 class="reel-caption">${reel.caption}</h4>
+        </div>
+      `;
+      reelsGrid.appendChild(card);
+    });
+  }
+
+  function applyDynamicSettings(settings) {
+    if (!settings) return;
+
+    const waNumber = settings.whatsappNumber || '5511999999999';
+    const waMsg = encodeURIComponent(settings.whatsappMessage || 'Olá equipe Zutere Audiovisual!');
+    const waLink = `https://wa.me/${waNumber}?text=${waMsg}`;
+    document.querySelectorAll('.btn-whatsapp, a[href*="wa.me"]').forEach(a => a.href = waLink);
+
+    if (settings.instagramUrl) {
+      document.querySelectorAll('a.social-card.insta, a.reels-cta-wrap a, a[href*="instagram.com"]').forEach(a => a.href = settings.instagramUrl);
+    }
+    if (settings.tiktokUrl) {
+      document.querySelectorAll('a.social-card.tiktok, a[href*="tiktok.com"]').forEach(a => a.href = settings.tiktokUrl);
+    }
+    if (settings.youtubeUrl) {
+      document.querySelectorAll('a.social-card.youtube, a[href*="youtube.com"]').forEach(a => a.href = settings.youtubeUrl);
+    }
+    if (settings.showreelUrl) {
+      defaultShowreel.url = settings.showreelUrl;
+    }
+
+    // Dynamic stats numbers update
+    const statCards = document.querySelectorAll('.stat-card');
+    if (statCards.length >= 4) {
+      if (settings.statProjects) {
+        const el = statCards[0].querySelector('.stat-number');
+        if (el) el.dataset.target = settings.statProjects;
+      }
+      if (settings.statQuality) {
+        const el = statCards[1].querySelector('.stat-number');
+        if (el) el.dataset.target = settings.statQuality;
+      }
+      if (settings.statBrands) {
+        const el = statCards[2].querySelector('.stat-number');
+        if (el) el.dataset.target = settings.statBrands;
+      }
+      if (settings.statYears) {
+        const el = statCards[3].querySelector('.stat-number');
+        if (el) el.dataset.target = settings.statYears;
+      }
+    }
+  }
+
+  // ------------------------------------------------------------------------
+  // HERO SLIDER ENGINE
+  // ------------------------------------------------------------------------
+  const slides = document.querySelectorAll('.slide');
+  let currentSlide = 0;
+  let slideInterval = null;
+  let isPlaying = true;
+
+  function goToSlide(n) {
+    if (slides.length === 0) return;
+    slides[currentSlide].classList.remove('active');
+    currentSlide = (n + slides.length) % slides.length;
+    slides[currentSlide].classList.add('active');
+
+    const activeSlide = slides[currentSlide];
+    const video = activeSlide.querySelector('video');
+    if (video) {
+      video.currentTime = 0;
+      video.play().catch(e => console.log('Video play error:', e));
+    }
+  }
+
+  function nextSlide() {
+    goToSlide(currentSlide + 1);
+  }
+
+  function startAutoSlide() {
+    if (slideInterval) clearInterval(slideInterval);
+    slideInterval = setInterval(nextSlide, 7000);
+  }
+
+  function initSlider() {
+    if (slides.length > 0) startAutoSlide();
+  }
+
+  initSlider();
+
+  // ------------------------------------------------------------------------
+  // FULLSCREEN VIDEO MODAL PLAYER (WITH YOUTUBE SUPPORT)
+  // ------------------------------------------------------------------------
+  const videoModal = document.getElementById('videoModal');
+  const modalCloseBtn = document.getElementById('modalCloseBtn');
+  const modalBackdrop = document.getElementById('modalBackdrop');
+
+  function openVideoModal(url, title, subtitle) {
+    if (!videoModal) return;
+    
+    isPlaying = false;
+
+    const playerWrapper = videoModal.querySelector('.video-player-wrapper');
+    const media = parseMediaUrl(url || defaultShowreel.url);
+
+    if (media.type === 'youtube') {
+      playerWrapper.innerHTML = `
+        <button class="modal-close-btn" id="modalCloseBtn" aria-label="Fechar Vídeo">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+        <iframe src="${media.embedUrl}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen style="width:100%; aspect-ratio:16/9; border:none; border-radius:16px;"></iframe>
+        <div class="modal-video-info">
+          <h3 id="modalVideoTitle">${title || defaultShowreel.title}</h3>
+          <span id="modalVideoSubtitle">${subtitle || defaultShowreel.subtitle}</span>
+        </div>
+      `;
+    } else {
+      playerWrapper.innerHTML = `
+        <button class="modal-close-btn" id="modalCloseBtn" aria-label="Fechar Vídeo">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+        <video id="modalVideoPlayer" controls autoplay playsinline style="width:100%; aspect-ratio:16/9; border-radius:16px; object-fit:cover;">
+          <source src="${url || defaultShowreel.url}" type="video/mp4">
+        </video>
+        <div class="modal-video-info">
+          <h3 id="modalVideoTitle">${title || defaultShowreel.title}</h3>
+          <span id="modalVideoSubtitle">${subtitle || defaultShowreel.subtitle}</span>
+        </div>
+      `;
+    }
+
+    const newCloseBtn = playerWrapper.querySelector('#modalCloseBtn');
+    if (newCloseBtn) newCloseBtn.addEventListener('click', closeVideoModal);
+
+    videoModal.classList.add('active');
+    videoModal.setAttribute('aria-hidden', 'false');
+  }
+
+  function closeVideoModal() {
+    if (!videoModal) return;
+    videoModal.classList.remove('active');
+    videoModal.setAttribute('aria-hidden', 'true');
+    const playerWrapper = videoModal.querySelector('.video-player-wrapper');
+    if (playerWrapper) {
+      playerWrapper.innerHTML = `
+        <button class="modal-close-btn" id="modalCloseBtn" aria-label="Fechar Vídeo">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+        <video id="modalVideoPlayer" controls playsinline>
+          <source src="" type="video/mp4">
+        </video>
+        <div class="modal-video-info">
+          <h3 id="modalVideoTitle"></h3>
+          <span id="modalVideoSubtitle"></span>
+        </div>
+      `;
+    }
+  }
+
+  document.addEventListener('click', (e) => {
+    if (e.target.closest('.open-showreel-btn') || e.target.closest('#btnShowreelHeader')) {
+      e.preventDefault();
+      openVideoModal(defaultShowreel.url, defaultShowreel.title, defaultShowreel.subtitle);
+    }
+
+    const projCard = e.target.closest('.project-card');
+    if (projCard) {
+      const videoUrl = projCard.dataset.video;
+      const title = projCard.querySelector('.project-title')?.textContent;
+      const client = projCard.querySelector('.project-client')?.textContent;
+      openVideoModal(videoUrl, title, client);
+    }
+
+    const reelCard = e.target.closest('.reel-card');
+    if (reelCard) {
+      const videoUrl = reelCard.dataset.video;
+      const reelUrl = reelCard.dataset.reelUrl;
+      const caption = reelCard.querySelector('.reel-caption')?.textContent || 'Reel @zutereprodutora';
+      const reelThumb = reelCard.querySelector('.reel-thumb');
+
+      const media = parseMediaUrl(videoUrl || reelUrl);
+
+      if (media.type === 'youtube') {
+        if (reelThumb && !reelThumb.querySelector('iframe')) {
+          reelThumb.innerHTML = `
+            <iframe src="${media.embedUrl}" style="width:100%; height:100%; border:none;" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+          `;
+        }
+      } else if (videoUrl && videoUrl.includes('.mp4')) {
+        if (reelThumb && !reelThumb.querySelector('video')) {
+          reelThumb.innerHTML = `
+            <video class="inline-reel-video" autoplay controls loop playsinline>
+              <source src="${videoUrl}" type="video/mp4">
+            </video>
+          `;
+        }
+      } else if (reelUrl && (reelUrl.includes('instagram.com/reel/') || reelUrl.includes('instagram.com/p/'))) {
+        const match = reelUrl.match(/\/(reel|p)\/([A-Za-z0-9_-]+)/);
+        if (match && match[2] && reelThumb && !reelThumb.querySelector('iframe')) {
+          const instaCode = match[2];
+          reelThumb.innerHTML = `
+            <iframe src="https://www.instagram.com/p/${instaCode}/embed/" class="inline-insta-iframe" scrolling="no" allowtransparency="true" allow="encrypted-media"></iframe>
+          `;
+        }
+      } else if (videoUrl) {
+        openVideoModal(videoUrl, caption, '@zutereprodutora');
+      } else if (reelUrl) {
+        window.open(reelUrl, '_blank');
+      }
+    }
+  });
+
+  if (modalCloseBtn) modalCloseBtn.addEventListener('click', closeVideoModal);
+  if (modalBackdrop) modalBackdrop.addEventListener('click', closeVideoModal);
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && videoModal && videoModal.classList.contains('active')) {
+      closeVideoModal();
+    }
+  });
+
+  // ------------------------------------------------------------------------
+  // PORTFOLIO FILTERING
+  // ------------------------------------------------------------------------
+  const filterBtns = document.querySelectorAll('.filter-btn');
+
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const filterValue = btn.dataset.filter;
+      const projectCards = document.querySelectorAll('.project-card');
+
+      projectCards.forEach(card => {
+        if (filterValue === 'all' || card.dataset.category === filterValue) {
+          card.style.display = 'block';
+          setTimeout(() => card.style.opacity = '1', 50);
+        } else {
+          card.style.opacity = '0';
+          setTimeout(() => card.style.display = 'none', 300);
+        }
+      });
+    });
+  });
+});

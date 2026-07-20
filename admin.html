@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Administrativo | Zutere Audiovisual</title>
+  <meta name="robots" content="noindex, nofollow">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="assets/logo.png">
+
+  <!-- Google Fonts: Montserrat & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Main & Admin CSS -->
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body class="admin-body">
+
+  <div class="admin-layout">
+    
+    <!-- SIDEBAR NAVIGATION -->
+    <aside class="admin-sidebar">
+      <div class="admin-brand">
+        <img src="assets/logo.png" alt="Zutere Audiovisual Logo">
+        <div class="admin-brand-info">
+          <h2>ZUTERE ADMIN</h2>
+          <span>Gestão Audiovisual</span>
+        </div>
+      </div>
+
+      <nav class="admin-nav" id="adminNav">
+        <button class="admin-nav-item active" data-tab="overview">
+          <i class="fa-solid fa-chart-pie"></i> Visão Geral
+        </button>
+        <button class="admin-nav-item" data-tab="hero">
+          <i class="fa-solid fa-film"></i> Hero Slider (Vídeos)
+        </button>
+        <button class="admin-nav-item" data-tab="portfolio">
+          <i class="fa-solid fa-photo-film"></i> Portfólio & Projetos
+        </button>
+        <button class="admin-nav-item" data-tab="reels">
+          <i class="fa-brands fa-instagram"></i> Reels & Vertical
+        </button>
+        <button class="admin-nav-item" data-tab="settings">
+          <i class="fa-solid fa-sliders"></i> Configurações & Contato
+        </button>
+        <button class="admin-nav-item" data-tab="backup">
+          <i class="fa-solid fa-database"></i> Backup & Sistema
+        </button>
+      </nav>
+
+      <div class="admin-sidebar-footer">
+        <a href="orcamento.html" class="btn-view-site" style="border-color: rgba(255, 91, 0, 0.4); color: #FF5B00;">
+          <i class="fa-solid fa-calculator"></i> Gerador de Orçamentos
+        </a>
+        <a href="index.html" target="_blank" class="btn-view-site">
+          <i class="fa-solid fa-arrow-up-right-from-square"></i> Ver Site Principal
+        </a>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="admin-main">
+      
+      <!-- TOP HEADER -->
+      <header class="admin-header">
+        <div class="admin-title-wrap">
+          <h1 id="pageTitle">Painel de Controle</h1>
+          <p id="pageSubtitle">Gerencie todo o conteúdo, vídeos e mídias do site Zutere Audiovisual em tempo real.</p>
+        </div>
+        <div class="admin-header-actions">
+          <button class="btn-admin btn-admin-primary" id="btnSaveAll">
+            <i class="fa-solid fa-floppy-disk"></i> Salvar Alterações
+          </button>
+        </div>
+      </header>
+
+      <!-- TAB 1: OVERVIEW -->
+      <section class="admin-tab-panel active" id="tab-overview">
+        <div class="admin-stats-grid">
+          <div class="admin-stat-card">
+            <div class="admin-stat-icon"><i class="fa-solid fa-film"></i></div>
+            <div class="admin-stat-info">
+              <h3 id="statHeroCount">0</h3>
+              <p>Slides no Hero</p>
+            </div>
+          </div>
+          <div class="admin-stat-card">
+            <div class="admin-stat-icon"><i class="fa-solid fa-photo-film"></i></div>
+            <div class="admin-stat-info">
+              <h3 id="statProjectCount">0</h3>
+              <p>Projetos no Portfólio</p>
+            </div>
+          </div>
+          <div class="admin-stat-card">
+            <div class="admin-stat-icon"><i class="fa-brands fa-instagram"></i></div>
+            <div class="admin-stat-info">
+              <h3 id="statReelsCount">0</h3>
+              <p>Reels / Shorts Cadastrados</p>
+            </div>
+          </div>
+          <div class="admin-stat-card">
+            <div class="admin-stat-icon"><i class="fa-solid fa-circle-check"></i></div>
+            <div class="admin-stat-info">
+              <h3 style="color:#10B981;">Ativo</h3>
+              <p>Sincronização com o Site</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="admin-panel-card">
+          <div class="admin-panel-header">
+            <h2 class="admin-panel-title"><i class="fa-solid fa-bolt"></i> Ações Rápidas</h2>
+          </div>
+          <div style="display: flex; gap: 14px; flex-wrap: wrap;">
+            <button class="btn-admin btn-admin-secondary" onclick="switchAdminTab('hero')">
+              <i class="fa-solid fa-plus"></i> Adicionar Vídeo ao Hero
+            </button>
+            <button class="btn-admin btn-admin-secondary" onclick="switchAdminTab('portfolio')">
+              <i class="fa-solid fa-plus"></i> Adicionar Projeto ao Portfólio
+            </button>
+            <button class="btn-admin btn-admin-secondary" onclick="switchAdminTab('reels')">
+              <i class="fa-solid fa-plus"></i> Adicionar Reel
+            </button>
+            <button class="btn-admin btn-admin-secondary" onclick="switchAdminTab('settings')">
+              <i class="fa-brands fa-whatsapp"></i> Atualizar WhatsApp
+            </button>
+          </div>
+        </div>
+
+        <div class="admin-panel-card">
+          <div class="admin-panel-header">
+            <h2 class="admin-panel-title"><i class="fa-solid fa-circle-info"></i> Dicas de Formato de Vídeo</h2>
+          </div>
+          <p style="color: var(--text-muted); font-size: 0.92rem; line-height: 1.6;">
+            • <strong>Vídeos MP4 Direct:</strong> Cole o link direto do arquivo (ex: `.mp4`). Ideal para reprodução contínua e sem anúncios.<br>
+            • <strong>Vídeos do YouTube:</strong> Cole qualquer link do YouTube (ex: `https://www.youtube.com/watch?v=XXXXX` ou `youtu.be/XXXXX` ou Shorts). O sistema extrai automaticamente as miniaturas e configurações de exibição.<br>
+            • <strong>Sincronização Automática:</strong> Ao salvar, as alterações ficam ativas instantaneamente no site para todos os visitantes neste navegador!
+          </p>
+        </div>
+      </section>
+
+      <!-- TAB 2: HERO SLIDER MANAGEMENT -->
+      <section class="admin-tab-panel" id="tab-hero">
+        <div class="admin-panel-card">
+          <div class="admin-panel-header">
+            <h2 class="admin-panel-title"><i class="fa-solid fa-film"></i> Slides & Vídeos do Topo (Hero)</h2>
+            <button class="btn-admin btn-admin-primary btn-admin-sm" id="btnAddHeroSlide">
+              <i class="fa-solid fa-plus"></i> Novo Slide
+            </button>
+          </div>
+          <div class="admin-items-grid" id="heroListContainer">
+            <!-- Dynamic Hero Slides list -->
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 3: PORTFOLIO MANAGEMENT -->
+      <section class="admin-tab-panel" id="tab-portfolio">
+        <div class="admin-panel-card">
+          <div class="admin-panel-header">
+            <h2 class="admin-panel-title"><i class="fa-solid fa-photo-film"></i> Projetos do Portfólio</h2>
+            <button class="btn-admin btn-admin-primary btn-admin-sm" id="btnAddProject">
+              <i class="fa-solid fa-plus"></i> Novo Projeto
+            </button>
+          </div>
+          <div class="admin-items-grid" id="portfolioListContainer">
+            <!-- Dynamic Projects List -->
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 4: REELS MANAGEMENT -->
+      <section class="admin-tab-panel" id="tab-reels">
+        <div class="admin-panel-card">
+          <div class="admin-panel-header">
+            <h2 class="admin-panel-title"><i class="fa-brands fa-instagram"></i> Reels & Vídeos Verticais</h2>
+            <button class="btn-admin btn-admin-primary btn-admin-sm" id="btnAddReel">
+              <i class="fa-solid fa-plus"></i> Novo Reel
+            </button>
+          </div>
+          <div class="admin-items-grid" id="reelsListContainer">
+            <!-- Dynamic Reels List -->
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 5: SITE SETTINGS & CONTACT -->
+      <section class="admin-tab-panel" id="tab-settings">
+        <div class="admin-panel-card">
+          <div class="admin-panel-header">
+            <h2 class="admin-panel-title"><i class="fa-solid fa-phone"></i> Contatos & WhatsApp</h2>
+          </div>
+          <div class="admin-form-grid">
+            <div class="form-group">
+              <label class="form-label"><i class="fa-brands fa-whatsapp"></i> Número do WhatsApp (somente números)</label>
+              <input type="text" id="settingWhatsappNumber" class="form-input" placeholder="ex: 5511999999999">
+            </div>
+            <div class="form-group">
+              <label class="form-label"><i class="fa-solid fa-comment-dots"></i> Mensagem Inicial WhatsApp</label>
+              <input type="text" id="settingWhatsappMessage" class="form-input" placeholder="ex: Olá equipe Zutere Audiovisual!">
+            </div>
+            <div class="form-group">
+              <label class="form-label"><i class="fa-solid fa-envelope"></i> E-mail de Contato</label>
+              <input type="email" id="settingEmail" class="form-input" placeholder="ex: contato@zutere.com.br">
+            </div>
+          </div>
+        </div>
+
+        <div class="admin-panel-card">
+          <div class="admin-panel-header">
+            <h2 class="admin-panel-title"><i class="fa-solid fa-share-nodes"></i> Redes Sociais & Links</h2>
+          </div>
+          <div class="admin-form-grid">
+            <div class="form-group">
+              <label class="form-label"><i class="fa-brands fa-instagram"></i> Instagram URL</label>
+              <input type="url" id="settingInstagramUrl" class="form-input" placeholder="https://instagram.com/...">
+            </div>
+            <div class="form-group">
+              <label class="form-label"><i class="fa-brands fa-youtube"></i> YouTube URL</label>
+              <input type="url" id="settingYoutubeUrl" class="form-input" placeholder="https://youtube.com/@...">
+            </div>
+            <div class="form-group">
+              <label class="form-label"><i class="fa-brands fa-tiktok"></i> TikTok URL</label>
+              <input type="url" id="settingTiktokUrl" class="form-input" placeholder="https://tiktok.com/@...">
+            </div>
+            <div class="form-group full-width">
+              <label class="form-label"><i class="fa-solid fa-play"></i> Showreel Vídeo Principal URL (MP4 ou YouTube)</label>
+              <input type="url" id="settingShowreelUrl" class="form-input" placeholder="https://assets.mixkit.co/...">
+            </div>
+          </div>
+        </div>
+
+        <div class="admin-panel-card">
+          <div class="admin-panel-header">
+            <h2 class="admin-panel-title"><i class="fa-solid fa-chart-simple"></i> Números de Estatísticas do Site</h2>
+          </div>
+          <div class="admin-form-grid">
+            <div class="form-group">
+              <label class="form-label">Projetos Produzidos</label>
+              <input type="number" id="statProjectsNumber" class="form-input" placeholder="180">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Porcentagem de Qualidade (%)</label>
+              <input type="number" id="statQualityNumber" class="form-input" placeholder="100">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Marcas Atendidas</label>
+              <input type="number" id="statBrandsNumber" class="form-input" placeholder="50">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Anos de Excelência</label>
+              <input type="number" id="statYearsNumber" class="form-input" placeholder="12">
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 6: BACKUP & RESTORE -->
+      <section class="admin-tab-panel" id="tab-backup">
+        <div class="admin-panel-card">
+          <div class="admin-panel-header">
+            <h2 class="admin-panel-title"><i class="fa-solid fa-download"></i> Exportar & Importar Backup</h2>
+          </div>
+          <p style="color: var(--text-muted); font-size: 0.92rem; margin-bottom: 20px;">
+            Você pode salvar um arquivo `.json` com todas as suas configurações e vídeos para aplicar em outro navegador ou computador.
+          </p>
+          <div style="display: flex; gap: 14px; flex-wrap: wrap;">
+            <button class="btn-admin btn-admin-primary" id="btnExportBackup">
+              <i class="fa-solid fa-file-export"></i> Baixar Backup JSON
+            </button>
+            <label class="btn-admin btn-admin-secondary" style="cursor: pointer;">
+              <i class="fa-solid fa-file-import"></i> Carregar Backup JSON
+              <input type="file" id="inputImportBackup" accept=".json" style="display: none;">
+            </label>
+          </div>
+        </div>
+
+        <div class="admin-panel-card" style="border-color: rgba(239, 68, 68, 0.4);">
+          <div class="admin-panel-header">
+            <h2 class="admin-panel-title" style="color: #EF4444;"><i class="fa-solid fa-triangle-exclamation"></i> Zona de Perigo</h2>
+          </div>
+          <p style="color: var(--text-muted); font-size: 0.92rem; margin-bottom: 20px;">
+            Deseja redefinir todo o conteúdo para as mídias e vídeos originais de demonstração?
+          </p>
+          <button class="btn-admin btn-admin-danger" id="btnResetDefaults">
+            <i class="fa-solid fa-rotate-left"></i> Restaurar Configurações Padrão de Fábrica
+          </button>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- MODAL EDIT HERO SLIDE -->
+  <div class="admin-modal-backdrop" id="modalHeroSlide">
+    <div class="admin-modal-box">
+      <div class="admin-modal-header">
+        <h3 class="admin-modal-title" id="modalHeroTitle">Editar Slide do Hero</h3>
+        <button class="admin-modal-close" onclick="closeAdminModal('modalHeroSlide')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="formHeroSlide">
+        <input type="hidden" id="heroSlideId">
+        <div class="form-group">
+          <label class="form-label">Tipo de Mídia</label>
+          <select id="heroSlideType" class="form-select">
+            <option value="video">Vídeo (MP4 ou YouTube)</option>
+            <option value="photo">Foto / Imagem</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">URL da Mídia (Vídeo MP4, YouTube ou Imagem)</label>
+          <input type="url" id="heroSlideMediaUrl" class="form-input" required placeholder="https://...">
+        </div>
+        <div class="form-group">
+          <label class="form-label">URL da Capa/Poster (Opcional se for vídeo)</label>
+          <input type="url" id="heroSlidePosterUrl" class="form-input" placeholder="assets/images/...">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Selo / Badge</label>
+          <input type="text" id="heroSlideBadge" class="form-input" placeholder="ex: Cinema & Publicidade">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Título Principal</label>
+          <input type="text" id="heroSlideTitleText" class="form-input" required placeholder="ex: Transformando Ideias em Narrativas">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Descrição</label>
+          <textarea id="heroSlideDescText" class="form-textarea" required placeholder="Escreva a descrição do slide..."></textarea>
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 20px;">
+          <button type="button" class="btn-admin btn-admin-secondary" onclick="closeAdminModal('modalHeroSlide')">Cancelar</button>
+          <button type="submit" class="btn-admin btn-admin-primary">Salvar Slide</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL EDIT PORTFOLIO PROJECT -->
+  <div class="admin-modal-backdrop" id="modalProject">
+    <div class="admin-modal-box">
+      <div class="admin-modal-header">
+        <h3 class="admin-modal-title" id="modalProjectTitle">Editar Projeto</h3>
+        <button class="admin-modal-close" onclick="closeAdminModal('modalProject')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="formProject">
+        <input type="hidden" id="projectId">
+        <div class="form-group">
+          <label class="form-label">Título do Projeto</label>
+          <input type="text" id="projectTitleText" class="form-input" required placeholder="ex: Campanha GT Series">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Cliente / Marca</label>
+          <input type="text" id="projectClientText" class="form-input" required placeholder="ex: Titan Motors">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Categoria</label>
+          <select id="projectCategorySelect" class="form-select">
+            <option value="comercial">Comerciais</option>
+            <option value="videoclipe">Videoclipes</option>
+            <option value="eventos">Eventos & Shows</option>
+            <option value="aereo">Drones & Aéreo</option>
+            <option value="corporativo">Corporativo</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">URL do Vídeo (MP4 ou YouTube)</label>
+          <input type="url" id="projectVideoUrlText" class="form-input" required placeholder="https://...">
+        </div>
+        <div class="form-group">
+          <label class="form-label">URL da Imagem de Capa (Thumb)</label>
+          <input type="url" id="projectThumbUrlText" class="form-input" placeholder="assets/images/...">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Selo do Card (Badge)</label>
+          <input type="text" id="projectBadgeText" class="form-input" placeholder="ex: Comercial 4K">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Tag do Card (Equipamento / Recurso)</label>
+          <input type="text" id="projectTagText" class="form-input" placeholder="ex: Cinema Rig & VFX">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Descrição Breve</label>
+          <textarea id="projectDescText" class="form-textarea" required placeholder="Descrição do projeto..."></textarea>
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 20px;">
+          <button type="button" class="btn-admin btn-admin-secondary" onclick="closeAdminModal('modalProject')">Cancelar</button>
+          <button type="submit" class="btn-admin btn-admin-primary">Salvar Projeto</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL EDIT REEL -->
+  <div class="admin-modal-backdrop" id="modalReel">
+    <div class="admin-modal-box">
+      <div class="admin-modal-header">
+        <h3 class="admin-modal-title" id="modalReelTitle">Editar Reel</h3>
+        <button class="admin-modal-close" onclick="closeAdminModal('modalReel')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="formReel">
+        <input type="hidden" id="reelId">
+        <div class="form-group">
+          <label class="form-label">URL do Vídeo (MP4, YouTube Shorts ou Reel)</label>
+          <input type="url" id="reelVideoUrlText" class="form-input" placeholder="https://...">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Link do Post no Instagram (Opcional)</label>
+          <input type="url" id="reelUrlText" class="form-input" placeholder="https://instagram.com/reel/...">
+        </div>
+        <div class="form-group">
+          <label class="form-label">URL da Miniatura (Thumb)</label>
+          <input type="url" id="reelThumbUrlText" class="form-input" placeholder="assets/images/...">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Legenda / Título</label>
+          <input type="text" id="reelCaptionText" class="form-input" required placeholder="ex: Bastidores de comercial com RED V-Raptor">
+        </div>
+        <div class="admin-form-grid">
+          <div class="form-group">
+            <label class="form-label">Visualizações (Views)</label>
+            <input type="text" id="reelViewsText" class="form-input" placeholder="ex: 128K">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Curtidas (Likes)</label>
+            <input type="text" id="reelLikesText" class="form-input" placeholder="ex: 14.2K">
+          </div>
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 20px;">
+          <button type="button" class="btn-admin btn-admin-secondary" onclick="closeAdminModal('modalReel')">Cancelar</button>
+          <button type="submit" class="btn-admin btn-admin-primary">Salvar Reel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATIONS CONTAINER -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- ADMIN JAVASCRIPT CONTROLLER -->
+  <script src="js/admin.js"></script>
+</body>
+</html>
