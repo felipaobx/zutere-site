@@ -326,34 +326,33 @@ document.addEventListener('DOMContentLoaded', () => {
     return `
       <div style="font-family: 'Inter', sans-serif; color: #0F172A; line-height: 1.5;">
         
-        <!-- DARK BRAND HEADER BANNER -->
-        <div style="background: #0B0E17; color: #FFFFFF; padding: 26px 30px; border-radius: 16px; margin-bottom: 26px; border: 1px solid rgba(255, 91, 0, 0.4); display: flex; justify-content: space-between; align-items: center; box-shadow: 0 10px 25px rgba(0,0,0,0.3);">
-          <div>
-            <img src="assets/logo.png" alt="Zutere Audiovisual" style="height: 44px; width: auto; margin-bottom: 8px; display: block;">
-            <h2 style="font-size: 1.05rem; font-weight: 800; color: #FFFFFF; margin: 0;">${comp.legalName || 'ZUTERE AUDIOVISUAL'}</h2>
-            ${comp.cnpj ? `<p style="font-size: 0.78rem; color: #FF5B00; margin: 2px 0 0 0; font-weight: 700;">CNPJ: ${comp.cnpj}</p>` : ''}
-            <p style="font-size: 0.78rem; color: #CBD5E1; margin: 2px 0 0 0;">${comp.phone ? comp.phone + ' | ' : ''}${comp.email || 'contato@zutere.com.br'}</p>
-          </div>
-          <div style="text-align: right;">
-            <span style="font-size: 0.72rem; font-weight: 800; color: #FF5B00; text-transform: uppercase; letter-spacing: 1.5px; background: rgba(255,91,0,0.15); padding: 4px 10px; border-radius: 20px; border: 1px solid rgba(255,91,0,0.3);">PROPOSTA COMERCIAL</span>
-            <h1 style="font-family: 'Montserrat', sans-serif; font-size: 1.9rem; font-weight: 900; color: #FFFFFF; margin: 8px 0 4px 0;">#${quote.id}</h1>
-            <p style="font-size: 0.82rem; color: #94A3B8; margin: 0;">Data de Emissão: <strong style="color: #FFF;">${issueFormatted}</strong></p>
-            <p style="font-size: 0.82rem; color: #94A3B8; margin: 2px 0 0 0;">Validade: <strong style="color: #FF5B00;">${quote.validityDays} dias</strong></p>
-          </div>
+        <!-- DARK BRAND HEADER BANNER (CENTERED & LARGE LOGO) -->
+        <div style="background: #0B0E17; color: #FFFFFF; padding: 32px 24px; border-radius: 18px; margin-bottom: 26px; border: 1px solid rgba(255, 91, 0, 0.4); text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.3);">
+          <img src="assets/logo.png" alt="Zutere Audiovisual" style="height: 75px; width: auto; margin: 0 auto 12px auto; display: block;">
+          <h2 style="font-family: 'Montserrat', sans-serif; font-size: 1.35rem; font-weight: 800; color: #FFFFFF; margin: 0 0 4px 0; letter-spacing: 0.5px;">${comp.legalName || 'ZUTERE AUDIOVISUAL'}</h2>
+          ${comp.cnpj ? `<p style="font-size: 0.82rem; color: #FF5B00; margin: 0 0 4px 0; font-weight: 700; letter-spacing: 0.5px;">CNPJ: ${comp.cnpj}</p>` : ''}
+          <p style="font-size: 0.82rem; color: #CBD5E1; margin: 0;">${comp.phone ? comp.phone + ' • ' : ''}${comp.email || 'contato@zutere.com.br'}</p>
+          ${comp.address ? `<p style="font-size: 0.78rem; color: #94A3B8; margin: 3px 0 0 0;">${comp.address}</p>` : ''}
         </div>
 
         <!-- CLIENT & PROJECT DETAILS -->
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; background: #F8FAFC; padding: 22px 26px; border-radius: 16px; border: 1px solid #E2E8F0; margin-bottom: 26px;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 18px; background: #F8FAFC; padding: 22px 24px; border-radius: 16px; border: 1px solid #E2E8F0; margin-bottom: 26px;">
           <div>
             <span style="font-size: 0.75rem; font-weight: 800; color: #64748B; text-transform: uppercase; letter-spacing: 0.5px;">A/C DO CLIENTE</span>
-            <h3 style="font-size: 1.2rem; font-weight: 800; color: #0F172A; margin: 4px 0 2px 0;">${quote.clientName || 'Cliente'}</h3>
-            ${quote.clientCompany ? `<p style="font-size: 0.9rem; color: #475569; margin: 0; font-weight: 600;">${quote.clientCompany}</p>` : ''}
-            <p style="font-size: 0.85rem; color: #64748B; margin: 4px 0 0 0;"><i class="fa-brands fa-whatsapp" style="color:#25D366;"></i> WhatsApp: ${quote.clientWhatsapp || '-'}</p>
+            <h3 style="font-size: 1.15rem; font-weight: 800; color: #0F172A; margin: 4px 0 2px 0;">${quote.clientName || 'Cliente'}</h3>
+            ${quote.clientCompany ? `<p style="font-size: 0.88rem; color: #475569; margin: 0; font-weight: 600;">${quote.clientCompany}</p>` : ''}
+            <p style="font-size: 0.82rem; color: #64748B; margin: 4px 0 0 0;"><i class="fa-brands fa-whatsapp" style="color:#25D366;"></i> ${quote.clientWhatsapp || '-'}</p>
           </div>
           <div>
             <span style="font-size: 0.75rem; font-weight: 800; color: #64748B; text-transform: uppercase; letter-spacing: 0.5px;">PROJETO AUDIOVISUAL</span>
-            <h3 style="font-size: 1.2rem; font-weight: 800; color: #FF5B00; margin: 4px 0 2px 0;">${quote.projectTitle || 'Produção Audiovisual'}</h3>
-            <p style="font-size: 0.85rem; color: #475569; margin: 4px 0 0 0;">Prazo Estimado de Entrega: <strong>${quote.deliveryTime || 'A combinar'}</strong></p>
+            <h3 style="font-size: 1.15rem; font-weight: 800; color: #FF5B00; margin: 4px 0 2px 0;">${quote.projectTitle || 'Produção Audiovisual'}</h3>
+            <p style="font-size: 0.82rem; color: #475569; margin: 4px 0 0 0;">Prazo: <strong>${quote.deliveryTime || 'A combinar'}</strong></p>
+          </div>
+          <div style="text-align: right; border-left: 1px solid #E2E8F0; padding-left: 16px;">
+            <span style="font-size: 0.72rem; font-weight: 800; color: #FF5B00; text-transform: uppercase; letter-spacing: 1px; background: rgba(255,91,0,0.1); padding: 3px 8px; border-radius: 12px; border: 1px solid rgba(255,91,0,0.2);">PROPOSTA</span>
+            <h3 style="font-family: 'Montserrat', sans-serif; font-size: 1.25rem; font-weight: 900; color: #0F172A; margin: 6px 0 2px 0;">#${quote.id}</h3>
+            <p style="font-size: 0.8rem; color: #64748B; margin: 0;">Emissão: <strong>${issueFormatted}</strong></p>
+            <p style="font-size: 0.8rem; color: #64748B; margin: 2px 0 0 0;">Validade: <strong style="color: #FF5B00;">${quote.validityDays} dias</strong></p>
           </div>
         </div>
 
