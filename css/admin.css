@@ -667,7 +667,7 @@
   color: #EF4444;
 }
 
-/* RESPONSIVE LAYOUT */
+/* RESPONSIVE LAYOUT FOR TABLETS & PHONES */
 @media (max-width: 992px) {
   .admin-sidebar {
     width: 240px;
@@ -688,16 +688,81 @@
     height: auto;
     border-right: none;
     border-bottom: 1px solid var(--admin-border);
+    padding: 16px;
+  }
+  .admin-brand {
+    margin-bottom: 16px;
+  }
+  .admin-nav {
+    display: flex;
+    overflow-x: auto;
+    white-space: nowrap;
+    gap: 8px;
+    padding-bottom: 8px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .admin-nav-item {
+    flex: 0 0 auto;
+    padding: 10px 14px;
+    font-size: 0.85rem;
+  }
+  .admin-sidebar-footer {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    margin-top: 16px;
+    padding-top: 16px;
+  }
+  .admin-sidebar-footer .btn-view-site {
+    flex: 1;
+    font-size: 0.8rem;
   }
   .admin-main {
     margin-left: 0;
-    padding: 20px;
+    padding: 16px 12px;
+  }
+  .admin-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+  }
+  .admin-header-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .admin-form-grid,
+  .admin-items-grid,
+  .admin-stats-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .admin-panel-card {
+    padding: 16px;
+  }
+  .admin-table {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+  }
+  .admin-modal-box {
+    width: 95% !important;
+    max-width: 95% !important;
+    margin: 10px auto !important;
+  }
+  #proposalPrintDocument {
+    padding: 12px !important;
   }
 }
 
 /* ==========================================================================
    PRINT STYLES FOR COMMERCIAL PROPOSAL PDF GENERATION
    ========================================================================== */
+@page {
+  size: A4 portrait;
+  margin: 4mm;
+}
+
 @media print {
   * {
     -webkit-print-color-adjust: exact !important;
@@ -761,9 +826,10 @@
   /* Proposal printable document fills page cleanly */
   #proposalPrintDocument {
     display: block !important;
-    padding: 20px !important;
-    margin: 0 !important;
+    padding: 8px !important;
+    margin: 0 auto !important;
     width: 100% !important;
+    max-width: 100% !important;
     background: #FFFFFF !important;
     color: #0F172A !important;
   }

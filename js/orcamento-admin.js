@@ -316,55 +316,55 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let itemsRowsHtml = quote.items.map((item, idx) => `
       <tr style="border-bottom: 1px solid #E2E8F0; background: ${idx % 2 === 0 ? '#FFFFFF' : '#F8FAFC'};">
-        <td style="padding: 14px 16px; font-weight: 600; color: #0F172A; font-size: 0.92rem;">${item.desc}</td>
-        <td style="padding: 14px 16px; text-align: center; color: #334155; font-weight: 600;">${item.qty}</td>
-        <td style="padding: 14px 16px; text-align: right; color: #334155;">${formatBRL(item.price)}</td>
-        <td style="padding: 14px 16px; text-align: right; font-weight: 700; color: #FF5B00;">${formatBRL(item.subtotal)}</td>
+        <td style="padding: 8px 12px; font-weight: 600; color: #0F172A; font-size: 0.85rem;">${item.desc}</td>
+        <td style="padding: 8px 12px; text-align: center; color: #334155; font-weight: 600; font-size: 0.85rem;">${item.qty}</td>
+        <td style="padding: 8px 12px; text-align: right; color: #334155; font-size: 0.85rem;">${formatBRL(item.price)}</td>
+        <td style="padding: 8px 12px; text-align: right; font-weight: 700; color: #FF5B00; font-size: 0.85rem;">${formatBRL(item.subtotal)}</td>
       </tr>
     `).join('');
 
     return `
-      <div style="font-family: 'Inter', sans-serif; color: #0F172A; line-height: 1.5;">
+      <div style="font-family: 'Inter', sans-serif; color: #0F172A; line-height: 1.4; max-width: 800px; margin: 0 auto;">
         
-        <!-- DARK BRAND HEADER BANNER (CENTERED & LARGE LOGO) -->
-        <div style="background: #0B0E17; color: #FFFFFF; padding: 32px 24px; border-radius: 18px; margin-bottom: 26px; border: 1px solid rgba(255, 91, 0, 0.4); text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.3);">
-          <img src="assets/logo.png" alt="Zutere Audiovisual" style="height: 75px; width: auto; margin: 0 auto 12px auto; display: block;">
-          <h2 style="font-family: 'Montserrat', sans-serif; font-size: 1.35rem; font-weight: 800; color: #FFFFFF; margin: 0 0 4px 0; letter-spacing: 0.5px;">${comp.legalName || 'ZUTERE AUDIOVISUAL'}</h2>
-          ${comp.cnpj ? `<p style="font-size: 0.82rem; color: #FF5B00; margin: 0 0 4px 0; font-weight: 700; letter-spacing: 0.5px;">CNPJ: ${comp.cnpj}</p>` : ''}
-          <p style="font-size: 0.82rem; color: #CBD5E1; margin: 0;">${comp.phone ? comp.phone + ' • ' : ''}${comp.email || 'contato@zutere.com.br'}</p>
-          ${comp.address ? `<p style="font-size: 0.78rem; color: #94A3B8; margin: 3px 0 0 0;">${comp.address}</p>` : ''}
+        <!-- DARK BRAND HEADER BANNER (COMPACT FOR SINGLE PAGE) -->
+        <div style="background: #0B0E17; color: #FFFFFF; padding: 18px 20px; border-radius: 14px; margin-bottom: 14px; border: 1px solid rgba(255, 91, 0, 0.4); text-align: center;">
+          <img src="assets/logo.png" alt="Zutere Audiovisual" style="height: 52px; width: auto; margin: 0 auto 6px auto; display: block;">
+          <h2 style="font-family: 'Montserrat', sans-serif; font-size: 1.15rem; font-weight: 800; color: #FFFFFF; margin: 0 0 2px 0; letter-spacing: 0.5px;">${comp.legalName || 'ZUTERE AUDIOVISUAL'}</h2>
+          ${comp.cnpj ? `<p style="font-size: 0.76rem; color: #FF5B00; margin: 0 0 2px 0; font-weight: 700; letter-spacing: 0.5px;">CNPJ: ${comp.cnpj}</p>` : ''}
+          <p style="font-size: 0.76rem; color: #CBD5E1; margin: 0;">${comp.phone ? comp.phone + ' • ' : ''}${comp.email || 'contato@zutere.com.br'}</p>
+          ${comp.address ? `<p style="font-size: 0.72rem; color: #94A3B8; margin: 2px 0 0 0;">${comp.address}</p>` : ''}
         </div>
 
         <!-- CLIENT & PROJECT DETAILS -->
-        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 18px; background: #F8FAFC; padding: 22px 24px; border-radius: 16px; border: 1px solid #E2E8F0; margin-bottom: 26px;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; background: #F8FAFC; padding: 14px 18px; border-radius: 12px; border: 1px solid #E2E8F0; margin-bottom: 14px;">
           <div>
-            <span style="font-size: 0.75rem; font-weight: 800; color: #64748B; text-transform: uppercase; letter-spacing: 0.5px;">A/C DO CLIENTE</span>
-            <h3 style="font-size: 1.15rem; font-weight: 800; color: #0F172A; margin: 4px 0 2px 0;">${quote.clientName || 'Cliente'}</h3>
-            ${quote.clientCompany ? `<p style="font-size: 0.88rem; color: #475569; margin: 0; font-weight: 600;">${quote.clientCompany}</p>` : ''}
-            <p style="font-size: 0.82rem; color: #64748B; margin: 4px 0 0 0;"><i class="fa-brands fa-whatsapp" style="color:#25D366;"></i> ${quote.clientWhatsapp || '-'}</p>
+            <span style="font-size: 0.7rem; font-weight: 800; color: #64748B; text-transform: uppercase;">A/C DO CLIENTE</span>
+            <h3 style="font-size: 1rem; font-weight: 800; color: #0F172A; margin: 2px 0 1px 0;">${quote.clientName || 'Cliente'}</h3>
+            ${quote.clientCompany ? `<p style="font-size: 0.8rem; color: #475569; margin: 0; font-weight: 600;">${quote.clientCompany}</p>` : ''}
+            <p style="font-size: 0.76rem; color: #64748B; margin: 2px 0 0 0;"><i class="fa-brands fa-whatsapp" style="color:#25D366;"></i> ${quote.clientWhatsapp || '-'}</p>
           </div>
           <div>
-            <span style="font-size: 0.75rem; font-weight: 800; color: #64748B; text-transform: uppercase; letter-spacing: 0.5px;">PROJETO AUDIOVISUAL</span>
-            <h3 style="font-size: 1.15rem; font-weight: 800; color: #FF5B00; margin: 4px 0 2px 0;">${quote.projectTitle || 'Produção Audiovisual'}</h3>
-            <p style="font-size: 0.82rem; color: #475569; margin: 4px 0 0 0;">Prazo: <strong>${quote.deliveryTime || 'A combinar'}</strong></p>
+            <span style="font-size: 0.7rem; font-weight: 800; color: #64748B; text-transform: uppercase;">PROJETO AUDIOVISUAL</span>
+            <h3 style="font-size: 1rem; font-weight: 800; color: #FF5B00; margin: 2px 0 1px 0;">${quote.projectTitle || 'Produção Audiovisual'}</h3>
+            <p style="font-size: 0.76rem; color: #475569; margin: 2px 0 0 0;">Prazo: <strong>${quote.deliveryTime || 'A combinar'}</strong></p>
           </div>
-          <div style="text-align: right; border-left: 1px solid #E2E8F0; padding-left: 16px;">
-            <span style="font-size: 0.72rem; font-weight: 800; color: #FF5B00; text-transform: uppercase; letter-spacing: 1px; background: rgba(255,91,0,0.1); padding: 3px 8px; border-radius: 12px; border: 1px solid rgba(255,91,0,0.2);">PROPOSTA</span>
-            <h3 style="font-family: 'Montserrat', sans-serif; font-size: 1.25rem; font-weight: 900; color: #0F172A; margin: 6px 0 2px 0;">#${quote.id}</h3>
-            <p style="font-size: 0.8rem; color: #64748B; margin: 0;">Emissão: <strong>${issueFormatted}</strong></p>
-            <p style="font-size: 0.8rem; color: #64748B; margin: 2px 0 0 0;">Validade: <strong style="color: #FF5B00;">${quote.validityDays} dias</strong></p>
+          <div style="text-align: right; border-left: 1px solid #E2E8F0; padding-left: 12px;">
+            <span style="font-size: 0.68rem; font-weight: 800; color: #FF5B00; text-transform: uppercase; background: rgba(255,91,0,0.1); padding: 2px 6px; border-radius: 10px;">PROPOSTA</span>
+            <h3 style="font-family: 'Montserrat', sans-serif; font-size: 1.1rem; font-weight: 900; color: #0F172A; margin: 4px 0 1px 0;">#${quote.id}</h3>
+            <p style="font-size: 0.75rem; color: #64748B; margin: 0;">Emissão: <strong>${issueFormatted}</strong></p>
+            <p style="font-size: 0.75rem; color: #64748B; margin: 1px 0 0 0;">Validade: <strong style="color: #FF5B00;">${quote.validityDays} dias</strong></p>
           </div>
         </div>
 
         <!-- SERVICES TABLE -->
-        <div style="border-radius: 14px; overflow: hidden; border: 1px solid #E2E8F0; margin-bottom: 26px;">
+        <div style="border-radius: 10px; overflow: hidden; border: 1px solid #E2E8F0; margin-bottom: 14px;">
           <table style="width: 100%; border-collapse: collapse;">
             <thead>
-              <tr style="background: #0F172A; color: #FFFFFF; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px;">
-                <th style="padding: 14px 16px; text-align: left;">Descrição do Serviço / Equipamento</th>
-                <th style="padding: 14px 16px; text-align: center;">Qtd / Diárias</th>
-                <th style="padding: 14px 16px; text-align: right;">Valor Unitário</th>
-                <th style="padding: 14px 16px; text-align: right;">Subtotal</th>
+              <tr style="background: #0F172A; color: #FFFFFF; font-size: 0.75rem; text-transform: uppercase;">
+                <th style="padding: 8px 12px; text-align: left;">Descrição do Serviço / Equipamento</th>
+                <th style="padding: 8px 12px; text-align: center;">Qtd / Diárias</th>
+                <th style="padding: 8px 12px; text-align: right;">Valor Unitário</th>
+                <th style="padding: 8px 12px; text-align: right;">Subtotal</th>
               </tr>
             </thead>
             <tbody>
@@ -374,28 +374,28 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
 
         <!-- TOTALS & SUMMARY -->
-        <div style="display: flex; justify-content: flex-end; margin-bottom: 26px; page-break-inside: avoid;">
-          <div style="width: 360px; background: #F8FAFC; padding: 20px; border-radius: 14px; border: 1px solid #CBD5E1;">
-            <div style="display: flex; justify-content: space-between; font-size: 0.92rem; color: #475569; margin-bottom: 8px;">
+        <div style="display: flex; justify-content: flex-end; margin-bottom: 14px; page-break-inside: avoid;">
+          <div style="width: 320px; background: #F8FAFC; padding: 14px 16px; border-radius: 12px; border: 1px solid #CBD5E1;">
+            <div style="display: flex; justify-content: space-between; font-size: 0.85rem; color: #475569; margin-bottom: 4px;">
               <span>Subtotal dos Serviços:</span>
               <span style="font-weight: 600; color: #0F172A;">${formatBRL(quote.subtotal)}</span>
             </div>
             ${quote.discountAmount > 0 ? `
-            <div style="display: flex; justify-content: space-between; font-size: 0.92rem; color: #EF4444; margin-bottom: 8px;">
+            <div style="display: flex; justify-content: space-between; font-size: 0.85rem; color: #EF4444; margin-bottom: 4px;">
               <span>Desconto Aplicado:</span>
               <span style="font-weight: 700;">- ${formatBRL(quote.discountAmount)}</span>
             </div>` : ''}
             ${quote.travelCost > 0 ? `
-            <div style="display: flex; justify-content: space-between; font-size: 0.92rem; color: #475569; margin-bottom: 8px;">
-              <span>Taxa Logística / Deslocamento:</span>
+            <div style="display: flex; justify-content: space-between; font-size: 0.85rem; color: #475569; margin-bottom: 4px;">
+              <span>Taxa Logística:</span>
               <span style="font-weight: 600;">+ ${formatBRL(quote.travelCost)}</span>
             </div>` : ''}
-            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 1.25rem; font-weight: 900; color: #FF5B00; border-top: 2px dashed #CBD5E1; padding-top: 12px; margin-top: 8px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 1.15rem; font-weight: 900; color: #FF5B00; border-top: 2px dashed #CBD5E1; padding-top: 8px; margin-top: 4px;">
               <span>VALOR TOTAL:</span>
-              <span style="font-size: 1.4rem;">${formatBRL(quote.grandTotal)}</span>
+              <span style="font-size: 1.25rem;">${formatBRL(quote.grandTotal)}</span>
             </div>
             ${comp.pixKey ? `
-            <div style="margin-top: 12px; padding-top: 10px; border-top: 1px solid #E2E8F0; font-size: 0.78rem; color: #475569;">
+            <div style="margin-top: 8px; padding-top: 6px; border-top: 1px solid #E2E8F0; font-size: 0.75rem; color: #475569;">
               <strong>Chave PIX:</strong> ${comp.pixKey}<br>
               <span style="color:#64748B;">${comp.bankInfo || ''}</span>
             </div>` : ''}
@@ -403,24 +403,24 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
 
         <!-- CONDITIONS & NOTES -->
-        <div style="background: #F8FAFC; border-left: 5px solid #FF5B00; padding: 20px; border-radius: 4px 14px 14px 4px; border-top: 1px solid #E2E8F0; border-right: 1px solid #E2E8F0; border-bottom: 1px solid #E2E8F0; margin-bottom: 26px; page-break-inside: avoid;">
-          <h4 style="font-size: 0.92rem; font-weight: 800; color: #0F172A; margin: 0 0 8px 0; text-transform: uppercase;">CONDIÇÕES COMERCIAIS & TERMOS</h4>
-          <p style="font-size: 0.88rem; color: #334155; margin: 0 0 6px 0;">• <strong>Forma de Pagamento:</strong> ${quote.paymentTerms}</p>
-          ${quote.notes ? `<p style="font-size: 0.88rem; color: #334155; margin: 4px 0 6px 0; white-space: pre-line;">• <strong>Observações:</strong> ${quote.notes}</p>` : ''}
-          ${comp.footerTerms ? `<p style="font-size: 0.82rem; color: #64748B; margin: 8px 0 0 0; white-space: pre-line; border-top: 1px dashed #CBD5E1; padding-top: 8px;">${comp.footerTerms}</p>` : ''}
+        <div style="background: #F8FAFC; border-left: 4px solid #FF5B00; padding: 12px 16px; border-radius: 4px 10px 10px 4px; border-top: 1px solid #E2E8F0; border-right: 1px solid #E2E8F0; border-bottom: 1px solid #E2E8F0; margin-bottom: 14px; page-break-inside: avoid;">
+          <h4 style="font-size: 0.82rem; font-weight: 800; color: #0F172A; margin: 0 0 4px 0; text-transform: uppercase;">CONDIÇÕES COMERCIAIS & TERMOS</h4>
+          <p style="font-size: 0.8rem; color: #334155; margin: 0 0 4px 0;">• <strong>Forma de Pagamento:</strong> ${quote.paymentTerms}</p>
+          ${quote.notes ? `<p style="font-size: 0.8rem; color: #334155; margin: 2px 0 4px 0; white-space: pre-line;">• <strong>Observações:</strong> ${quote.notes}</p>` : ''}
+          ${comp.footerTerms ? `<p style="font-size: 0.75rem; color: #64748B; margin: 6px 0 0 0; white-space: pre-line; border-top: 1px dashed #CBD5E1; padding-top: 6px;">${comp.footerTerms}</p>` : ''}
         </div>
 
         <!-- SIGNATURE SECTION (SINGLE CENTERED) -->
-        <div style="max-width: 340px; margin: 40px auto 0 auto; text-align: center; page-break-inside: avoid;">
-          <div style="border-bottom: 1.5px solid #94A3B8; margin-bottom: 8px; height: 35px;"></div>
-          <span style="font-size: 0.92rem; font-weight: 800; color: #0F172A;">${comp.legalName || 'Felipe Ferreira Barbosa'}</span>
-          <p style="font-size: 0.78rem; color: #64748B; margin: 2px 0 0 0;">Produtora Executiva</p>
+        <div style="max-width: 300px; margin: 20px auto 0 auto; text-align: center; page-break-inside: avoid;">
+          <div style="border-bottom: 1.5px solid #94A3B8; margin-bottom: 6px; height: 28px;"></div>
+          <span style="font-size: 0.85rem; font-weight: 800; color: #0F172A;">${comp.legalName || 'Felipe Ferreira Barbosa'}</span>
+          <p style="font-size: 0.75rem; color: #64748B; margin: 1px 0 0 0;">Produtora Executiva</p>
         </div>
 
         <!-- FOOTER ADDRESS & CNPJ NOTE -->
-        <div style="margin-top: 30px; text-align: center; padding-top: 16px; border-top: 1px solid #E2E8F0; font-size: 0.75rem; color: #64748B; page-break-inside: avoid;">
+        <div style="margin-top: 16px; text-align: center; padding-top: 10px; border-top: 1px solid #E2E8F0; font-size: 0.72rem; color: #64748B; page-break-inside: avoid;">
           <p style="margin: 0;">${comp.legalName || 'Zutere Produção Audiovisual'} ${comp.cnpj ? ' • CNPJ: ' + comp.cnpj : ''}</p>
-          ${comp.address ? `<p style="margin: 2px 0 0 0;">${comp.address}</p>` : ''}
+          ${comp.address ? `<p style="margin: 1px 0 0 0;">${comp.address}</p>` : ''}
         </div>
 
       </div>
@@ -436,6 +436,35 @@ document.addEventListener('DOMContentLoaded', () => {
 
   window.printProposalDocument = function() {
     window.print();
+  };
+
+  window.downloadPdfDirectly = function() {
+    const element = document.getElementById('proposalPrintDocument');
+    if (!element) return;
+    
+    showToast('Gerando e baixando arquivo PDF...', 'info');
+
+    const quote = getQuoteFormData();
+    const fileName = `Proposta_Zutere_${quote.id || 'Audiovisual'}.pdf`;
+
+    const opt = {
+      margin:       [4, 4, 4, 4],
+      filename:     fileName,
+      image:        { type: 'jpeg', quality: 0.98 },
+      html2canvas:  { scale: 2, useCORS: true, logging: false },
+      jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+
+    if (window.html2pdf) {
+      window.html2pdf().set(opt).from(element).save().then(() => {
+        showToast('PDF baixado com sucesso!', 'success');
+      }).catch(err => {
+        console.error(err);
+        window.print();
+      });
+    } else {
+      window.print();
+    }
   };
 
   // ------------------------------------------------------------------------
