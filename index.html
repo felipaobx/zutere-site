@@ -34,6 +34,7 @@
       <nav class="nav-menu" id="navMenu">
         <a href="#hero" class="nav-link active">Início</a>
         <a href="#portfolio" class="nav-link">Portfólio</a>
+        <a href="#processo" class="nav-link">Nosso Processo</a>
         <a href="#sobre" class="nav-link">Sobre Nós</a>
         <a href="#orcamento" class="nav-link">Contato</a>
       </nav>
@@ -346,35 +347,50 @@
 
 
 
+    <!-- OUR PROCESS SECTION -->
+    <section id="processo" class="process-section section-padding alt-bg">
+      <div class="container">
+        <div class="section-header center">
+          <span class="section-badge" id="dynProcessBadge"><i class="fa-solid fa-gears"></i> Como Trabalhamos</span>
+          <h2 class="section-title" id="dynProcessTitle">Nosso <span class="text-gradient">Processo de Produção</span></h2>
+          <p class="section-subtitle" id="dynProcessSubtitle">Do primeiro briefing até a entrega final da sua obra audiovisual, seguimos etapas rigorosas de qualidade.</p>
+        </div>
+
+        <div class="process-steps-grid" id="dynProcessGrid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; margin-top: 40px;">
+          <!-- Dynamic Process Steps -->
+        </div>
+      </div>
+    </section>
+
     <!-- ABOUT ZUTERE SECTION -->
     <section id="sobre" class="about-section section-padding">
       <div class="container about-grid">
         <div class="about-image-stack">
-          <img src="assets/images/hero_concert_stage.png" alt="Set de filmagem Zutere" class="about-img-main">
+          <img src="assets/images/hero_concert_stage.png" alt="Set de filmagem Zutere" class="about-img-main" id="dynAboutImage">
           <div class="about-experience-card glass-panel">
-            <span class="exp-number">12+</span>
-            <span class="exp-text">Anos Criando Histórias Impactantes</span>
+            <span class="exp-number" id="dynAboutExpNum">12+</span>
+            <span class="exp-text" id="dynAboutExpText">Anos Criando Histórias Impactantes</span>
           </div>
         </div>
         <div class="about-text-content">
-          <span class="section-badge"><i class="fa-solid fa-crown"></i> Sobre a Zutere</span>
-          <h2 class="section-title">Paixão por Movimento, <span class="text-gradient">Obsessão por Qualidade</span></h2>
-          <p class="about-para">A <strong>Zutere Audiovisual</strong> nasceu com a missão de elevar o patamar das produções visuais no Brasil. Combinamos sensibilidade artística com o vigor da inovação tecnológica.</p>
-          <p class="about-para">Atendemos agências de publicidade, grandes marcas, artistas musicais e organizadores de eventos que buscam uma estética refinada e capaz de despertar emoções reais.</p>
+          <span class="section-badge" id="dynAboutBadge"><i class="fa-solid fa-crown"></i> Sobre a Zutere</span>
+          <h2 class="section-title" id="dynAboutTitle">Paixão por Movimento, <span class="text-gradient">Obsessão por Qualidade</span></h2>
+          <p class="about-para" id="dynAboutPara1">A <strong>Zutere Audiovisual</strong> nasceu com a missão de elevar o patamar das produções visuais no Brasil.</p>
+          <p class="about-para" id="dynAboutPara2">Atendemos agências de publicidade, grandes marcas, artistas musicais e organizadores de eventos.</p>
           
-          <div class="about-highlights">
+          <div class="about-highlights" id="dynAboutHighlights">
             <div class="highlight-item">
-              <i class="fa-solid fa-bullseye"></i>
+              <i class="fa-solid fa-bullseye" id="dynHighlight1Icon"></i>
               <div>
-                <strong>Visão Artística</strong>
-                <p>Cada frame é pensado para valorizar a mensagem da sua marca.</p>
+                <strong id="dynHighlight1Title">Visão Artística</strong>
+                <p id="dynHighlight1Desc">Cada frame é pensado para valorizar a mensagem da sua marca.</p>
               </div>
             </div>
             <div class="highlight-item">
-              <i class="fa-solid fa-stopwatch"></i>
+              <i class="fa-solid fa-stopwatch" id="dynHighlight2Icon"></i>
               <div>
-                <strong>Pontualidade Rigorosa</strong>
-                <p>Prazos de entrega garantidos e comunicação constante durante todo o projeto.</p>
+                <strong id="dynHighlight2Title">Pontualidade Rigorosa</strong>
+                <p id="dynHighlight2Desc">Prazos de entrega garantidos e comunicação constante durante todo o projeto.</p>
               </div>
             </div>
           </div>
@@ -394,7 +410,7 @@
         <div class="contact-single-box glass-panel text-center">
           <div class="whatsapp-cta-content">
             <div class="whatsapp-badge-icon"><i class="fa-brands fa-whatsapp"></i></div>
-            <a href="https://wa.me/5511999999999?text=Ol%C3%A1%20equipe%20Zutere%20Audiovisual!%20Gostaria%20de%20solicitar%20um%20or%C3%A7amento%20para%20o%20meu%20projeto." target="_blank" rel="noopener" class="btn btn-whatsapp btn-large">
+            <a href="https://wa.me/5511999999999?text=Ol%C3%A1%20equipe%20Zutere%20Audiovisual!" target="_blank" rel="noopener" class="btn btn-whatsapp btn-large" id="mainWhatsappBtn">
               <i class="fa-brands fa-whatsapp"></i> Chamar no WhatsApp
             </a>
           </div>

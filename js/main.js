@@ -59,6 +59,8 @@ document.addEventListener('DOMContentLoaded', () => {
   if (siteData) {
     renderDynamicHero(siteData.heroSlides);
     renderDynamicProjects(siteData.projects);
+    renderDynamicAbout(siteData.about);
+    renderDynamicProcess(siteData.process);
     applyDynamicSettings(siteData.settings);
   }
 
@@ -147,6 +149,84 @@ document.addEventListener('DOMContentLoaded', () => {
             <button class="project-action-btn">Ver Projeto <i class="fa-solid fa-arrow-up-right-from-square"></i></button>
           </div>
         </div>
+      `;
+      grid.appendChild(card);
+    });
+  }
+
+  function renderDynamicAbout(about) {
+    if (!about) return;
+    const badge = document.getElementById('dynAboutBadge');
+    if (badge && about.badge) badge.innerHTML = `<i class="fa-solid fa-crown"></i> ${about.badge}`;
+    
+    const title = document.getElementById('dynAboutTitle');
+    if (title && about.title) title.innerHTML = about.title;
+
+    const p1 = document.getElementById('dynAboutPara1');
+    if (p1 && about.para1) p1.innerHTML = about.para1;
+
+    const p2 = document.getElementById('dynAboutPara2');
+    if (p2 && about.para2) p2.innerHTML = about.para2;
+
+    const img = document.getElementById('dynAboutImage');
+    if (img && about.mainImage) img.src = about.mainImage;
+
+    const expNum = document.getElementById('dynAboutExpNum');
+    if (expNum && about.expNum) expNum.textContent = about.expNum;
+
+    const expText = document.getElementById('dynAboutExpText');
+    if (expText && about.expText) expText.textContent = about.expText;
+
+    const h1Icon = document.getElementById('dynHighlight1Icon');
+    if (h1Icon && about.highlight1Icon) h1Icon.className = `fa-solid ${about.highlight1Icon}`;
+    const h1Title = document.getElementById('dynHighlight1Title');
+    if (h1Title && about.highlight1Title) h1Title.textContent = about.highlight1Title;
+    const h1Desc = document.getElementById('dynHighlight1Desc');
+    if (h1Desc && about.highlight1Desc) h1Desc.textContent = about.highlight1Desc;
+
+    const h2Icon = document.getElementById('dynHighlight2Icon');
+    if (h2Icon && about.highlight2Icon) h2Icon.className = `fa-solid ${about.highlight2Icon}`;
+    const h2Title = document.getElementById('dynHighlight2Title');
+    if (h2Title && about.highlight2Title) h2Title.textContent = about.highlight2Title;
+    const h2Desc = document.getElementById('dynHighlight2Desc');
+    if (h2Desc && about.highlight2Desc) h2Desc.textContent = about.highlight2Desc;
+  }
+
+  function renderDynamicProcess(process) {
+    if (!process) return;
+    const badge = document.getElementById('dynProcessBadge');
+    if (badge && process.badge) badge.innerHTML = `<i class="fa-solid fa-gears"></i> ${process.badge}`;
+
+    const title = document.getElementById('dynProcessTitle');
+    if (title && process.title) title.innerHTML = process.title;
+
+    const sub = document.getElementById('dynProcessSubtitle');
+    if (sub && process.subtitle) sub.textContent = process.subtitle;
+
+    const grid = document.getElementById('dynProcessGrid');
+    if (!grid) return;
+
+    const steps = [
+      { num: process.step1Num || '01', icon: process.step1Icon || 'fa-comments', title: process.step1Title || 'Briefing & Roteiro', desc: process.step1Desc || '' },
+      { num: process.step2Num || '02', icon: process.step2Icon || 'fa-camera', title: process.step2Title || 'Captação & Filmagem', desc: process.step2Desc || '' },
+      { num: process.step3Num || '03', icon: process.step3Icon || 'fa-sliders', title: process.step3Title || 'Pós-Produção & Color', desc: process.step3Desc || '' },
+      { num: process.step4Num || '04', icon: process.step4Icon || 'fa-circle-check', title: process.step4Title || 'Aprovação & Entrega', desc: process.step4Desc || '' }
+    ];
+
+    grid.innerHTML = '';
+    steps.forEach(step => {
+      const card = document.createElement('div');
+      card.className = 'process-step-card glass-panel';
+      card.style.cssText = 'padding: 28px 22px; border-radius: 18px; position: relative; border: 1px solid rgba(255,255,255,0.08); background: rgba(18, 22, 34, 0.6); backdrop-filter: blur(10px); transition: all 0.3s ease;';
+      card.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 16px;">
+          <span style="font-size: 2rem; font-weight: 900; color: rgba(255, 91, 0, 0.4); font-family: 'Montserrat', sans-serif;">${step.num}</span>
+          <div style="width: 44px; height: 44px; border-radius: 12px; background: rgba(255, 91, 0, 0.12); border: 1px solid rgba(255, 91, 0, 0.3); display: flex; align-items: center; justify-content: center; color: #FF5B00; font-size: 1.2rem;">
+            <i class="fa-solid ${step.icon}"></i>
+          </div>
+        </div>
+        <h3 style="font-size: 1.15rem; font-weight: 700; color: #FFF; margin-bottom: 10px;">${step.title}</h3>
+        <p style="font-size: 0.9rem; color: #94A3B8; line-height: 1.5; margin: 0;">${step.desc}</p>
       `;
       grid.appendChild(card);
     });

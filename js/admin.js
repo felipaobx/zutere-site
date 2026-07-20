@@ -146,6 +146,42 @@ document.addEventListener('DOMContentLoaded', () => {
       statQuality: '100',
       statBrands: '50',
       statYears: '12'
+    },
+    about: {
+      badge: 'Sobre a Zutere',
+      title: 'Paixão por Movimento, Obsessão por Qualidade',
+      para1: 'A Zutere Audiovisual nasceu com a missão de elevar o patamar das produções visuais no Brasil. Combinamos sensibilidade artística com o vigor da inovação tecnológica.',
+      para2: 'Atendemos agências de publicidade, grandes marcas, artistas musicais e organizadores de eventos que buscam uma estética refinada e capaz de despertar emoções reais.',
+      mainImage: 'assets/images/hero_concert_stage.png',
+      expNum: '12+',
+      expText: 'Anos Criando Histórias Impactantes',
+      highlight1Icon: 'fa-bullseye',
+      highlight1Title: 'Visão Artística',
+      highlight1Desc: 'Cada frame é pensado para valorizar a mensagem da sua marca.',
+      highlight2Icon: 'fa-stopwatch',
+      highlight2Title: 'Pontualidade Rigorosa',
+      highlight2Desc: 'Prazos de entrega garantidos e comunicação constante durante todo o projeto.'
+    },
+    process: {
+      badge: 'Como Trabalhamos',
+      title: 'Nosso Processo de Produção',
+      subtitle: 'Do primeiro briefing até a entrega final da sua obra audiovisual, seguimos etapas rigorosas de qualidade.',
+      step1Num: '01',
+      step1Icon: 'fa-comments',
+      step1Title: 'Briefing & Roteiro',
+      step1Desc: 'Entendimento profundo do seu projeto, objetivo de negócio e criação da narrativa.',
+      step2Num: '02',
+      step2Icon: 'fa-camera',
+      step2Title: 'Captação & Filmagem',
+      step2Desc: 'Execução da gravação com equipamentos de ponta, câmeras de cinema e iluminação.',
+      step3Num: '03',
+      step3Icon: 'fa-sliders',
+      step3Title: 'Pós-Produção & Color',
+      step3Desc: 'Edição dinâmica, tratamento de áudio, efeitos visuais e color grading profissional.',
+      step4Num: '04',
+      step4Icon: 'fa-circle-check',
+      step4Title: 'Aprovação & Entrega',
+      step4Desc: 'Revisão final com o cliente e entrega em múltiplos formatos para web, TV e cinema.'
     }
   };
 
@@ -200,8 +236,9 @@ document.addEventListener('DOMContentLoaded', () => {
     overview: { title: 'Visão Geral', sub: 'Métricas e estado de sincronização em tempo real.' },
     hero: { title: 'Gerenciar Hero Slider', sub: 'Adicione ou troque os vídeos e imagens em destaque no topo do site.' },
     portfolio: { title: 'Gerenciar Portfólio', sub: 'Organize seus trabalhos, vídeos e categorias de produções.' },
-    reels: { title: 'Gerenciar Reels & Vídeos Verticais', sub: 'Cadastre e edite vídeos para a seção do Instagram e Shorts.' },
-    settings: { title: 'Configurações & Contatos', sub: 'Atualize números de WhatsApp, e-mail, redes sociais e estatísticas.' },
+    about: { title: 'Personalizar Sobre Nós', sub: 'Edite textos, missão, biografia, imagem de destaque e pilares da produtora.' },
+    process: { title: 'Personalizar Nosso Processo', sub: 'Edite as etapas de produção, ícones e descrições do fluxo de trabalho.' },
+    settings: { title: 'Atendimento & Contatos', sub: 'Atualize números de WhatsApp, e-mail, redes sociais e estatísticas do site.' },
     backup: { title: 'Backup & Restauração', sub: 'Exporte ou importe as configurações em formato JSON.' }
   };
 
@@ -355,21 +392,122 @@ document.addEventListener('DOMContentLoaded', () => {
   // ------------------------------------------------------------------------
 
   // ------------------------------------------------------------------------
+  // ABOUT US & PROCESS FORM HANDLERS
+  // ------------------------------------------------------------------------
+  function populateAboutForm() {
+    const a = siteData.about || {};
+    if (document.getElementById('aboutBadge')) document.getElementById('aboutBadge').value = a.badge || '';
+    if (document.getElementById('aboutTitle')) document.getElementById('aboutTitle').value = a.title || '';
+    if (document.getElementById('aboutPara1')) document.getElementById('aboutPara1').value = a.para1 || '';
+    if (document.getElementById('aboutPara2')) document.getElementById('aboutPara2').value = a.para2 || '';
+    if (document.getElementById('aboutMainImage')) document.getElementById('aboutMainImage').value = a.mainImage || '';
+    if (document.getElementById('aboutExpNum')) document.getElementById('aboutExpNum').value = a.expNum || '';
+    if (document.getElementById('aboutExpText')) document.getElementById('aboutExpText').value = a.expText || '';
+    if (document.getElementById('aboutHighlight1Icon')) document.getElementById('aboutHighlight1Icon').value = a.highlight1Icon || '';
+    if (document.getElementById('aboutHighlight1Title')) document.getElementById('aboutHighlight1Title').value = a.highlight1Title || '';
+    if (document.getElementById('aboutHighlight1Desc')) document.getElementById('aboutHighlight1Desc').value = a.highlight1Desc || '';
+    if (document.getElementById('aboutHighlight2Icon')) document.getElementById('aboutHighlight2Icon').value = a.highlight2Icon || '';
+    if (document.getElementById('aboutHighlight2Title')) document.getElementById('aboutHighlight2Title').value = a.highlight2Title || '';
+    if (document.getElementById('aboutHighlight2Desc')) document.getElementById('aboutHighlight2Desc').value = a.highlight2Desc || '';
+  }
+
+  function populateProcessForm() {
+    const p = siteData.process || {};
+    if (document.getElementById('processBadge')) document.getElementById('processBadge').value = p.badge || '';
+    if (document.getElementById('processTitle')) document.getElementById('processTitle').value = p.title || '';
+    if (document.getElementById('processSubtitle')) document.getElementById('processSubtitle').value = p.subtitle || '';
+
+    if (document.getElementById('step1Num')) document.getElementById('step1Num').value = p.step1Num || '01';
+    if (document.getElementById('step1Icon')) document.getElementById('step1Icon').value = p.step1Icon || 'fa-comments';
+    if (document.getElementById('step1Title')) document.getElementById('step1Title').value = p.step1Title || 'Briefing & Roteiro';
+    if (document.getElementById('step1Desc')) document.getElementById('step1Desc').value = p.step1Desc || '';
+
+    if (document.getElementById('step2Num')) document.getElementById('step2Num').value = p.step2Num || '02';
+    if (document.getElementById('step2Icon')) document.getElementById('step2Icon').value = p.step2Icon || 'fa-camera';
+    if (document.getElementById('step2Title')) document.getElementById('step2Title').value = p.step2Title || 'Captação & Filmagem';
+    if (document.getElementById('step2Desc')) document.getElementById('step2Desc').value = p.step2Desc || '';
+
+    if (document.getElementById('step3Num')) document.getElementById('step3Num').value = p.step3Num || '03';
+    if (document.getElementById('step3Icon')) document.getElementById('step3Icon').value = p.step3Icon || 'fa-sliders';
+    if (document.getElementById('step3Title')) document.getElementById('step3Title').value = p.step3Title || 'Pós-Produção & Color';
+    if (document.getElementById('step3Desc')) document.getElementById('step3Desc').value = p.step3Desc || '';
+
+    if (document.getElementById('step4Num')) document.getElementById('step4Num').value = p.step4Num || '04';
+    if (document.getElementById('step4Icon')) document.getElementById('step4Icon').value = p.step4Icon || 'fa-circle-check';
+    if (document.getElementById('step4Title')) document.getElementById('step4Title').value = p.step4Title || 'Aprovação & Entrega';
+    if (document.getElementById('step4Desc')) document.getElementById('step4Desc').value = p.step4Desc || '';
+  }
+
+  const formAbout = document.getElementById('formAboutSettings');
+  if (formAbout) {
+    formAbout.addEventListener('submit', (e) => {
+      e.preventDefault();
+      siteData.about = {
+        badge: document.getElementById('aboutBadge').value,
+        title: document.getElementById('aboutTitle').value,
+        para1: document.getElementById('aboutPara1').value,
+        para2: document.getElementById('aboutPara2').value,
+        mainImage: document.getElementById('aboutMainImage').value,
+        expNum: document.getElementById('aboutExpNum').value,
+        expText: document.getElementById('aboutExpText').value,
+        highlight1Icon: document.getElementById('aboutHighlight1Icon').value,
+        highlight1Title: document.getElementById('aboutHighlight1Title').value,
+        highlight1Desc: document.getElementById('aboutHighlight1Desc').value,
+        highlight2Icon: document.getElementById('aboutHighlight2Icon').value,
+        highlight2Title: document.getElementById('aboutHighlight2Title').value,
+        highlight2Desc: document.getElementById('aboutHighlight2Desc').value
+      };
+      saveData();
+      showToast('Seção Sobre Nós salva com sucesso!', 'success');
+    });
+  }
+
+  const formProcess = document.getElementById('formProcessSettings');
+  if (formProcess) {
+    formProcess.addEventListener('submit', (e) => {
+      e.preventDefault();
+      siteData.process = {
+        badge: document.getElementById('processBadge').value,
+        title: document.getElementById('processTitle').value,
+        subtitle: document.getElementById('processSubtitle').value,
+        step1Num: document.getElementById('step1Num').value,
+        step1Icon: document.getElementById('step1Icon').value,
+        step1Title: document.getElementById('step1Title').value,
+        step1Desc: document.getElementById('step1Desc').value,
+        step2Num: document.getElementById('step2Num').value,
+        step2Icon: document.getElementById('step2Icon').value,
+        step2Title: document.getElementById('step2Title').value,
+        step2Desc: document.getElementById('step2Desc').value,
+        step3Num: document.getElementById('step3Num').value,
+        step3Icon: document.getElementById('step3Icon').value,
+        step3Title: document.getElementById('step3Title').value,
+        step3Desc: document.getElementById('step3Desc').value,
+        step4Num: document.getElementById('step4Num').value,
+        step4Icon: document.getElementById('step4Icon').value,
+        step4Title: document.getElementById('step4Title').value,
+        step4Desc: document.getElementById('step4Desc').value
+      };
+      saveData();
+      showToast('Seção Nosso Processo salva com sucesso!', 'success');
+    });
+  }
+
+  // ------------------------------------------------------------------------
   // SETTINGS FORM POPULATE & BIND
   // ------------------------------------------------------------------------
   function populateSettingsForm() {
     const s = siteData.settings || {};
-    document.getElementById('settingWhatsappNumber').value = s.whatsappNumber || '';
-    document.getElementById('settingWhatsappMessage').value = s.whatsappMessage || '';
-    document.getElementById('settingEmail').value = s.email || '';
-    document.getElementById('settingInstagramUrl').value = s.instagramUrl || '';
-    document.getElementById('settingYoutubeUrl').value = s.youtubeUrl || '';
-    document.getElementById('settingTiktokUrl').value = s.tiktokUrl || '';
-    document.getElementById('settingShowreelUrl').value = s.showreelUrl || '';
-    document.getElementById('statProjectsNumber').value = s.statProjects || '180';
-    document.getElementById('statQualityNumber').value = s.statQuality || '100';
-    document.getElementById('statBrandsNumber').value = s.statBrands || '50';
-    document.getElementById('statYearsNumber').value = s.statYears || '12';
+    if (document.getElementById('settingWhatsappNumber')) document.getElementById('settingWhatsappNumber').value = s.whatsappNumber || '';
+    if (document.getElementById('settingWhatsappMessage')) document.getElementById('settingWhatsappMessage').value = s.whatsappMessage || '';
+    if (document.getElementById('settingEmail')) document.getElementById('settingEmail').value = s.email || '';
+    if (document.getElementById('settingInstagramUrl')) document.getElementById('settingInstagramUrl').value = s.instagramUrl || '';
+    if (document.getElementById('settingYoutubeUrl')) document.getElementById('settingYoutubeUrl').value = s.youtubeUrl || '';
+    if (document.getElementById('settingTiktokUrl')) document.getElementById('settingTiktokUrl').value = s.tiktokUrl || '';
+    if (document.getElementById('settingShowreelUrl')) document.getElementById('settingShowreelUrl').value = s.showreelUrl || '';
+    if (document.getElementById('statProjectsNumber')) document.getElementById('statProjectsNumber').value = s.statProjects || '180';
+    if (document.getElementById('statQualityNumber')) document.getElementById('statQualityNumber').value = s.statQuality || '100';
+    if (document.getElementById('statBrandsNumber')) document.getElementById('statBrandsNumber').value = s.statBrands || '50';
+    if (document.getElementById('statYearsNumber')) document.getElementById('statYearsNumber').value = s.statYears || '12';
   }
 
   function readSettingsForm() {
@@ -574,6 +712,8 @@ document.addEventListener('DOMContentLoaded', () => {
     updateOverviewStats();
     renderHeroSlides();
     renderProjects();
+    populateAboutForm();
+    populateProcessForm();
     populateSettingsForm();
   }
 

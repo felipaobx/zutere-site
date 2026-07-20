@@ -45,8 +45,14 @@
         <button class="admin-nav-item" data-tab="portfolio">
           <i class="fa-solid fa-photo-film"></i> Portfólio & Projetos
         </button>
+        <button class="admin-nav-item" data-tab="about">
+          <i class="fa-solid fa-crown"></i> Sobre Nós
+        </button>
+        <button class="admin-nav-item" data-tab="process">
+          <i class="fa-solid fa-gears"></i> Nosso Processo
+        </button>
         <button class="admin-nav-item" data-tab="settings">
-          <i class="fa-solid fa-sliders"></i> Configurações & Contato
+          <i class="fa-solid fa-sliders"></i> Atendimento & Contato
         </button>
         <button class="admin-nav-item" data-tab="backup">
           <i class="fa-solid fa-database"></i> Backup & Sistema
@@ -167,7 +173,226 @@
         </div>
       </section>
 
-      <!-- TAB 5: SITE SETTINGS & CONTACT -->
+      <!-- TAB 4: ABOUT US MANAGEMENT -->
+      <section class="admin-tab-panel" id="tab-about">
+        <form id="formAboutSettings">
+          <div class="admin-panel-card">
+            <div class="admin-panel-header">
+              <h2 class="admin-panel-title"><i class="fa-solid fa-crown"></i> Cabeçalho & Textos do Sobre Nós</h2>
+            </div>
+            <div class="admin-form-grid">
+              <div class="form-group">
+                <label class="form-label">Badge de Selo (Topo)</label>
+                <input type="text" id="aboutBadge" class="form-input" placeholder="ex: Sobre a Zutere">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Título Principal</label>
+                <input type="text" id="aboutTitle" class="form-input" placeholder="ex: Paixão por Movimento, Obsessão por Qualidade">
+              </div>
+              <div class="form-group full-width">
+                <label class="form-label">Parágrafo 1 (História & Missão)</label>
+                <textarea id="aboutPara1" class="form-textarea" rows="3" placeholder="A Zutere Audiovisual nasceu com a missão..."></textarea>
+              </div>
+              <div class="form-group full-width">
+                <label class="form-label">Parágrafo 2 (Público & Atendimento)</label>
+                <textarea id="aboutPara2" class="form-textarea" rows="3" placeholder="Atendemos agências de publicidade, grandes marcas..."></textarea>
+              </div>
+            </div>
+          </div>
+
+          <div class="admin-panel-card">
+            <div class="admin-panel-header">
+              <h2 class="admin-panel-title"><i class="fa-solid fa-image"></i> Imagem Principal & Card de Experiência</h2>
+            </div>
+            <div class="admin-form-grid">
+              <div class="form-group full-width">
+                <label class="form-label">URL da Imagem de Destaque</label>
+                <input type="text" id="aboutMainImage" class="form-input" placeholder="ex: assets/images/hero_concert_stage.png">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Número de Experiência</label>
+                <input type="text" id="aboutExpNum" class="form-input" placeholder="ex: 12+">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Texto da Experiência</label>
+                <input type="text" id="aboutExpText" class="form-input" placeholder="ex: Anos Criando Histórias Impactantes">
+              </div>
+            </div>
+          </div>
+
+          <div class="admin-panel-card">
+            <div class="admin-panel-header">
+              <h2 class="admin-panel-title"><i class="fa-solid fa-star"></i> Pilares de Destaque (2 Ícones & Textos)</h2>
+            </div>
+            <div class="admin-form-grid">
+              <div class="form-group">
+                <label class="form-label">Ícone 1 (Classe FontAwesome)</label>
+                <input type="text" id="aboutHighlight1Icon" class="form-input" placeholder="ex: fa-bullseye">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Título Pilar 1</label>
+                <input type="text" id="aboutHighlight1Title" class="form-input" placeholder="ex: Visão Artística">
+              </div>
+              <div class="form-group full-width">
+                <label class="form-label">Descrição Pilar 1</label>
+                <input type="text" id="aboutHighlight1Desc" class="form-input" placeholder="ex: Cada frame é pensado para valorizar a mensagem da sua marca.">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Ícone 2 (Classe FontAwesome)</label>
+                <input type="text" id="aboutHighlight2Icon" class="form-input" placeholder="ex: fa-stopwatch">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Título Pilar 2</label>
+                <input type="text" id="aboutHighlight2Title" class="form-input" placeholder="ex: Pontualidade Rigorosa">
+              </div>
+              <div class="form-group full-width">
+                <label class="form-label">Descrição Pilar 2</label>
+                <input type="text" id="aboutHighlight2Desc" class="form-input" placeholder="ex: Prazos de entrega garantidos e comunicação constante.">
+              </div>
+            </div>
+          </div>
+
+          <div style="display:flex; justify-content:flex-end; margin-bottom: 30px;">
+            <button type="submit" class="btn-admin btn-admin-primary">
+              <i class="fa-solid fa-floppy-disk"></i> Salvar Sobre Nós
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <!-- TAB 5: OUR PROCESS MANAGEMENT -->
+      <section class="admin-tab-panel" id="tab-process">
+        <form id="formProcessSettings">
+          <div class="admin-panel-card">
+            <div class="admin-panel-header">
+              <h2 class="admin-panel-title"><i class="fa-solid fa-gears"></i> Cabeçalho da Seção Nosso Processo</h2>
+            </div>
+            <div class="admin-form-grid">
+              <div class="form-group">
+                <label class="form-label">Selo / Badge</label>
+                <input type="text" id="processBadge" class="form-input" placeholder="ex: Como Trabalhamos">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Título Principal</label>
+                <input type="text" id="processTitle" class="form-input" placeholder="ex: Nosso Processo de Produção">
+              </div>
+              <div class="form-group full-width">
+                <label class="form-label">Subtítulo Explicativo</label>
+                <input type="text" id="processSubtitle" class="form-input" placeholder="ex: Do primeiro briefing até a entrega final...">
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 1 -->
+          <div class="admin-panel-card">
+            <div class="admin-panel-header">
+              <h2 class="admin-panel-title"><i class="fa-solid fa-1"></i> Etapa 1</h2>
+            </div>
+            <div class="admin-form-grid">
+              <div class="form-group">
+                <label class="form-label">Número</label>
+                <input type="text" id="step1Num" class="form-input" placeholder="01">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Ícone FontAwesome</label>
+                <input type="text" id="step1Icon" class="form-input" placeholder="fa-comments">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Título da Etapa</label>
+                <input type="text" id="step1Title" class="form-input" placeholder="Briefing & Roteiro">
+              </div>
+              <div class="form-group full-width">
+                <label class="form-label">Descrição da Etapa</label>
+                <input type="text" id="step1Desc" class="form-input" placeholder="Entendimento profundo do seu projeto...">
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 2 -->
+          <div class="admin-panel-card">
+            <div class="admin-panel-header">
+              <h2 class="admin-panel-title"><i class="fa-solid fa-2"></i> Etapa 2</h2>
+            </div>
+            <div class="admin-form-grid">
+              <div class="form-group">
+                <label class="form-label">Número</label>
+                <input type="text" id="step2Num" class="form-input" placeholder="02">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Ícone FontAwesome</label>
+                <input type="text" id="step2Icon" class="form-input" placeholder="fa-camera">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Título da Etapa</label>
+                <input type="text" id="step2Title" class="form-input" placeholder="Captação & Filmagem">
+              </div>
+              <div class="form-group full-width">
+                <label class="form-label">Descrição da Etapa</label>
+                <input type="text" id="step2Desc" class="form-input" placeholder="Execução da gravação com equipamentos de ponta...">
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 3 -->
+          <div class="admin-panel-card">
+            <div class="admin-panel-header">
+              <h2 class="admin-panel-title"><i class="fa-solid fa-3"></i> Etapa 3</h2>
+            </div>
+            <div class="admin-form-grid">
+              <div class="form-group">
+                <label class="form-label">Número</label>
+                <input type="text" id="step3Num" class="form-input" placeholder="03">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Ícone FontAwesome</label>
+                <input type="text" id="step3Icon" class="form-input" placeholder="fa-sliders">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Título da Etapa</label>
+                <input type="text" id="step3Title" class="form-input" placeholder="Pós-Produção & Color">
+              </div>
+              <div class="form-group full-width">
+                <label class="form-label">Descrição da Etapa</label>
+                <input type="text" id="step3Desc" class="form-input" placeholder="Edição dinâmica, tratamento de áudio e color grading...">
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 4 -->
+          <div class="admin-panel-card">
+            <div class="admin-panel-header">
+              <h2 class="admin-panel-title"><i class="fa-solid fa-4"></i> Etapa 4</h2>
+            </div>
+            <div class="admin-form-grid">
+              <div class="form-group">
+                <label class="form-label">Número</label>
+                <input type="text" id="step4Num" class="form-input" placeholder="04">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Ícone FontAwesome</label>
+                <input type="text" id="step4Icon" class="form-input" placeholder="fa-circle-check">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Título da Etapa</label>
+                <input type="text" id="step4Title" class="form-input" placeholder="Aprovação & Entrega">
+              </div>
+              <div class="form-group full-width">
+                <label class="form-label">Descrição da Etapa</label>
+                <input type="text" id="step4Desc" class="form-input" placeholder="Revisão final com o cliente e entrega final...">
+              </div>
+            </div>
+          </div>
+
+          <div style="display:flex; justify-content:flex-end; margin-bottom: 30px;">
+            <button type="submit" class="btn-admin btn-admin-primary">
+              <i class="fa-solid fa-floppy-disk"></i> Salvar Nosso Processo
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <!-- TAB 6: SITE SETTINGS & CONTACT -->
       <section class="admin-tab-panel" id="tab-settings">
         <div class="admin-panel-card">
           <div class="admin-panel-header">
