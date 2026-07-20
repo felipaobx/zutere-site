@@ -72,9 +72,12 @@
           <h1 id="pageTitle">Painel de Controle</h1>
           <p id="pageSubtitle">Gerencie todo o conteúdo, vídeos e mídias do site Zutere Audiovisual em tempo real.</p>
         </div>
-        <div class="admin-header-actions">
+        <div class="admin-header-actions" style="display: flex; gap: 10px;">
           <button class="btn-admin btn-admin-primary" id="btnSaveAll">
             <i class="fa-solid fa-floppy-disk"></i> Salvar Alterações
+          </button>
+          <button class="btn-admin btn-admin-danger" onclick="logoutAdmin()">
+            <i class="fa-solid fa-right-from-bracket"></i> Sair
           </button>
         </div>
       </header>
@@ -232,6 +235,27 @@
               <input type="number" id="statYearsNumber" class="form-input" placeholder="12">
             </div>
           </div>
+        <div class="admin-panel-card">
+          <div class="admin-panel-header">
+            <h2 class="admin-panel-title"><i class="fa-solid fa-shield-halved"></i> Segurança & Credenciais de Acesso do Painel</h2>
+          </div>
+          <form id="formChangeAuth" onsubmit="if(event){event.preventDefault();} const u = document.getElementById('settingAuthUser').value; const p = document.getElementById('settingAuthPass').value; if(updateAdminCredentials(u,p)){ showToast('Usuário e Senha atualizados com sucesso!', 'success'); }">
+            <div class="admin-form-grid">
+              <div class="form-group">
+                <label class="form-label"><i class="fa-solid fa-user"></i> Novo Usuário de Login</label>
+                <input type="text" id="settingAuthUser" class="form-input" placeholder="ex: admin" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label"><i class="fa-solid fa-key"></i> Nova Senha de Acesso</label>
+                <input type="password" id="settingAuthPass" class="form-input" placeholder="ex: ********" required>
+              </div>
+            </div>
+            <div style="margin-top: 16px; text-align: right;">
+              <button type="submit" class="btn-admin btn-admin-primary">
+                <i class="fa-solid fa-key"></i> Atualizar Usuário e Senha
+              </button>
+            </div>
+          </form>
         </div>
       </section>
 
@@ -373,6 +397,8 @@
   <!-- TOAST NOTIFICATIONS CONTAINER -->
   <div class="toast-container" id="toastContainer"></div>
 
+  <!-- AUTHENTICATION GUARD -->
+  <script src="js/auth.js"></script>
   <!-- ADMIN JAVASCRIPT CONTROLLER -->
   <script src="js/admin.js"></script>
 </body>
