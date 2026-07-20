@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // DEFAULT COMPANY INFO (CNPJ, ADDRESS, FOOTER TERMS)
   const DEFAULT_COMPANY_INFO = {
-    legalName: 'Zutere Produção Audiovisual LTDA',
+    legalName: 'Felipe Ferreira Barbosa',
     cnpj: '00.000.000/0001-00',
     phone: '(11) 99999-8888',
     email: 'contato@zutere.com.br',
@@ -410,18 +410,11 @@ document.addEventListener('DOMContentLoaded', () => {
           ${comp.footerTerms ? `<p style="font-size: 0.82rem; color: #64748B; margin: 8px 0 0 0; white-space: pre-line; border-top: 1px dashed #CBD5E1; padding-top: 8px;">${comp.footerTerms}</p>` : ''}
         </div>
 
-        <!-- SIGNATURE / APPROVAL SECTION -->
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 50px; margin-top: 36px; text-align: center; page-break-inside: avoid;">
-          <div>
-            <div style="border-bottom: 1.5px solid #94A3B8; margin-bottom: 8px; height: 35px;"></div>
-            <span style="font-size: 0.88rem; font-weight: 800; color: #0F172A;">${comp.legalName || 'ZUTERE AUDIOVISUAL'}</span>
-            <p style="font-size: 0.78rem; color: #64748B; margin: 2px 0 0 0;">Produtora Executiva</p>
-          </div>
-          <div>
-            <div style="border-bottom: 1.5px solid #94A3B8; margin-bottom: 8px; height: 35px;"></div>
-            <span style="font-size: 0.88rem; font-weight: 800; color: #0F172A;">ACEITE DO CLIENTE</span>
-            <p style="font-size: 0.78rem; color: #64748B; margin: 2px 0 0 0;">Assinatura & Data</p>
-          </div>
+        <!-- SIGNATURE SECTION (SINGLE CENTERED) -->
+        <div style="max-width: 340px; margin: 40px auto 0 auto; text-align: center; page-break-inside: avoid;">
+          <div style="border-bottom: 1.5px solid #94A3B8; margin-bottom: 8px; height: 35px;"></div>
+          <span style="font-size: 0.92rem; font-weight: 800; color: #0F172A;">${comp.legalName || 'Felipe Ferreira Barbosa'}</span>
+          <p style="font-size: 0.78rem; color: #64748B; margin: 2px 0 0 0;">Produtora Executiva</p>
         </div>
 
         <!-- FOOTER ADDRESS & CNPJ NOTE -->
