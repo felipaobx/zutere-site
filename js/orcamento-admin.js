@@ -327,9 +327,9 @@ document.addEventListener('DOMContentLoaded', () => {
       <div style="font-family: 'Inter', sans-serif; color: #0F172A; line-height: 1.4; max-width: 800px; margin: 0 auto;">
         
         <!-- DARK BRAND HEADER BANNER (COMPACT FOR SINGLE PAGE) -->
-        <div style="background: #0B0E17; color: #FFFFFF; padding: 18px 20px; border-radius: 14px; margin-bottom: 14px; border: 1px solid rgba(255, 91, 0, 0.4); text-align: center;">
-          <img src="assets/logo.png" alt="Zutere Audiovisual" style="height: 52px; width: auto; margin: 0 auto 6px auto; display: block;">
-          <h2 style="font-family: 'Montserrat', sans-serif; font-size: 1.15rem; font-weight: 800; color: #FFFFFF; margin: 0 0 2px 0; letter-spacing: 0.5px;">${comp.legalName || 'ZUTERE AUDIOVISUAL'}</h2>
+        <div style="background: #0B0E17; color: #FFFFFF; padding: 22px 20px; border-radius: 14px; margin-bottom: 14px; border: 1px solid rgba(255, 91, 0, 0.4); text-align: center;">
+          <img src="assets/logo.png" alt="Zutere Audiovisual" style="height: 82px; width: auto; margin: 0 auto 8px auto; display: block;">
+          <h2 style="font-family: 'Montserrat', sans-serif; font-size: 1.25rem; font-weight: 800; color: #FFFFFF; margin: 0 0 2px 0; letter-spacing: 0.5px;">${comp.legalName || 'ZUTERE AUDIOVISUAL'}</h2>
           ${comp.cnpj ? `<p style="font-size: 0.76rem; color: #FF5B00; margin: 0 0 2px 0; font-weight: 700; letter-spacing: 0.5px;">CNPJ: ${comp.cnpj}</p>` : ''}
           <p style="font-size: 0.76rem; color: #CBD5E1; margin: 0;">${comp.phone ? comp.phone + ' • ' : ''}${comp.email || 'contato@zutere.com.br'}</p>
           ${comp.address ? `<p style="font-size: 0.72rem; color: #94A3B8; margin: 2px 0 0 0;">${comp.address}</p>` : ''}
