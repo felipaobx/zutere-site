@@ -507,6 +507,12 @@ document.addEventListener('DOMContentLoaded', () => {
           setTimeout(() => card.style.opacity = '1', 50);
         } else {
           card.style.opacity = '0';
+          setTimeout(() => card.style.display = 'none', 300);
+        }
+      });
+    });
+  });
+
   // ------------------------------------------------------------------------
   // STATS COUNTER ANIMATION ENGINE
   // ------------------------------------------------------------------------
@@ -548,4 +554,22 @@ document.addEventListener('DOMContentLoaded', () => {
       animateCounters();
     }
   }
+
+  // ------------------------------------------------------------------------
+  // REAL-TIME STORAGE SYNC LISTENER (ADMIN -> MAIN PAGE)
+  // ------------------------------------------------------------------------
+  window.addEventListener('storage', (e) => {
+    if (e.key === 'zutere_site_data' && e.newValue) {
+      try {
+        const newData = JSON.parse(e.newValue);
+        renderDynamicHero(newData.heroSlides);
+        renderDynamicProjects(newData.projects);
+        renderDynamicAbout(newData.about);
+        renderDynamicProcess(newData.process);
+        applyDynamicSettings(newData.settings);
+      } catch (err) {
+        console.error('Error syncing site data:', err);
+      }
+    }
+  });
 });
