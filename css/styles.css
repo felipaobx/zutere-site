@@ -4716,6 +4716,65 @@ select.form-control option {
   }
 }
 
+/* ==========================================================================
+   STRICT ANTI-LATERAL DISPLACEMENT LOCK FOR MOBILE (iOS SAFARI & CHROME)
+   ========================================================================== */
+html, body {
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow-x: hidden !important;
+  position: relative !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box !important;
+}
+
+.hero-slider-section,
+.slider-wrapper,
+.slide,
+.navbar,
+.stats-bar-section,
+.portfolio-section,
+.about-section,
+.process-section,
+.contact-section,
+footer,
+header,
+main {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.container {
+  width: 100% !important;
+  max-width: 1280px !important;
+  box-sizing: border-box !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+@media (max-width: 768px) {
+  .portfolio-filters, .filter-bar {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding: 6px 12px 12px 12px !important;
+  }
+  .filter-btn {
+    flex-shrink: 0 !important;
+    white-space: nowrap !important;
+  }
+}
+
 
 
 

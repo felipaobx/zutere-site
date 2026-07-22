@@ -103,6 +103,14 @@ document.addEventListener('DOMContentLoaded', () => {
           <span class="slide-badge"><i class="fa-solid fa-${slide.type === 'video' || media.type === 'youtube' ? 'film' : 'bolt'}"></i> ${slide.badge}</span>
           <h1 class="slide-title">${slide.title}</h1>
           <p class="slide-description">${slide.description}</p>
+          <div class="slide-cta-group">
+            <a href="#orcamento" class="btn btn-primary btn-large">
+              <i class="fa-solid fa-paper-plane"></i> Solicitar Orçamento
+            </a>
+            <button class="btn btn-glass btn-large open-showreel-btn">
+              <i class="fa-solid fa-play"></i> Assistir Showreel
+            </button>
+          </div>
         </div>
       `;
       sliderWrapper.appendChild(slideDiv);
@@ -499,9 +507,45 @@ document.addEventListener('DOMContentLoaded', () => {
           setTimeout(() => card.style.opacity = '1', 50);
         } else {
           card.style.opacity = '0';
-          setTimeout(() => card.style.display = 'none', 300);
-        }
+  // ------------------------------------------------------------------------
+  // STATS COUNTER ANIMATION ENGINE
+  // ------------------------------------------------------------------------
+  const statNumbers = document.querySelectorAll('.stat-number');
+  if (statNumbers.length > 0) {
+    const animateCounters = () => {
+      statNumbers.forEach(stat => {
+        const targetStr = stat.dataset.target || stat.textContent;
+        const target = parseInt(targetStr, 10);
+        if (isNaN(target)) return;
+        let current = 0;
+        const step = Math.max(1, Math.ceil(target / 35));
+        const timer = setInterval(() => {
+          current += step;
+          if (current >= target) {
+            stat.textContent = target;
+            clearInterval(timer);
+          } else {
+            stat.textContent = current;
+          }
+        }, 30);
       });
-    });
-  });
+    };
+
+    if ('IntersectionObserver' in window) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            animateCounters();
+            observer.disconnect();
+          }
+        });
+      }, { threshold: 0.1 });
+
+      const statsSection = document.querySelector('.stats-bar-section');
+      if (statsSection) observer.observe(statsSection);
+      else animateCounters();
+    } else {
+      animateCounters();
+    }
+  }
 });
