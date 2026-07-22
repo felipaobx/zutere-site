@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   // ------------------------------------------------------------------------
-  // DATA LOADER FROM LOCALSTORAGE
+  // DATA LOADER FROM LOCALSTORAGE & CLOUD DB
   // ------------------------------------------------------------------------
   function getSiteData() {
     const saved = localStorage.getItem('zutere_site_data');
@@ -63,6 +63,27 @@ document.addEventListener('DOMContentLoaded', () => {
     renderDynamicProcess(siteData.process);
     applyDynamicSettings(siteData.settings);
   }
+
+  // Cloud sync update for main page
+  async function loadCloudSiteData() {
+    try {
+      const res = await fetch('/api/site-data');
+      if (res.ok) {
+        const json = await res.json();
+        if (json && json.success && json.data) {
+          const cloudData = json.data;
+          localStorage.setItem('zutere_site_data', JSON.stringify(cloudData));
+          renderDynamicHero(cloudData.heroSlides);
+          renderDynamicProjects(cloudData.projects);
+          renderDynamicAbout(cloudData.about);
+          renderDynamicProcess(cloudData.process);
+          applyDynamicSettings(cloudData.settings);
+        }
+      }
+    } catch (e) {}
+  }
+
+  loadCloudSiteData();
 
   // ------------------------------------------------------------------------
   // DYNAMIC RENDER FUNCTIONS

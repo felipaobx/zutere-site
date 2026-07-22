@@ -185,27 +185,41 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  // LOCALSTORAGE MANAGEMENT
-  function loadData() {
+  // LOCALSTORAGE & CLOUD DATABASE MANAGEMENT
+  let siteData = DEFAULT_SITE_DATA;
+
+  async function syncSiteDataFromCloud() {
+    try {
+      const res = await fetch('/api/site-data');
+      if (res.ok) {
+        const json = await res.json();
+        if (json && json.success && json.data) {
+          siteData = json.data;
+          localStorage.setItem('zutere_site_data', JSON.stringify(siteData));
+          initAdmin();
+          return;
+        }
+      }
+    } catch (e) {}
+
     const saved = localStorage.getItem('zutere_site_data');
     if (saved) {
-      try {
-        return JSON.parse(saved);
-      } catch (e) {
-        console.error('Error loading zutere_site_data:', e);
-      }
+      try { siteData = JSON.parse(saved); } catch (e) {}
+    } else {
+      localStorage.setItem('zutere_site_data', JSON.stringify(DEFAULT_SITE_DATA));
     }
-    // Set default if empty
-    localStorage.setItem('zutere_site_data', JSON.stringify(DEFAULT_SITE_DATA));
-    return DEFAULT_SITE_DATA;
+    initAdmin();
   }
-
-  let siteData = loadData();
 
   function saveData() {
     localStorage.setItem('zutere_site_data', JSON.stringify(siteData));
     updateOverviewStats();
     showToast('Alterações salvas com sucesso!', 'success');
+    fetch('/api/site-data', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(siteData)
+    }).catch(err => console.log('Cloud site-data sync error:', err));
   }
 
   // SMART MEDIA HELPER
@@ -718,4 +732,5 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   initAdmin();
+  syncSiteDataFromCloud();
 });

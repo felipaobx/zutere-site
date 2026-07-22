@@ -22,22 +22,53 @@ document.addEventListener('DOMContentLoaded', () => {
     return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(amount || 0);
   }
 
-  // LOCALSTORAGE MANAGEMENT FOR QUOTES AND CATALOG
-  function loadQuotesHistory() {
+  // LOCALSTORAGE & CLOUD DATABASE SYNC MANAGEMENT FOR QUOTES AND CATALOG
+  let quotesHistory = [];
+  let catalogServices = DEFAULT_CATALOG;
+  let companyInfo = DEFAULT_COMPANY_INFO;
+
+  async function syncQuotesFromCloud() {
+    try {
+      const res = await fetch('/api/quotes');
+      if (res.ok) {
+        const json = await res.json();
+        if (json && json.success && Array.isArray(json.data) && json.data.length > 0) {
+          quotesHistory = json.data;
+          localStorage.setItem('zutere_quotes_history', JSON.stringify(quotesHistory));
+          renderHistoryTable();
+          return;
+        }
+      }
+    } catch (e) {}
+
     const saved = localStorage.getItem('zutere_quotes_history');
     if (saved) {
-      try { return JSON.parse(saved); } catch (e) {}
+      try { quotesHistory = JSON.parse(saved); } catch (e) {}
     }
-    return [];
+    renderHistoryTable();
   }
 
-  function loadCatalog() {
+  async function syncCatalogFromCloud() {
+    try {
+      const res = await fetch('/api/catalog');
+      if (res.ok) {
+        const json = await res.json();
+        if (json && json.success && Array.isArray(json.data) && json.data.length > 0) {
+          catalogServices = json.data;
+          localStorage.setItem('zutere_catalog_services', JSON.stringify(catalogServices));
+          renderCatalog();
+          return;
+        }
+      }
+    } catch (e) {}
+
     const saved = localStorage.getItem('zutere_catalog_services');
     if (saved) {
-      try { return JSON.parse(saved); } catch (e) {}
+      try { catalogServices = JSON.parse(saved); } catch (e) {}
+    } else {
+      localStorage.setItem('zutere_catalog_services', JSON.stringify(DEFAULT_CATALOG));
     }
-    localStorage.setItem('zutere_catalog_services', JSON.stringify(DEFAULT_CATALOG));
-    return DEFAULT_CATALOG;
+    renderCatalog();
   }
 
   // DEFAULT COMPANY INFO (CNPJ, ADDRESS, FOOTER TERMS)
@@ -52,32 +83,57 @@ document.addEventListener('DOMContentLoaded', () => {
     footerTerms: '• Os direitos autorais e de veiculação das produções serão cedidos mediante quitação integral do projeto.\n• O orçamento possui validade pela quantidade de dias informada no cabeçalho.\n• Alterações adicionais no roteiro/montagem aprovados poderão acarretar custos extras de diária/edição.'
   };
 
-  function loadCompanyInfo() {
+  async function syncCompanyFromCloud() {
+    try {
+      const res = await fetch('/api/company');
+      if (res.ok) {
+        const json = await res.json();
+        if (json && json.success && json.data) {
+          companyInfo = json.data;
+          localStorage.setItem('zutere_company_info', JSON.stringify(companyInfo));
+          populateCompanyForm();
+          return;
+        }
+      }
+    } catch (e) {}
+
     const saved = localStorage.getItem('zutere_company_info');
     if (saved) {
-      try { return JSON.parse(saved); } catch (e) {}
+      try { companyInfo = JSON.parse(saved); } catch (e) {}
+    } else {
+      localStorage.setItem('zutere_company_info', JSON.stringify(DEFAULT_COMPANY_INFO));
     }
-    localStorage.setItem('zutere_company_info', JSON.stringify(DEFAULT_COMPANY_INFO));
-    return DEFAULT_COMPANY_INFO;
+    populateCompanyForm();
   }
-
-  let quotesHistory = loadQuotesHistory();
-  let catalogServices = loadCatalog();
-  let companyInfo = loadCompanyInfo();
 
   function saveQuotesHistory() {
     localStorage.setItem('zutere_quotes_history', JSON.stringify(quotesHistory));
     renderHistoryTable();
+    fetch('/api/quotes', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(quotesHistory)
+    }).catch(err => console.log('Cloud quotes sync error:', err));
   }
 
   function saveCatalog() {
     localStorage.setItem('zutere_catalog_services', JSON.stringify(catalogServices));
     renderCatalog();
+    fetch('/api/catalog', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(catalogServices)
+    }).catch(err => console.log('Cloud catalog sync error:', err));
   }
 
   function saveCompanyInfo() {
     localStorage.setItem('zutere_company_info', JSON.stringify(companyInfo));
     showToast('Dados da empresa e rodapé salvos com sucesso!', 'success');
+    fetch('/api/company', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(companyInfo)
+    }).catch(err => console.log('Cloud company sync error:', err));
   }
 
   // TAB NAVIGATION
@@ -833,6 +889,12 @@ document.addEventListener('DOMContentLoaded', () => {
     renderHistoryTable();
     renderCatalog();
     populateCompanyForm();
+
+    // Sincroniza dados com a nuvem (API Serverless / Vercel KV)
+    syncQuotesFromCloud();
+    syncCatalogFromCloud();
+    syncCompanyFromCloud();
+
     if (document.getElementById('quoteIssueDate')) {
       document.getElementById('quoteIssueDate').value = new Date().toISOString().slice(0,10);
     }

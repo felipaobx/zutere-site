@@ -1,0 +1,10 @@
+{
+  "name": "zutere-site",
+  "version": "1.0.0",
+  "description": "Zutere Audiovisual Website & Proposal Management System",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve ."
+  },
+  "dependencies": {}
+}
