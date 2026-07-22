@@ -4290,33 +4290,44 @@ select.form-control option {
 }
 
 /* ==========================================================================
-   ULTRA-RESPONSIVE MOBILE ENGINE (PHONES & TABLETS)
+   ULTRA-RESPONSIVE MOBILE PROPORTION & LAYOUT ENGINE (PHONES & TABLETS)
    ========================================================================== */
 
-/* 1. TABLET & SMALL DESKTOP (<= 992px) */
 @media (max-width: 992px) {
+  :root {
+    --header-height: 68px;
+  }
+
+  .navbar {
+    height: var(--header-height);
+  }
+
   .navbar .nav-container {
     padding: 0 16px;
+  }
+
+  .brand-logo {
+    height: 48px;
+  }
+
+  .logo-img {
+    height: 40px;
+    max-height: 40px;
   }
 
   .mobile-toggle {
     display: flex !important;
     align-items: center;
     justify-content: center;
-    width: 44px;
-    height: 44px;
-    border-radius: 12px;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
     background: rgba(255, 255, 255, 0.08);
     border: 1px solid rgba(255, 255, 255, 0.16);
     color: #FFFFFF;
-    font-size: 1.25rem;
+    font-size: 1.15rem;
     cursor: pointer;
     transition: all var(--tr-fast);
-  }
-
-  .mobile-toggle:hover {
-    background: rgba(255, 91, 0, 0.2);
-    border-color: #FF5B00;
   }
 
   .nav-menu {
@@ -4329,8 +4340,8 @@ select.form-control option {
     -webkit-backdrop-filter: blur(24px);
     border-bottom: 1px solid var(--glass-border-accent);
     flex-direction: column;
-    padding: 24px 20px;
-    gap: 12px;
+    padding: 20px 16px;
+    gap: 8px;
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
@@ -4349,8 +4360,8 @@ select.form-control option {
   .nav-link {
     width: 100%;
     text-align: center;
-    padding: 12px 16px;
-    font-size: 1.05rem;
+    padding: 10px 14px;
+    font-size: 1rem;
     font-weight: 600;
     border-radius: 10px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
@@ -4360,89 +4371,173 @@ select.form-control option {
     display: none;
   }
 
-  .nav-link:hover, .nav-link.active {
-    background: rgba(255, 91, 0, 0.15);
-    color: #FFFFFF;
-  }
-
   .about-grid, .contact-grid {
     grid-template-columns: 1fr;
-    gap: 36px;
+    gap: 32px;
   }
 
   .about-image-stack {
-    max-width: 540px;
+    max-width: 480px;
     margin: 0 auto;
   }
 }
 
-/* 2. MOBILE LANDSCAPE & SMALL TABLETS (<= 768px) */
 @media (max-width: 768px) {
+  :root {
+    --header-height: 60px;
+  }
+
+  html {
+    font-size: 15px;
+  }
+
   .section-padding {
-    padding: 60px 0;
+    padding: 48px 0;
   }
 
   .container {
     padding: 0 16px;
   }
 
-  /* Hero Section */
+  /* HERO SLIDER PROPORTIONS */
   .hero-slider-section {
     height: 100dvh;
-    min-height: 540px;
+    min-height: 520px;
+    max-height: 800px;
   }
 
   .slide-content {
-    padding-top: 60px;
+    padding-top: 64px;
+    padding-bottom: 60px;
     text-align: center;
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
+    height: 100%;
+    box-sizing: border-box;
   }
 
   .slide-badge {
-    font-size: 0.75rem;
-    padding: 6px 14px;
-    margin-bottom: 16px;
+    font-size: 0.68rem;
+    padding: 5px 12px;
+    margin-bottom: 12px;
+    letter-spacing: 0.5px;
   }
 
   .slide-title {
-    font-size: 2.1rem;
+    font-size: clamp(1.4rem, 5.5vw, 1.85rem);
     letter-spacing: -0.5px;
-    line-height: 1.2;
-    margin-bottom: 16px;
+    line-height: 1.25;
+    margin-bottom: 12px;
+    font-weight: 800;
+    max-width: 100%;
   }
 
   .slide-description {
-    font-size: 0.92rem;
-    line-height: 1.6;
-    margin-bottom: 24px;
-    max-width: 100%;
+    font-size: 0.85rem;
+    line-height: 1.5;
+    margin-bottom: 20px;
+    max-width: 95%;
+    color: #CBD5E1;
   }
 
   .slide-cta-group {
     flex-direction: column;
     width: 100%;
-    max-width: 320px;
-    gap: 12px;
+    max-width: 270px;
+    gap: 10px;
   }
 
   .slide-cta-group .btn {
     width: 100%;
     justify-content: center;
-    padding: 14px 20px;
-    font-size: 0.92rem;
+    padding: 12px 18px;
+    font-size: 0.88rem;
   }
 
-  /* Portfolio Section */
+  /* SLIDER CONTROLS & TABS FIT ON MOBILE */
+  .slider-controls {
+    bottom: 16px;
+    gap: 10px;
+    width: 90%;
+  }
+
+  .slider-tabs {
+    display: none !important; /* Hide large desktop tabs on phone to avoid screen overlap */
+  }
+
+  .slider-arrows {
+    gap: 10px;
+    transform: scale(0.85);
+  }
+
+  /* QUICK STATS BAR PROPORTIONS */
+  .stats-bar-section {
+    margin-top: 0;
+    padding: 24px 0 0 0;
+  }
+
+  .stats-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 14px !important;
+    padding: 18px 14px !important;
+    border-radius: 16px;
+  }
+
+  .stat-divider {
+    display: none !important;
+  }
+
+  .stat-card {
+    padding: 6px 4px;
+  }
+
+  .stat-number-wrap {
+    font-size: 1.6rem;
+  }
+
+  .stat-number, .stat-plus {
+    font-size: 1.6rem;
+  }
+
+  .stat-label {
+    font-size: 0.75rem;
+    line-height: 1.2;
+    margin-top: 2px;
+  }
+
+  /* PORTFOLIO PROPORTIONS */
+  .section-header {
+    margin-bottom: 24px;
+    text-align: center;
+  }
+
+  .section-badge {
+    font-size: 0.72rem;
+    padding: 5px 12px;
+    margin-bottom: 10px;
+  }
+
+  .section-title {
+    font-size: 1.6rem;
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+
+  .section-subtitle {
+    font-size: 0.85rem;
+  }
+
   .portfolio-filters {
     display: flex;
-    gap: 8px;
+    gap: 6px;
     overflow-x: auto;
     scrollbar-width: none;
     -webkit-overflow-scrolling: touch;
-    padding: 4px 0 12px 0;
-    margin-bottom: 24px;
+    padding: 4px 0 10px 0;
+    margin-bottom: 20px;
     justify-content: flex-start;
   }
 
@@ -4452,107 +4547,154 @@ select.form-control option {
 
   .filter-btn {
     flex-shrink: 0;
-    font-size: 0.8rem;
-    padding: 8px 16px;
+    font-size: 0.78rem;
+    padding: 7px 14px;
+    border-radius: 20px;
     white-space: nowrap;
   }
 
   .projects-grid {
     grid-template-columns: 1fr !important;
-    gap: 20px;
+    gap: 16px;
   }
 
-  .project-media {
-    height: 220px;
+  .project-card {
+    border-radius: 14px;
   }
 
-  /* About Experience Card */
+  .card-thumb {
+    height: 190px;
+  }
+
+  .card-info {
+    padding: 16px 14px;
+  }
+
+  .project-title {
+    font-size: 1rem;
+    margin-bottom: 4px;
+  }
+
+  .project-desc {
+    font-size: 0.8rem;
+    line-height: 1.4;
+  }
+
+  /* ABOUT SECTION PROPORTIONS */
+  .about-img-main {
+    max-height: 240px;
+    object-fit: cover;
+    border-radius: 16px;
+  }
+
   .about-experience-card {
-    position: relative;
-    bottom: 0;
-    right: 0;
-    margin: -30px 16px 0 auto;
-    max-width: 240px;
-    padding: 14px 18px;
+    position: relative !important;
+    bottom: auto !important;
+    right: auto !important;
+    left: auto !important;
+    margin: 14px auto 0 auto !important;
+    max-width: 220px;
+    padding: 12px 16px;
+    border-radius: 14px;
+    justify-content: center;
   }
 
   .exp-number {
-    font-size: 2.2rem;
+    font-size: 2rem;
   }
 
   .exp-text {
-    font-size: 0.8rem;
+    font-size: 0.78rem;
   }
 
-  /* Estimator & Contact Cards */
+  .about-para {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    margin-bottom: 14px;
+  }
+
+  .highlight-item {
+    gap: 12px;
+  }
+
+  .highlight-item i {
+    font-size: 1.1rem;
+    padding: 10px;
+    border-radius: 10px;
+  }
+
+  /* ESTIMATOR & CONTACT CARDS PROPORTIONS */
   .estimator-card, .contact-info-card, .contact-single-box {
-    padding: 22px 16px;
+    padding: 20px 14px;
     border-radius: 16px;
   }
 
   .card-header h3 {
-    font-size: 1.25rem;
+    font-size: 1.2rem;
+  }
+
+  .form-control, select.form-control {
+    padding: 11px 14px;
+    font-size: 0.88rem;
+    border-radius: 10px;
   }
 
   .whatsapp-badge-icon {
-    width: 60px;
-    height: 60px;
-    font-size: 1.8rem;
-    margin-bottom: 14px;
+    width: 56px;
+    height: 56px;
+    font-size: 1.7rem;
+    margin-bottom: 12px;
   }
 
   .whatsapp-cta-content h3 {
-    font-size: 1.5rem;
+    font-size: 1.35rem;
   }
 
   .whatsapp-cta-content p {
-    font-size: 0.92rem;
-    margin-bottom: 24px;
+    font-size: 0.88rem;
+    margin-bottom: 20px;
   }
 
-  /* Video Modal */
+  .btn-large {
+    padding: 12px 20px;
+    font-size: 0.9rem;
+  }
+
+  /* VIDEO MODAL PROPORTIONS */
   .video-modal-container {
     width: 96vw;
     border-radius: 14px;
   }
 
+  .modal-close-btn {
+    width: 36px;
+    height: 36px;
+    top: 8px;
+    right: 8px;
+    font-size: 1rem;
+  }
+
   .modal-video-info {
-    padding: 14px 16px;
+    padding: 12px 14px;
   }
 
   .modal-video-info h3 {
-    font-size: 1.05rem;
-  }
-
-  .admin-layout {
-    flex-direction: column;
-  }
-  .admin-sidebar {
-    width: 100%;
-    position: relative;
-    height: auto;
-    border-right: none;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-  }
-  .admin-main {
-    margin-left: 0;
-    padding: 20px;
+    font-size: 0.98rem;
   }
 }
 
-/* 3. EXTRA SMALL PHONES (<= 480px) */
 @media (max-width: 480px) {
   .logo-img, .footer-logo {
-    height: 44px;
+    height: 34px;
   }
 
   .slide-title {
-    font-size: 1.7rem;
+    font-size: 1.45rem;
     line-height: 1.25;
   }
 
   .slide-description {
-    font-size: 0.88rem;
+    font-size: 0.82rem;
   }
 
   .checkbox-group {
@@ -4561,16 +4703,16 @@ select.form-control option {
 
   .bottom-flex {
     flex-direction: column;
-    gap: 12px;
+    gap: 10px;
     text-align: center;
   }
 
   .toast-notification {
-    left: 16px;
-    right: 16px;
-    bottom: 20px;
-    padding: 12px 16px;
-    font-size: 0.85rem;
+    left: 12px;
+    right: 12px;
+    bottom: 16px;
+    padding: 10px 14px;
+    font-size: 0.82rem;
   }
 }
 
