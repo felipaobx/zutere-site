@@ -277,6 +277,71 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
+  // DRAFT AUTO-SAVE & RESTORE
+  function saveDraft() {
+    try {
+      const draft = {
+        clientName: document.getElementById('clientName')?.value || '',
+        clientCompany: document.getElementById('clientCompany')?.value || '',
+        clientWhatsapp: document.getElementById('clientWhatsapp')?.value || '',
+        clientEmail: document.getElementById('clientEmail')?.value || '',
+        projectTitle: document.getElementById('projectTitleName')?.value || '',
+        issueDate: document.getElementById('quoteIssueDate')?.value || '',
+        validityDays: document.getElementById('quoteValidityDays')?.value || '15',
+        deliveryTime: document.getElementById('quoteDeliveryTime')?.value || '',
+        paymentTerms: document.getElementById('quotePaymentTerms')?.value || '',
+        notes: document.getElementById('quoteNotes')?.value || '',
+        travelCost: document.getElementById('travelCost')?.value || '0',
+        items: Array.from(itemsTableBody.querySelectorAll('tr')).map(tr => ({
+          desc: tr.querySelector('.item-desc')?.value || '',
+          qty: parseFloat(tr.querySelector('.item-qty')?.value) || 1,
+          price: parseFloat(tr.querySelector('.item-price')?.value) || 0
+        }))
+      };
+      if (draft.clientName || draft.projectTitle || (draft.items.length > 0 && draft.items[0].desc)) {
+        localStorage.setItem('zutere_quote_draft', JSON.stringify(draft));
+      }
+    } catch (e) {}
+  }
+
+  function loadDraft() {
+    const saved = localStorage.getItem('zutere_quote_draft');
+    if (!saved) return false;
+    try {
+      const draft = JSON.parse(saved);
+      if (!draft) return false;
+      document.getElementById('clientName').value = draft.clientName || '';
+      document.getElementById('clientCompany').value = draft.clientCompany || '';
+      document.getElementById('clientWhatsapp').value = draft.clientWhatsapp || '';
+      document.getElementById('clientEmail').value = draft.clientEmail || '';
+      document.getElementById('projectTitleName').value = draft.projectTitle || '';
+      if (draft.issueDate) document.getElementById('quoteIssueDate').value = draft.issueDate;
+      document.getElementById('quoteValidityDays').value = draft.validityDays || '15';
+      document.getElementById('quoteDeliveryTime').value = draft.deliveryTime || '';
+      document.getElementById('quotePaymentTerms').value = draft.paymentTerms || '';
+      document.getElementById('quoteNotes').value = draft.notes || '';
+      document.getElementById('travelCost').value = draft.travelCost || 0;
+
+      itemsTableBody.innerHTML = '';
+      if (draft.items && draft.items.length > 0) {
+        draft.items.forEach(item => createItemRow(item));
+      } else {
+        createItemRow();
+      }
+      calculateTotals();
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function clearDraft() {
+    localStorage.removeItem('zutere_quote_draft');
+  }
+
+  // Auto-save draft on input
+  document.getElementById('formQuoteGenerator')?.addEventListener('input', saveDraft);
+
   // SAVE QUOTE SUBMIT
   document.getElementById('formQuoteGenerator').addEventListener('submit', (e) => {
     e.preventDefault();
@@ -290,7 +355,27 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     saveQuotesHistory();
-    showToast(`Proposta #${quote.id} salva com sucesso!`, 'success');
+    clearDraft();
+
+    // Reset form for next quote
+    document.getElementById('quoteId').value = '';
+    document.getElementById('clientName').value = '';
+    document.getElementById('clientCompany').value = '';
+    document.getElementById('clientWhatsapp').value = '';
+    document.getElementById('clientEmail').value = '';
+    document.getElementById('projectTitleName').value = '';
+    document.getElementById('quoteDeliveryTime').value = '';
+    document.getElementById('quotePaymentTerms').value = '';
+    document.getElementById('quoteNotes').value = '';
+    document.getElementById('travelCost').value = '0';
+    itemsTableBody.innerHTML = '';
+    createItemRow();
+    calculateTotals();
+
+    showToast(`Proposta #${quote.id} salva no Histórico com sucesso!`, 'success');
+    
+    // Auto switch to history tab so user sees their saved proposal in the list
+    switchProposalTab('history');
   });
 
   document.getElementById('btnQuickSaveQuote').addEventListener('click', () => {
@@ -764,6 +849,9 @@ document.addEventListener('DOMContentLoaded', () => {
           viewHistoryQuote(found.id);
         }
       }
+    } else {
+      // Se não abriu uma proposta específica, tenta carregar o rascunho em andamento
+      loadDraft();
     }
   }
 
