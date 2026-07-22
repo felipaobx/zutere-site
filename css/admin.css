@@ -676,6 +676,9 @@
     margin-left: 240px;
     padding: 24px;
   }
+  .split-view-form {
+    grid-template-columns: 1fr !important;
+  }
 }
 
 @media (max-width: 768px) {
@@ -684,38 +687,60 @@
   }
   .admin-sidebar {
     width: 100%;
-    position: relative;
+    position: sticky;
+    top: 0;
+    left: 0;
+    z-index: 900;
     height: auto;
     border-right: none;
     border-bottom: 1px solid var(--admin-border);
-    padding: 16px;
+    padding: 12px 14px;
+    background: rgba(11, 14, 23, 0.96);
+    backdrop-filter: blur(20px);
   }
   .admin-brand {
-    margin-bottom: 16px;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    gap: 10px;
+  }
+  .admin-brand img {
+    height: 34px;
+  }
+  .admin-brand-info h2 {
+    font-size: 0.92rem;
   }
   .admin-nav {
     display: flex;
+    flex-direction: row;
     overflow-x: auto;
     white-space: nowrap;
     gap: 8px;
-    padding-bottom: 8px;
+    padding-bottom: 6px;
+    scrollbar-width: none;
     -webkit-overflow-scrolling: touch;
+  }
+  .admin-nav::-webkit-scrollbar {
+    display: none;
   }
   .admin-nav-item {
     flex: 0 0 auto;
-    padding: 10px 14px;
-    font-size: 0.85rem;
+    padding: 9px 14px;
+    font-size: 0.82rem;
+    border-radius: 10px;
   }
   .admin-sidebar-footer {
     display: flex;
     flex-direction: row;
-    gap: 10px;
-    margin-top: 16px;
-    padding-top: 16px;
+    gap: 8px;
+    margin-top: 10px;
+    padding-top: 10px;
   }
   .admin-sidebar-footer .btn-view-site {
     flex: 1;
-    font-size: 0.8rem;
+    font-size: 0.78rem;
+    padding: 8px 12px;
+    justify-content: center;
+    border-radius: 8px;
   }
   .admin-main {
     margin-left: 0;
@@ -724,19 +749,33 @@
   .admin-header {
     flex-direction: column;
     align-items: flex-start;
-    gap: 14px;
+    gap: 12px;
+  }
+  .admin-title-wrap h1 {
+    font-size: 1.4rem;
   }
   .admin-header-actions {
     width: 100%;
-    justify-content: space-between;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .admin-header-actions .btn-admin {
+    flex: 1;
+    text-align: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    padding: 10px 14px;
   }
   .admin-form-grid,
   .admin-items-grid,
   .admin-stats-grid {
     grid-template-columns: 1fr !important;
+    gap: 14px;
   }
   .admin-panel-card {
-    padding: 16px;
+    padding: 16px 12px;
+    border-radius: 14px;
   }
   .admin-table {
     display: block;
@@ -746,12 +785,49 @@
     -webkit-overflow-scrolling: touch;
   }
   .admin-modal-box {
-    width: 95% !important;
-    max-width: 95% !important;
+    width: 96% !important;
+    max-width: 96% !important;
     margin: 10px auto !important;
+    padding: 18px 14px !important;
+    border-radius: 16px !important;
+  }
+  .catalog-grid-selector {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)) !important;
+    gap: 8px !important;
+  }
+  .catalog-chip-btn {
+    padding: 8px 10px !important;
+    gap: 8px !important;
+  }
+  .add-custom-item-inline {
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+  .add-custom-item-inline .price-sm {
+    width: 100% !important;
+  }
+  .checkout-actions-row {
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+  .checkout-actions-row .btn {
+    width: 100% !important;
+    justify-content: center !important;
   }
   #proposalPrintDocument {
     padding: 12px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .catalog-grid-selector {
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)) !important;
+  }
+  .admin-brand-info span {
+    font-size: 0.65rem;
+  }
+  .admin-modal-title {
+    font-size: 1.1rem;
   }
 }
 
