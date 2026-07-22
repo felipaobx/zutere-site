@@ -741,7 +741,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // INITIALIZE DEFAULT ROW ON CREATE TAB
+  // INICIALIZADOR E LEITOR DE PARÂMETROS DA URL
   function initGenerator() {
     itemsTableBody.innerHTML = '';
     createItemRow();
@@ -751,7 +751,42 @@ document.addEventListener('DOMContentLoaded', () => {
     if (document.getElementById('quoteIssueDate')) {
       document.getElementById('quoteIssueDate').value = new Date().toISOString().slice(0,10);
     }
+
+    // Suporte a carregamento direto via URL (ex: orcamento.html?id=ZUT-2026-XXXX ou ?view=ZUT-2026-XXXX)
+    const urlParams = new URLSearchParams(window.location.search);
+    const paramId = urlParams.get('id') || urlParams.get('view') || urlParams.get('proposal');
+    if (paramId) {
+      const found = quotesHistory.find(q => q.id === paramId || q.id === `ZUT-${paramId}`);
+      if (found) {
+        if (urlParams.get('mode') === 'edit') {
+          loadQuoteToEdit(found.id);
+        } else {
+          viewHistoryQuote(found.id);
+        }
+      }
+    }
   }
+
+  // ------------------------------------------------------------------------
+  // SINCRONIZAÇÃO EM TEMPO REAL VIA STORAGE LISTENER (OUTRAS ABAS/NAVEGADORES)
+  // ------------------------------------------------------------------------
+  window.addEventListener('storage', (e) => {
+    if (e.key === 'zutere_quotes_history' && e.newValue) {
+      try {
+        quotesHistory = JSON.parse(e.newValue);
+        renderHistoryTable();
+      } catch (err) {
+        console.error('Erro ao sincronizar histórico de propostas:', err);
+      }
+    } else if (e.key === 'zutere_catalog_services' && e.newValue) {
+      try {
+        catalogServices = JSON.parse(e.newValue);
+        renderCatalog();
+      } catch (err) {
+        console.error('Erro ao sincronizar catálogo:', err);
+      }
+    }
+  });
 
   initGenerator();
 });
