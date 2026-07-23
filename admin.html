@@ -398,72 +398,82 @@
 
       <!-- TAB 6: SITE SETTINGS & CONTACT -->
       <section class="admin-tab-panel" id="tab-settings">
-        <div class="admin-panel-card">
-          <div class="admin-panel-header">
-            <h2 class="admin-panel-title"><i class="fa-solid fa-phone"></i> Contatos & WhatsApp</h2>
+        <form id="formSettings">
+          <div class="admin-panel-card">
+            <div class="admin-panel-header">
+              <h2 class="admin-panel-title"><i class="fa-solid fa-phone"></i> Contatos & WhatsApp</h2>
+            </div>
+            <div class="admin-form-grid">
+              <div class="form-group">
+                <label class="form-label"><i class="fa-brands fa-whatsapp"></i> Número do WhatsApp (somente números)</label>
+                <input type="text" id="settingWhatsappNumber" class="form-input" placeholder="ex: 5511999999999">
+              </div>
+              <div class="form-group">
+                <label class="form-label"><i class="fa-solid fa-comment-dots"></i> Mensagem Inicial WhatsApp</label>
+                <input type="text" id="settingWhatsappMessage" class="form-input" placeholder="ex: Olá equipe Zutere Audiovisual!">
+              </div>
+              <div class="form-group">
+                <label class="form-label"><i class="fa-solid fa-envelope"></i> E-mail de Contato</label>
+                <input type="email" id="settingEmail" class="form-input" placeholder="ex: contato@zutere.com.br">
+              </div>
+            </div>
           </div>
-          <div class="admin-form-grid">
-            <div class="form-group">
-              <label class="form-label"><i class="fa-brands fa-whatsapp"></i> Número do WhatsApp (somente números)</label>
-              <input type="text" id="settingWhatsappNumber" class="form-input" placeholder="ex: 5511999999999">
-            </div>
-            <div class="form-group">
-              <label class="form-label"><i class="fa-solid fa-comment-dots"></i> Mensagem Inicial WhatsApp</label>
-              <input type="text" id="settingWhatsappMessage" class="form-input" placeholder="ex: Olá equipe Zutere Audiovisual!">
-            </div>
-            <div class="form-group">
-              <label class="form-label"><i class="fa-solid fa-envelope"></i> E-mail de Contato</label>
-              <input type="email" id="settingEmail" class="form-input" placeholder="ex: contato@zutere.com.br">
-            </div>
-          </div>
-        </div>
 
-        <div class="admin-panel-card">
-          <div class="admin-panel-header">
-            <h2 class="admin-panel-title"><i class="fa-solid fa-share-nodes"></i> Redes Sociais & Links</h2>
+          <div class="admin-panel-card">
+            <div class="admin-panel-header">
+              <h2 class="admin-panel-title"><i class="fa-solid fa-share-nodes"></i> Redes Sociais & Links</h2>
+            </div>
+            <div class="admin-form-grid">
+              <div class="form-group">
+                <label class="form-label"><i class="fa-brands fa-instagram"></i> Instagram URL</label>
+                <input type="text" id="settingInstagramUrl" class="form-input" placeholder="https://instagram.com/...">
+              </div>
+              <div class="form-group">
+                <label class="form-label"><i class="fa-brands fa-youtube"></i> YouTube URL</label>
+                <input type="text" id="settingYoutubeUrl" class="form-input" placeholder="https://youtube.com/@...">
+              </div>
+              <div class="form-group">
+                <label class="form-label"><i class="fa-brands fa-tiktok"></i> TikTok URL</label>
+                <input type="text" id="settingTiktokUrl" class="form-input" placeholder="https://tiktok.com/@...">
+              </div>
+              <div class="form-group full-width">
+                <label class="form-label"><i class="fa-solid fa-play"></i> Showreel Vídeo Principal URL (MP4 ou YouTube)</label>
+                <input type="text" id="settingShowreelUrl" class="form-input" placeholder="https://assets.mixkit.co/...">
+              </div>
+            </div>
           </div>
-          <div class="admin-form-grid">
-            <div class="form-group">
-              <label class="form-label"><i class="fa-brands fa-instagram"></i> Instagram URL</label>
-              <input type="text" id="settingInstagramUrl" class="form-input" placeholder="https://instagram.com/...">
-            </div>
-            <div class="form-group">
-              <label class="form-label"><i class="fa-brands fa-youtube"></i> YouTube URL</label>
-              <input type="text" id="settingYoutubeUrl" class="form-input" placeholder="https://youtube.com/@...">
-            </div>
-            <div class="form-group">
-              <label class="form-label"><i class="fa-brands fa-tiktok"></i> TikTok URL</label>
-              <input type="text" id="settingTiktokUrl" class="form-input" placeholder="https://tiktok.com/@...">
-            </div>
-            <div class="form-group full-width">
-              <label class="form-label"><i class="fa-solid fa-play"></i> Showreel Vídeo Principal URL (MP4 ou YouTube)</label>
-              <input type="text" id="settingShowreelUrl" class="form-input" placeholder="https://assets.mixkit.co/...">
-            </div>
-          </div>
-        </div>
 
-        <div class="admin-panel-card">
-          <div class="admin-panel-header">
-            <h2 class="admin-panel-title"><i class="fa-solid fa-chart-simple"></i> Números de Estatísticas do Site</h2>
+          <div class="admin-panel-card">
+            <div class="admin-panel-header">
+              <h2 class="admin-panel-title"><i class="fa-solid fa-chart-simple"></i> Números de Estatísticas do Site</h2>
+            </div>
+            <div class="admin-form-grid">
+              <div class="form-group">
+                <label class="form-label">Projetos Produzidos</label>
+                <input type="number" id="statProjectsNumber" class="form-input" placeholder="180">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Porcentagem de Qualidade (%)</label>
+                <input type="number" id="statQualityNumber" class="form-input" placeholder="100">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Marcas Atendidas</label>
+                <input type="number" id="statBrandsNumber" class="form-input" placeholder="50">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Anos de Excelência</label>
+                <input type="number" id="statYearsNumber" class="form-input" placeholder="12">
+              </div>
+            </div>
           </div>
-          <div class="admin-form-grid">
-            <div class="form-group">
-              <label class="form-label">Projetos Produzidos</label>
-              <input type="number" id="statProjectsNumber" class="form-input" placeholder="180">
-            </div>
-            <div class="form-group">
-              <label class="form-label">Porcentagem de Qualidade (%)</label>
-              <input type="number" id="statQualityNumber" class="form-input" placeholder="100">
-            </div>
-            <div class="form-group">
-              <label class="form-label">Marcas Atendidas</label>
-              <input type="number" id="statBrandsNumber" class="form-input" placeholder="50">
-            </div>
-            <div class="form-group">
-              <label class="form-label">Anos de Excelência</label>
-              <input type="number" id="statYearsNumber" class="form-input" placeholder="12">
-            </div>
+
+          <div style="display:flex; justify-content:flex-end; margin-bottom: 30px;">
+            <button type="submit" class="btn-admin btn-admin-primary">
+              <i class="fa-solid fa-floppy-disk"></i> Salvar Contatos & Configurações
+            </button>
           </div>
+        </form>
+
         <div class="admin-panel-card">
           <div class="admin-panel-header">
             <h2 class="admin-panel-title"><i class="fa-solid fa-shield-halved"></i> Segurança & Credenciais de Acesso do Painel</h2>

@@ -608,6 +608,16 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
+  const formSettings = document.getElementById('formSettings');
+  if (formSettings) {
+    formSettings.addEventListener('submit', (e) => {
+      e.preventDefault();
+      readSettingsForm();
+      saveData();
+      showToast('Configurações e Contatos salvos com sucesso!', 'success');
+    });
+  }
+
   // SAVE ALL HANDLER
   document.getElementById('btnSaveAll')?.addEventListener('click', () => {
     readAboutForm();
