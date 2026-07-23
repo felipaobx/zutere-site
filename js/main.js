@@ -278,14 +278,6 @@ document.addEventListener('DOMContentLoaded', () => {
           <span class="slide-badge"><i class="fa-solid fa-${slide.type === 'video' || media.type === 'youtube' ? 'film' : 'bolt'}"></i> ${slide.badge || 'Zutere Audiovisual'}</span>
           <h1 class="slide-title">${slide.title}</h1>
           <p class="slide-description">${slide.description}</p>
-          <div class="slide-cta-group">
-            <a href="#orcamento" class="btn btn-primary btn-large">
-              <i class="fa-solid fa-paper-plane"></i> Solicitar Orçamento
-            </a>
-            <button class="btn btn-glass btn-large open-showreel-btn">
-              <i class="fa-solid fa-play"></i> Assistir Showreel
-            </button>
-          </div>
         </div>
       `;
       wrapper.appendChild(div);
