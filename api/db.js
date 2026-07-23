@@ -1,4 +1,11 @@
-// Serverless Multi-Provider DB helper (Upstash Redis, Firebase, and Free Cloud Fallback)
+// Serverless Multi-Provider DB helper (Upstash Redis, Firebase, and Pre-configured Cloud DB)
+
+const DEFAULT_BLOBS = {
+  zutere_quotes_history: 'https://jsonblob.com/api/jsonBlob/019f8cb5-f28a-7ea2-bdfb-f68972229e44',
+  zutere_site_data: 'https://jsonblob.com/api/jsonBlob/019f8cbc-2756-7e2e-8890-7e21ba385e7e',
+  zutere_catalog_services: 'https://jsonblob.com/api/jsonBlob/019f8cbc-4626-713d-b3f6-2a045c8c5f63',
+  zutere_company_info: 'https://jsonblob.com/api/jsonBlob/019f8cbc-62cb-7461-b468-b8041ebefe95'
+};
 
 function getCredentials() {
   const url = process.env.UPSTASH_REDIS_REST_URL || 
@@ -21,7 +28,7 @@ function getCredentials() {
 async function getKV(key) {
   const { url, token, firebaseUrl } = getCredentials();
 
-  // 1. Firebase Realtime DB Fallback (100% Free, no credit card)
+  // 1. Firebase Realtime DB (If configured)
   if (firebaseUrl) {
     try {
       const cleanUrl = firebaseUrl.replace(/\/$/, '');
@@ -33,7 +40,7 @@ async function getKV(key) {
     }
   }
 
-  // 2. Upstash Redis / Vercel Redis
+  // 2. Upstash Redis / Vercel Redis (If configured)
   if (url && token) {
     try {
       const res = await fetch(`${url}/get/${key}`, {
@@ -51,16 +58,21 @@ async function getKV(key) {
     }
   }
 
-  // 3. Persistent Public Cloud Bin Fallback (Free, zero config)
-  try {
-    const res = await fetch(`https://jsonblob.com/api/jsonBlob/zutere_site_${key}`, {
-      headers: { 'Accept': 'application/json' }
-    });
-    if (res.ok) {
-      const data = await res.json();
-      return data || null;
+  // 3. Pre-configured Persistent Cloud DB (Zero setup required)
+  const blobUrl = DEFAULT_BLOBS[key];
+  if (blobUrl) {
+    try {
+      const res = await fetch(blobUrl, {
+        headers: { 'Accept': 'application/json' }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        return data !== null ? data : null;
+      }
+    } catch (e) {
+      console.error(`[Pre-configured Cloud DB] GET error for ${key}:`, e);
     }
-  } catch (e) {}
+  }
 
   return null;
 }
@@ -117,18 +129,23 @@ async function setKV(key, value) {
     }
   }
 
-  // 3. Persistent Public Cloud Bin Fallback
-  try {
-    const res = await fetch(`https://jsonblob.com/api/jsonBlob/zutere_site_${key}`, {
-      method: 'PUT',
-      headers: { 
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      },
-      body: JSON.stringify(value)
-    });
-    return res.ok;
-  } catch (e) {}
+  // 3. Pre-configured Persistent Cloud DB (Zero setup required)
+  const blobUrl = DEFAULT_BLOBS[key];
+  if (blobUrl) {
+    try {
+      const res = await fetch(blobUrl, {
+        method: 'PUT',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(value)
+      });
+      return res.ok;
+    } catch (e) {
+      console.error(`[Pre-configured Cloud DB] SET error for ${key}:`, e);
+    }
+  }
 
   return false;
 }
