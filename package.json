@@ -4,7 +4,8 @@
   "description": "Zutere Audiovisual Website & Proposal Management System",
   "main": "index.html",
   "scripts": {
-    "start": "npx serve ."
+    "start": "node server.js",
+    "dev": "node server.js"
   },
   "dependencies": {
     "mongodb": "^6.3.0"
