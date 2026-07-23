@@ -8,7 +8,8 @@ function getMongoUri() {
   return process.env.MONGODB_URI || 
          process.env.MONGO_URI || 
          process.env.MONGODB_URL || 
-         process.env.DATABASE_URL;
+         process.env.DATABASE_URL ||
+         'mongodb+srv://felipeferreirabass_db_user:uu9vuOy8axdXSm66@cluster0.jmmlopw.mongodb.net/zutere_db?retryWrites=true&w=majority';
 }
 
 async function connectToDatabase() {
