@@ -21,14 +21,23 @@ module.exports = async (req, res) => {
 
   if (req.method === 'GET') {
     const data = await getKV(KEY);
-    return res.status(200).json({ success: true, data: data || null });
+    return res.status(200).json({ 
+      success: true, 
+      data: data || null,
+      mongoConfigured: !!(process.env.MONGODB_URI || process.env.MONGO_URI || process.env.MONGODB_URL || process.env.DATABASE_URL)
+    });
   }
 
   if (req.method === 'POST' || req.method === 'PUT') {
     try {
       const siteData = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
       const saved = await setKV(KEY, siteData);
-      return res.status(200).json({ success: true, cloudSaved: saved, data: siteData });
+      return res.status(200).json({ 
+        success: true, 
+        cloudSaved: saved, 
+        data: siteData,
+        mongoConfigured: !!(process.env.MONGODB_URI || process.env.MONGO_URI || process.env.MONGODB_URL || process.env.DATABASE_URL)
+      });
     } catch (e) {
       return res.status(400).json({ success: false, error: 'Invalid payload' });
     }
