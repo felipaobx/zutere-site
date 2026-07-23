@@ -471,6 +471,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     allSlides.forEach((slide, idx) => {
       const vid = slide.querySelector('video');
+      const iframe = slide.querySelector('iframe');
+
       if (idx === targetIndex) {
         slide.classList.add('active');
         slide.style.zIndex = '10';
@@ -481,11 +483,21 @@ document.addEventListener('DOMContentLoaded', () => {
             playPromise.catch(err => console.log('Video autoplay error:', err));
           }
         }
+        if (iframe) {
+          try {
+            iframe.contentWindow?.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+          } catch (e) {}
+        }
       } else {
         slide.classList.remove('active');
         slide.style.zIndex = '1';
         if (vid) {
           try { vid.pause(); } catch (e) {}
+        }
+        if (iframe) {
+          try {
+            iframe.contentWindow?.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+          } catch (e) {}
         }
       }
     });
