@@ -635,13 +635,6 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
         </div>
 
-        <!-- CONDITIONS & NOTES -->
-        <div style="background: #F8FAFC; border-left: 4px solid #FF5B00; padding: 12px 16px; border-radius: 4px 10px 10px 4px; border-top: 1px solid #E2E8F0; border-right: 1px solid #E2E8F0; border-bottom: 1px solid #E2E8F0; margin-bottom: 14px; page-break-inside: avoid;">
-          <h4 style="font-size: 0.82rem; font-weight: 800; color: #0F172A; margin: 0 0 4px 0; text-transform: uppercase;">CONDIÇÕES COMERCIAIS & TERMOS</h4>
-          <p style="font-size: 0.8rem; color: #334155; margin: 0 0 4px 0;">• <strong>Forma de Pagamento:</strong> ${quote.paymentTerms}</p>
-          ${quote.notes ? `<p style="font-size: 0.8rem; color: #334155; margin: 2px 0 4px 0; white-space: pre-line;">• <strong>Observações:</strong> ${quote.notes}</p>` : ''}
-          ${comp.footerTerms ? `<p style="font-size: 0.75rem; color: #64748B; margin: 6px 0 0 0; white-space: pre-line; border-top: 1px dashed #CBD5E1; padding-top: 6px;">${comp.footerTerms}</p>` : ''}
-        </div>
 
         <!-- SIGNATURE SECTION (SINGLE CENTERED) -->
         <div style="max-width: 300px; margin: 20px auto 0 auto; text-align: center; page-break-inside: avoid;">
