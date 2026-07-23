@@ -299,47 +299,22 @@ document.addEventListener('DOMContentLoaded', () => {
       heroSec.appendChild(controls);
     }
 
-    const tabsHtml = slides.map((s, idx) => `
-      <div class="slider-tab ${idx === 0 ? 'active' : ''}" data-index="${idx}">
-        <span class="tab-number">0${idx + 1}</span>
-        <div class="tab-info">
-          <span class="tab-title">${s.title}</span>
-          <span class="tab-type"><i class="fa-solid fa-${s.type === 'video' ? 'video' : 'image'}"></i> ${s.badge || s.type}</span>
-        </div>
-      </div>
+    const dotsHtml = slides.map((s, idx) => `
+      <button type="button" class="slider-dot ${idx === 0 ? 'active' : ''}" data-index="${idx}" aria-label="Slide ${idx + 1}"></button>
     `).join('');
 
     controls.innerHTML = `
-      <div class="slider-arrows">
-        <button type="button" class="slider-arrow hero-prev-btn" aria-label="Anterior"><i class="fa-solid fa-chevron-left"></i></button>
-        <button type="button" class="slider-toggle-play hero-play-btn" aria-label="Play/Pause"><i class="fa-solid fa-pause"></i></button>
-        <button type="button" class="slider-arrow hero-next-btn" aria-label="Próximo"><i class="fa-solid fa-chevron-right"></i></button>
-      </div>
-      <div class="slider-tabs">${tabsHtml}</div>
+      <div class="slider-dots">${dotsHtml}</div>
     `;
 
-    controls.querySelectorAll('.slider-tab').forEach(tab => {
-      tab.addEventListener('click', () => {
-        const idx = parseInt(tab.dataset.index, 10);
+    controls.querySelectorAll('.slider-dot').forEach(dot => {
+      dot.addEventListener('click', () => {
+        const idx = parseInt(dot.dataset.index, 10);
         if (!isNaN(idx)) {
           goToSlide(idx);
           restartHeroTimer();
         }
       });
-    });
-
-    controls.querySelector('.hero-prev-btn')?.addEventListener('click', () => {
-      prevSlide();
-      restartHeroTimer();
-    });
-
-    controls.querySelector('.hero-next-btn')?.addEventListener('click', () => {
-      nextSlide();
-      restartHeroTimer();
-    });
-
-    controls.querySelector('.hero-play-btn')?.addEventListener('click', () => {
-      toggleHeroPlay();
     });
 
     currentSlideIndex = 0;
@@ -349,7 +324,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function goToSlide(index) {
     const slides = document.querySelectorAll('#heroSlider .slide');
-    const tabs = document.querySelectorAll('#heroSliderControls .slider-tab');
+    const dots = document.querySelectorAll('#heroSliderControls .slider-dot');
     if (slides.length === 0) return;
 
     currentSlideIndex = (index + slides.length) % slides.length;
@@ -376,9 +351,9 @@ document.addEventListener('DOMContentLoaded', () => {
       } catch (e) {}
     });
 
-    tabs.forEach((tab, idx) => {
-      if (idx === currentSlideIndex) tab.classList.add('active');
-      else tab.classList.remove('active');
+    dots.forEach((dot, idx) => {
+      if (idx === currentSlideIndex) dot.classList.add('active');
+      else dot.classList.remove('active');
     });
   }
 

@@ -454,8 +454,45 @@ button {
   transform: translateX(-50%);
   z-index: 20;
   display: flex;
-  flex-direction: column;
-  gap: 20px;
+  justify-content: center;
+  align-items: center;
+}
+
+.slider-dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 12px 24px;
+  background: rgba(9, 10, 15, 0.5);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 40px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+.slider-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.35);
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  outline: none;
+}
+
+.slider-dot:hover {
+  background: rgba(255, 255, 255, 0.85);
+  transform: scale(1.2);
+}
+
+.slider-dot.active {
+  width: 34px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #FF5B00 0%, #FF8A00 100%);
+  box-shadow: 0 0 16px rgba(255, 91, 0, 0.8);
 }
 
 .slider-arrows {
