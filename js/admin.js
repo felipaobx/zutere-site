@@ -701,6 +701,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // BACKUP & RESTORE ACTIONS
   // ------------------------------------------------------------------------
   document.getElementById('btnExportBackup').addEventListener('click', () => {
+    readAboutForm();
+    readProcessForm();
     readSettingsForm();
     const jsonStr = JSON.stringify(siteData, null, 2);
     const blob = new Blob([jsonStr], { type: 'application/json' });
