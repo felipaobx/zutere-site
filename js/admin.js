@@ -211,8 +211,8 @@ document.addEventListener('DOMContentLoaded', () => {
           const cloudTime = json.data.lastUpdated || 0;
           const localTime = siteData.lastUpdated || 0;
 
-          if (cloudTime >= localTime) {
-            siteData = { ...DEFAULT_SITE_DATA, ...json.data };
+          if (cloudTime > localTime) {
+            siteData = { ...DEFAULT_SITE_DATA, ...json.data, ...siteData };
             localStorage.setItem('zutere_site_data', JSON.stringify(siteData));
             initAdmin();
           } else if (siteData) {

@@ -132,8 +132,8 @@ document.addEventListener('DOMContentLoaded', () => {
           const localTime = localData.lastUpdated || 0;
           const cloudTime = cloudData.lastUpdated || 0;
 
-          // If localData has a newer edit timestamp, keep localData and sync up to cloud
-          if (localTime > cloudTime && localData.heroSlides && localData.heroSlides.length > 0) {
+          // If localData is newer or equal, prioritize localData and sync it up to the cloud
+          if (localTime >= cloudTime && localData.heroSlides && localData.heroSlides.length > 0) {
             fetch('/api/site-data', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
@@ -142,18 +142,19 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
           }
 
+          // Otherwise, merge with localData taking precedence for locally edited sections
           const mergedData = {
-            ...localData,
-            ...cloudData
+            ...cloudData,
+            ...localData
           };
 
-          if (Array.isArray(cloudData.heroSlides) && cloudData.heroSlides.length > 0) {
+          if (Array.isArray(cloudData.heroSlides) && cloudData.heroSlides.length > 0 && cloudTime > localTime) {
             mergedData.heroSlides = cloudData.heroSlides;
-          } else {
-            mergedData.heroSlides = localData.heroSlides && localData.heroSlides.length > 0 ? localData.heroSlides : DEFAULT_HERO_SLIDES;
+          } else if (!mergedData.heroSlides || mergedData.heroSlides.length === 0) {
+            mergedData.heroSlides = DEFAULT_HERO_SLIDES;
           }
 
-          if (Array.isArray(cloudData.projects) && cloudData.projects.length > 0) {
+          if (Array.isArray(cloudData.projects) && cloudData.projects.length > 0 && cloudTime > localTime) {
             mergedData.projects = cloudData.projects;
           }
 
