@@ -334,7 +334,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (activeFilterBtn) {
       const filterValue = activeFilterBtn.dataset.filter;
       grid.querySelectorAll('.project-card').forEach(card => {
-        if (filterValue === 'all' || card.dataset.category === filterValue) {
+        if (isCategoryMatch(card.dataset.category, filterValue)) {
           card.style.display = 'block';
           card.style.opacity = '1';
         } else {
@@ -744,28 +744,46 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ------------------------------------------------------------------------
-  // PORTFOLIO FILTERING
+  // PORTFOLIO FILTERING & ACCURATE CATEGORY MATCHING
   // ------------------------------------------------------------------------
-  const filterBtns = document.querySelectorAll('.filter-btn');
+  function isCategoryMatch(cardCategory, filterValue) {
+    if (!filterValue || filterValue === 'all') return true;
+    if (!cardCategory) return false;
 
-  filterBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      filterBtns.forEach(b => b.classList.remove('active'));
+    const cardCat = cardCategory.toLowerCase().trim();
+    const filterVal = filterValue.toLowerCase().trim();
+
+    if (cardCat === filterVal) return true;
+    if (filterVal === 'comercial' && (cardCat.includes('comercia') || cardCat.includes('comercial'))) return true;
+    if (filterVal === 'videoclipe' && (cardCat.includes('clipe') || cardCat.includes('videoclipe') || cardCat.includes('music'))) return true;
+    if (filterVal === 'eventos' && (cardCat.includes('evento') || cardCat.includes('show') || cardCat.includes('live'))) return true;
+    if (filterVal === 'aereo' && (cardCat.includes('aereo') || cardCat.includes('aéreo') || cardCat.includes('drone') || cardCat.includes('fpv'))) return true;
+    if (filterVal === 'corporativo' && (cardCat.includes('corporativ') || cardCat.includes('institucion'))) return true;
+
+    return false;
+  }
+
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('.filter-btn');
+    if (btn) {
+      e.preventDefault();
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
 
       const filterValue = btn.dataset.filter;
-      const projectCards = document.querySelectorAll('.project-card');
+      const projectCards = document.querySelectorAll('#projectsGrid .project-card');
 
       projectCards.forEach(card => {
-        if (filterValue === 'all' || card.dataset.category === filterValue) {
+        const cat = card.dataset.category || '';
+        if (isCategoryMatch(cat, filterValue)) {
           card.style.display = 'block';
-          setTimeout(() => card.style.opacity = '1', 50);
+          card.style.opacity = '1';
         } else {
+          card.style.display = 'none';
           card.style.opacity = '0';
-          setTimeout(() => card.style.display = 'none', 300);
         }
       });
-    });
+    }
   });
 
   // ------------------------------------------------------------------------
