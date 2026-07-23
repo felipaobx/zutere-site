@@ -104,7 +104,22 @@ document.addEventListener('DOMContentLoaded', () => {
   if (siteData.process) renderDynamicProcess(siteData.process);
   if (siteData.settings) applyDynamicSettings(siteData.settings);
 
-  // Cloud sync update for main page
+  // REAL-TIME LOCALSTORAGE SYNC & CLOUD DB LOADER
+  window.addEventListener('storage', (e) => {
+    if (e.key === 'zutere_site_data' && e.newValue) {
+      try {
+        const newData = JSON.parse(e.newValue);
+        if (newData && typeof newData === 'object') {
+          if (newData.heroSlides && newData.heroSlides.length > 0) renderDynamicHero(newData.heroSlides);
+          if (newData.projects && newData.projects.length > 0) renderDynamicProjects(newData.projects);
+          if (newData.about) renderDynamicAbout(newData.about);
+          if (newData.process) renderDynamicProcess(newData.process);
+          if (newData.settings) applyDynamicSettings(newData.settings);
+        }
+      } catch (err) {}
+    }
+  });
+
   async function loadCloudSiteData() {
     try {
       const res = await fetch('/api/site-data');
@@ -112,13 +127,31 @@ document.addEventListener('DOMContentLoaded', () => {
         const json = await res.json();
         if (json && json.success && json.data && typeof json.data === 'object') {
           const cloudData = json.data;
-          const heroList = (cloudData.heroSlides && Array.isArray(cloudData.heroSlides) && cloudData.heroSlides.length > 0) ? cloudData.heroSlides : DEFAULT_HERO_SLIDES;
-          localStorage.setItem('zutere_site_data', JSON.stringify({ ...cloudData, heroSlides: heroList }));
-          renderDynamicHero(heroList);
-          if (cloudData.projects) renderDynamicProjects(cloudData.projects);
-          if (cloudData.about) renderDynamicAbout(cloudData.about);
-          if (cloudData.process) renderDynamicProcess(cloudData.process);
-          if (cloudData.settings) applyDynamicSettings(cloudData.settings);
+          const localData = getSiteData() || {};
+
+          // Smart merge local and cloud data to prevent wiping unsaved edits
+          const mergedData = {
+            ...localData,
+            ...cloudData
+          };
+
+          if (Array.isArray(cloudData.heroSlides) && cloudData.heroSlides.length > 0) {
+            mergedData.heroSlides = cloudData.heroSlides;
+          } else {
+            mergedData.heroSlides = localData.heroSlides && localData.heroSlides.length > 0 ? localData.heroSlides : DEFAULT_HERO_SLIDES;
+          }
+
+          if (Array.isArray(cloudData.projects) && cloudData.projects.length > 0) {
+            mergedData.projects = cloudData.projects;
+          }
+
+          localStorage.setItem('zutere_site_data', JSON.stringify(mergedData));
+
+          renderDynamicHero(mergedData.heroSlides);
+          if (mergedData.projects && mergedData.projects.length > 0) renderDynamicProjects(mergedData.projects);
+          if (mergedData.about) renderDynamicAbout(mergedData.about);
+          if (mergedData.process) renderDynamicProcess(mergedData.process);
+          if (mergedData.settings) applyDynamicSettings(mergedData.settings);
         }
       }
     } catch (e) {}
