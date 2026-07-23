@@ -323,13 +323,46 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ------------------------------------------------------------------------
-  // HERO SLIDES RENDER & ACTIONS
+  // HERO SLIDES RENDER & ACTIONS (WITH RE-ORDER SUPPORT)
   // ------------------------------------------------------------------------
+  window.moveHeroSlideUp = function(id) {
+    const idx = siteData.heroSlides.findIndex(s => s.id === id);
+    if (idx > 0) {
+      const temp = siteData.heroSlides[idx];
+      siteData.heroSlides[idx] = siteData.heroSlides[idx - 1];
+      siteData.heroSlides[idx - 1] = temp;
+      saveData();
+      renderHeroSlides();
+      showToast('Ordem do slide atualizada!', 'success');
+    }
+  };
+
+  window.moveHeroSlideDown = function(id) {
+    const idx = siteData.heroSlides.findIndex(s => s.id === id);
+    if (idx !== -1 && idx < siteData.heroSlides.length - 1) {
+      const temp = siteData.heroSlides[idx];
+      siteData.heroSlides[idx] = siteData.heroSlides[idx + 1];
+      siteData.heroSlides[idx + 1] = temp;
+      saveData();
+      renderHeroSlides();
+      showToast('Ordem do slide atualizada!', 'success');
+    }
+  };
+
   function renderHeroSlides() {
     const container = document.getElementById('heroListContainer');
     if (!container) return;
 
     container.innerHTML = '';
+    if (!siteData.heroSlides || siteData.heroSlides.length === 0) {
+      container.innerHTML = `
+        <div style="grid-column: 1 / -1; padding: 40px; text-align: center; color: var(--text-muted); background: rgba(255,255,255,0.02); border-radius: 16px; border: 1px dashed var(--glass-border);">
+          <i class="fa-solid fa-film" style="font-size: 2.5rem; color: var(--accent-gradient-start); margin-bottom: 12px; display: block;"></i>
+          <p style="margin: 0; font-size: 1rem;">Nenhum slide cadastrado. Clique no botão <strong>"+ Novo Slide"</strong> para adicionar.</p>
+        </div>`;
+      return;
+    }
+
     siteData.heroSlides.forEach((slide, index) => {
       const mediaInfo = parseMedia(slide.mediaUrl);
       let mediaPreview = '';
@@ -337,7 +370,8 @@ document.addEventListener('DOMContentLoaded', () => {
       if (mediaInfo.type === 'youtube') {
         mediaPreview = `<img src="${mediaInfo.thumb}" alt="${slide.title}">`;
       } else if (slide.type === 'video' || mediaInfo.type === 'mp4') {
-        mediaPreview = `<video src="${slide.mediaUrl}" poster="${slide.posterUrl || ''}" muted></video>`;
+        const poster = slide.posterUrl || 'assets/images/hero_cinema_camera.png';
+        mediaPreview = `<img src="${poster}" alt="${slide.title}">`;
       } else {
         mediaPreview = `<img src="${slide.mediaUrl}" alt="${slide.title}">`;
       }
@@ -349,14 +383,20 @@ document.addEventListener('DOMContentLoaded', () => {
           ${mediaPreview}
           <span class="admin-item-type-badge">
             <i class="fa-solid fa-${slide.type === 'video' || mediaInfo.type === 'youtube' ? 'film' : 'image'}"></i>
-            ${slide.type.toUpperCase()}
+            ${slide.type ? slide.type.toUpperCase() : 'MÍDIA'}
           </span>
         </div>
         <div class="admin-item-body">
-          <span style="font-size:0.75rem; color:var(--accent-gradient-start); font-weight:700;">${slide.badge || 'SLIDE #' + (index + 1)}</span>
-          <h3 class="admin-item-title">${slide.title}</h3>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 6px;">
+            <span style="font-size:0.75rem; color:var(--accent-gradient-start); font-weight:700;">SLIDE 0${index + 1} • ${slide.badge || 'Zutere'}</span>
+            <div style="display:flex; gap:4px;">
+              ${index > 0 ? `<button class="btn-admin btn-admin-secondary btn-admin-sm" style="padding: 4px 8px;" onclick="moveHeroSlideUp('${slide.id}')" title="Mover para Cima"><i class="fa-solid fa-arrow-up"></i></button>` : ''}
+              ${index < siteData.heroSlides.length - 1 ? `<button class="btn-admin btn-admin-secondary btn-admin-sm" style="padding: 4px 8px;" onclick="moveHeroSlideDown('${slide.id}')" title="Mover para Baixo"><i class="fa-solid fa-arrow-down"></i></button>` : ''}
+            </div>
+          </div>
+          <h3 class="admin-item-title">${slide.title.replace(/<[^>]*>?/gm, '')}</h3>
           <p class="admin-item-desc">${slide.description}</p>
-          <div class="admin-item-actions">
+          <div class="admin-item-actions" style="margin-top: 12px;">
             <button class="btn-admin btn-admin-secondary btn-admin-sm" onclick="editHeroSlide('${slide.id}')">
               <i class="fa-solid fa-pen"></i> Editar
             </button>
