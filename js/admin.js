@@ -74,7 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
         title: 'Videoclipe "Sombras da Noite"',
         client: 'Artista / Sony Music',
         videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-singer-singing-in-a-dark-studio-41483-large.mp4',
-        thumbUrl: 'assets/images/project_music_video.png',
+        thumbUrl: 'assets/images/hero_cinema_camera.png',
         badge: 'Music Video',
         tag: 'Lentes Anamórficas',
         desc: 'Produção narrativa com efeitos de luzes estroboscópicas, cenografia personalizada e pós-produção avançada.'
@@ -96,7 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
         title: 'Vídeo Institucional Inovação',
         client: 'TechCorp International',
         videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-group-of-people-working-in-a-modern-office-41511-large.mp4',
-        thumbUrl: 'assets/images/project_corporate_film.png',
+        thumbUrl: 'assets/images/project_commercial_car.png',
         badge: 'Institucional',
         tag: 'Motion Graphics',
         desc: 'Apresentação corporativa de grande impacto para acionistas e lançamento global de novos produtos.'
@@ -118,7 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
         caption: 'Color Grading antes e depois: transformando o visual de log em cinema 🎨✨',
         videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-camera-operator-filming-a-scene-in-a-studio-41481-large.mp4',
         reelUrl: 'https://instagram.com/zutereprodutora',
-        thumbUrl: 'assets/images/reels_color_grading.png',
+        thumbUrl: 'assets/images/reels_behind_the_scenes.png',
         user: '@zutereprodutora',
         views: '94K',
         likes: '11.8K'
@@ -128,7 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
         caption: 'Take de drone FPV rasando o palco do festival! Sensação indescritível 🚁🔥',
         videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-aerial-view-of-a-beach-with-turquoise-water-41523-large.mp4',
         reelUrl: 'https://instagram.com/zutereprodutora',
-        thumbUrl: 'assets/images/reels_drone_fpv.png',
+        thumbUrl: 'assets/images/reels_concert_cut.png',
         user: '@zutereprodutora',
         views: '245K',
         likes: '32.1K'

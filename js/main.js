@@ -39,45 +39,153 @@ document.addEventListener('DOMContentLoaded', () => {
     subtitle: 'Produção Cinematográfica 4K/8K HDR'
   };
 
-  // DEFAULT HERO SLIDES FALLBACK
-  const DEFAULT_HERO_SLIDES = [
-    {
-      id: 'hero_1',
-      type: 'video',
-      mediaUrl: 'https://assets.mixkit.co/videos/preview/mixkit-camera-operator-filming-a-scene-in-a-studio-41481-large.mp4',
-      posterUrl: 'assets/images/hero_cinema_camera.png',
-      badge: 'Cinema & Publicidade',
-      title: 'Transformando Ideias em Narrativas Épicas',
-      description: 'Produtora audiovisual especialista em comerciais, filmes de alta definição, direção de fotografia e produções que encantam audiências.'
+  // DEFAULT SITE DATA FALLBACK
+  const DEFAULT_SITE_DATA = {
+    heroSlides: [
+      {
+        id: 'hero_1',
+        type: 'video',
+        mediaUrl: 'https://assets.mixkit.co/videos/preview/mixkit-camera-operator-filming-a-scene-in-a-studio-41481-large.mp4',
+        posterUrl: 'assets/images/hero_cinema_camera.png',
+        badge: 'Cinema & Publicidade',
+        title: 'Transformando Ideias em Narrativas Épicas',
+        description: 'Produtora audiovisual especialista em comerciais, filmes de alta definição, direção de fotografia e produções que encantam audiências.'
+      },
+      {
+        id: 'hero_2',
+        type: 'photo',
+        mediaUrl: 'assets/images/hero_concert_stage.png',
+        posterUrl: 'assets/images/hero_concert_stage.png',
+        badge: 'Eventos & Broadcast Live',
+        title: 'A Energia do Ao Vivo em Qualidade Broadcast',
+        description: 'Captação multi-câmera com estabilização avançada para festivais, shows e coberturas institucionais de grande porte.'
+      },
+      {
+        id: 'hero_3',
+        type: 'video',
+        mediaUrl: 'https://assets.mixkit.co/videos/preview/mixkit-car-driving-fast-at-night-42861-large.mp4',
+        posterUrl: 'assets/images/project_commercial_car.png',
+        badge: 'Comercial de Produtos & Automotivo',
+        title: 'Estética Cinematográfica que Vende',
+        description: 'Iluminação de estúdio meticulosa, rigs de câmera dinâmicos e color grading de nível Hollywood para sua marca.'
+      },
+      {
+        id: 'hero_4',
+        type: 'photo',
+        mediaUrl: 'assets/images/project_drone_aerial.png',
+        posterUrl: 'assets/images/project_drone_aerial.png',
+        badge: 'Imagens Aéreas 8K / FPV',
+        title: 'Perspectivas Sem Limites Acima das Nuvens',
+        description: 'Pilotos certificados de drones FPV e de cinema para tomadas aéreas contínuas, dinâmicas e impressionantes.'
+      }
+    ],
+    projects: [
+      {
+        id: 'proj_1',
+        category: 'comercial',
+        title: 'Campanha Lançamento GT Series',
+        client: 'Titan Motors',
+        videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-car-driving-fast-at-night-42861-large.mp4',
+        thumbUrl: 'assets/images/project_commercial_car.png',
+        badge: 'Comercial 4K',
+        tag: 'Cinema Rig & VFX',
+        desc: 'Filme publicitário com captura noturna em alta velocidade e color grading anamórfico.'
+      },
+      {
+        id: 'proj_2',
+        category: 'eventos',
+        title: 'Festival Electric Beats 2026',
+        client: 'Live Nation / Groove Fest',
+        videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-party-lights-in-a-disco-club-40545-large.mp4',
+        thumbUrl: 'assets/images/hero_concert_stage.png',
+        badge: 'Live Broadcast',
+        tag: '8 Câmeras 4K HDR',
+        desc: 'Cobertura oficial completa de 3 dias de festival com transmissão ao vivo em telões LED.'
+      },
+      {
+        id: 'proj_3',
+        category: 'videoclipe',
+        title: 'Videoclipe "Sombras da Noite"',
+        client: 'Artista / Sony Music',
+        videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-singer-singing-in-a-dark-studio-41483-large.mp4',
+        thumbUrl: 'assets/images/hero_cinema_camera.png',
+        badge: 'Music Video',
+        tag: 'Lentes Anamórficas',
+        desc: 'Produção narrativa com efeitos de luzes estroboscópicas, cenografia personalizada e pós-produção avançada.'
+      },
+      {
+        id: 'proj_4',
+        category: 'aereo',
+        title: 'Imagens Aéreas FPV & Natureza',
+        client: 'Resort & Ecoturismo',
+        videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-aerial-view-of-a-beach-with-turquoise-water-41523-large.mp4',
+        thumbUrl: 'assets/images/project_drone_aerial.png',
+        badge: 'FPV Cinema',
+        tag: 'Drone 8K Raw',
+        desc: 'Tomadas contínuas de mergulho em penhascos e praias de difícil acesso gravadas em 8K 60fps.'
+      },
+      {
+        id: 'proj_5',
+        category: 'corporativo',
+        title: 'Vídeo Institucional Inovação',
+        client: 'TechCorp International',
+        videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-group-of-people-working-in-a-modern-office-41511-large.mp4',
+        thumbUrl: 'assets/images/project_commercial_car.png',
+        badge: 'Institucional',
+        tag: 'Motion Graphics',
+        desc: 'Apresentação corporativa de grande impacto para acionistas e lançamento global de novos produtos.'
+      }
+    ],
+    about: {
+      badge: 'Sobre a Zutere',
+      title: 'Paixão por Movimento, Obsessão por Qualidade',
+      para1: 'A Zutere Audiovisual nasceu com a missão de elevar o patamar das produções visuais no Brasil. Combinamos sensibilidade artística com o vigor da inovação tecnológica.',
+      para2: 'Atendemos agências de publicidade, grandes marcas, artistas musicais e organizadores de eventos que buscam uma estética refinada e capaz de despertar emoções reais.',
+      mainImage: 'assets/images/hero_concert_stage.png',
+      expNum: '12+',
+      expText: 'Anos Criando Histórias Impactantes',
+      highlight1Icon: 'fa-bullseye',
+      highlight1Title: 'Visão Artística',
+      highlight1Desc: 'Cada frame é pensado para valorizar a mensagem da sua marca.',
+      highlight2Icon: 'fa-stopwatch',
+      highlight2Title: 'Pontualidade Rigorosa',
+      highlight2Desc: 'Prazos de entrega garantidos e comunicação constante durante todo o projeto.'
     },
-    {
-      id: 'hero_2',
-      type: 'photo',
-      mediaUrl: 'assets/images/hero_concert_stage.png',
-      posterUrl: 'assets/images/hero_concert_stage.png',
-      badge: 'Eventos & Broadcast Live',
-      title: 'A Energia do Ao Vivo em Qualidade Broadcast',
-      description: 'Captação multi-câmera com estabilização avançada para festivais, shows e coberturas institucionais de grande porte.'
+    process: {
+      badge: 'Como Trabalhamos',
+      title: 'Nosso Processo de Produção',
+      subtitle: 'Do primeiro briefing até a entrega final da sua obra audiovisual, seguimos etapas rigorosas de qualidade.',
+      step1Num: '01',
+      step1Icon: 'fa-comments',
+      step1Title: 'Briefing & Roteiro',
+      step1Desc: 'Entendimento profundo do seu projeto, objetivo de negócio e criação da narrativa.',
+      step2Num: '02',
+      step2Icon: 'fa-camera',
+      step2Title: 'Captação & Filmagem',
+      step2Desc: 'Execução da gravação com equipamentos de ponta, câmeras de cinema e iluminação.',
+      step3Num: '03',
+      step3Icon: 'fa-sliders',
+      step3Title: 'Pós-Produção & Color',
+      step3Desc: 'Edição dinâmica, tratamento de áudio, efeitos visuais e color grading profissional.',
+      step4Num: '04',
+      step4Icon: 'fa-circle-check',
+      step4Title: 'Aprovação & Entrega',
+      step4Desc: 'Revisão final com o cliente e entrega em múltiplos formatos para web, TV e cinema.'
     },
-    {
-      id: 'hero_3',
-      type: 'video',
-      mediaUrl: 'https://assets.mixkit.co/videos/preview/mixkit-car-driving-fast-at-night-42861-large.mp4',
-      posterUrl: 'assets/images/project_commercial_car.png',
-      badge: 'Comercial de Produtos & Automotivo',
-      title: 'Estética Cinematográfica que Vende',
-      description: 'Iluminação de estúdio meticulosa, rigs de câmera dinâmicos e color grading de nível Hollywood para sua marca.'
-    },
-    {
-      id: 'hero_4',
-      type: 'photo',
-      mediaUrl: 'assets/images/project_drone_aerial.png',
-      posterUrl: 'assets/images/project_drone_aerial.png',
-      badge: 'Imagens Aéreas 8K / FPV',
-      title: 'Perspectivas Sem Limites Acima das Nuvens',
-      description: 'Pilotos certificados de drones FPV e de cinema para tomadas aéreas contínuas, dinâmicas e impressionantes.'
+    settings: {
+      whatsappNumber: '5511999999999',
+      whatsappMessage: 'Olá equipe Zutere Audiovisual! Vim pelo site e gostaria de solicitar um orçamento para meu projeto.',
+      email: 'contato@zutere.com.br',
+      instagramUrl: 'https://instagram.com/zutereprodutora',
+      youtubeUrl: 'https://youtube.com/@zutereaudiovisual',
+      tiktokUrl: 'https://tiktok.com/@zutereaudiovisual',
+      showreelUrl: 'https://assets.mixkit.co/videos/preview/mixkit-camera-operator-filming-a-scene-in-a-studio-41481-large.mp4',
+      statProjects: '180',
+      statQuality: '100',
+      statBrands: '50',
+      statYears: '12'
     }
-  ];
+  };
 
   // ------------------------------------------------------------------------
   // DATA LOADER FROM LOCALSTORAGE & CLOUD DB
@@ -87,34 +195,37 @@ document.addEventListener('DOMContentLoaded', () => {
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
-        if (parsed && typeof parsed === 'object') return parsed;
+        if (parsed && typeof parsed === 'object' && parsed !== null) {
+          return { ...DEFAULT_SITE_DATA, ...parsed };
+        }
       } catch (e) {
         console.error('Error parsing site data:', e);
       }
     }
-    return null;
+    return { ...DEFAULT_SITE_DATA };
   }
 
-  const siteData = getSiteData() || {};
-  const initialHeroSlides = (siteData.heroSlides && siteData.heroSlides.length > 0) ? siteData.heroSlides : DEFAULT_HERO_SLIDES;
+  const siteData = getSiteData();
 
-  renderDynamicHero(initialHeroSlides);
-  if (siteData.projects) renderDynamicProjects(siteData.projects);
-  if (siteData.about) renderDynamicAbout(siteData.about);
-  if (siteData.process) renderDynamicProcess(siteData.process);
-  if (siteData.settings) applyDynamicSettings(siteData.settings);
+  function renderAllDynamic(data) {
+    if (!data) return;
+    if (Array.isArray(data.heroSlides) && data.heroSlides.length > 0) renderDynamicHero(data.heroSlides);
+    if (Array.isArray(data.projects) && data.projects.length > 0) renderDynamicProjects(data.projects);
+    if (data.about) renderDynamicAbout(data.about);
+    if (data.process) renderDynamicProcess(data.process);
+    if (data.settings) applyDynamicSettings(data.settings);
+  }
+
+  renderAllDynamic(siteData);
 
   // REAL-TIME LOCALSTORAGE SYNC & CLOUD DB LOADER
   window.addEventListener('storage', (e) => {
     if (e.key === 'zutere_site_data' && e.newValue) {
       try {
         const newData = JSON.parse(e.newValue);
-        if (newData && typeof newData === 'object') {
-          if (newData.heroSlides && newData.heroSlides.length > 0) renderDynamicHero(newData.heroSlides);
-          if (newData.projects && newData.projects.length > 0) renderDynamicProjects(newData.projects);
-          if (newData.about) renderDynamicAbout(newData.about);
-          if (newData.process) renderDynamicProcess(newData.process);
-          if (newData.settings) applyDynamicSettings(newData.settings);
+        if (newData && typeof newData === 'object' && newData !== null) {
+          const merged = { ...DEFAULT_SITE_DATA, ...newData };
+          renderAllDynamic(merged);
         }
       } catch (err) {}
     }
@@ -125,46 +236,27 @@ document.addEventListener('DOMContentLoaded', () => {
       const res = await fetch('/api/site-data');
       if (res.ok) {
         const json = await res.json();
-        if (json && json.success && json.data && typeof json.data === 'object') {
+        if (json && json.success && json.data && typeof json.data === 'object' && json.data !== null) {
           const cloudData = json.data;
-          const localData = getSiteData() || {};
+          const localData = getSiteData();
 
           const localTime = localData.lastUpdated || 0;
           const cloudTime = cloudData.lastUpdated || 0;
 
-          // If localData is newer or equal, prioritize localData and sync it up to the cloud
-          if (localTime >= cloudTime && localData.heroSlides && localData.heroSlides.length > 0) {
+          let mergedData;
+          if (cloudTime > localTime) {
+            mergedData = { ...DEFAULT_SITE_DATA, ...cloudData };
+          } else {
+            mergedData = { ...DEFAULT_SITE_DATA, ...cloudData, ...localData };
             fetch('/api/site-data', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(localData)
+              body: JSON.stringify(mergedData)
             }).catch(() => {});
-            return;
-          }
-
-          // Otherwise, merge with localData taking precedence for locally edited sections
-          const mergedData = {
-            ...cloudData,
-            ...localData
-          };
-
-          if (Array.isArray(cloudData.heroSlides) && cloudData.heroSlides.length > 0 && cloudTime > localTime) {
-            mergedData.heroSlides = cloudData.heroSlides;
-          } else if (!mergedData.heroSlides || mergedData.heroSlides.length === 0) {
-            mergedData.heroSlides = DEFAULT_HERO_SLIDES;
-          }
-
-          if (Array.isArray(cloudData.projects) && cloudData.projects.length > 0 && cloudTime > localTime) {
-            mergedData.projects = cloudData.projects;
           }
 
           localStorage.setItem('zutere_site_data', JSON.stringify(mergedData));
-
-          renderDynamicHero(mergedData.heroSlides);
-          if (mergedData.projects && mergedData.projects.length > 0) renderDynamicProjects(mergedData.projects);
-          if (mergedData.about) renderDynamicAbout(mergedData.about);
-          if (mergedData.process) renderDynamicProcess(mergedData.process);
-          if (mergedData.settings) applyDynamicSettings(mergedData.settings);
+          renderAllDynamic(mergedData);
         }
       }
     } catch (e) {}
@@ -310,7 +402,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       card.innerHTML = `
         <div class="card-thumb">
-          <img src="${thumb}" alt="${proj.title}" onerror="this.onerror=null; this.src='${media.thumbUrl || 'assets/images/project_commercial_car.png'}';">
+          <img src="${thumb}" alt="${proj.title}" onerror="this.onerror=null; this.src='assets/images/project_commercial_car.png';">
           <div class="card-overlay">
             <div class="card-play-btn"><i class="fa-solid fa-play"></i></div>
           </div>
