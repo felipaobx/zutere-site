@@ -185,30 +185,41 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  // LOCALSTORAGE & CLOUD DATABASE MANAGEMENT
-  let siteData = DEFAULT_SITE_DATA;
+  // SYNCHRONOUS LOCALSTORAGE LOADER FOR ADMIN SITE DATA
+  function loadSiteDataSync() {
+    const saved = localStorage.getItem('zutere_site_data');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (parsed && typeof parsed === 'object' && Array.isArray(parsed.heroSlides) && parsed.heroSlides.length > 0) {
+          return { ...DEFAULT_SITE_DATA, ...parsed };
+        }
+      } catch (e) {}
+    }
+    localStorage.setItem('zutere_site_data', JSON.stringify(DEFAULT_SITE_DATA));
+    return DEFAULT_SITE_DATA;
+  }
+
+  let siteData = loadSiteDataSync();
 
   async function syncSiteDataFromCloud() {
     try {
       const res = await fetch('/api/site-data');
       if (res.ok) {
         const json = await res.json();
-        if (json && json.success && json.data) {
-          siteData = json.data;
+        if (json && json.success && json.data && typeof json.data === 'object' && Array.isArray(json.data.heroSlides) && json.data.heroSlides.length > 0) {
+          siteData = { ...DEFAULT_SITE_DATA, ...json.data };
           localStorage.setItem('zutere_site_data', JSON.stringify(siteData));
           initAdmin();
-          return;
+        } else if (siteData) {
+          fetch('/api/site-data', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(siteData)
+          }).catch(() => {});
         }
       }
     } catch (e) {}
-
-    const saved = localStorage.getItem('zutere_site_data');
-    if (saved) {
-      try { siteData = JSON.parse(saved); } catch (e) {}
-    } else {
-      localStorage.setItem('zutere_site_data', JSON.stringify(DEFAULT_SITE_DATA));
-    }
-    initAdmin();
   }
 
   function saveData() {
