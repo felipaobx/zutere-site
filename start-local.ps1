@@ -34,6 +34,17 @@ while ($listener.IsListening) {
 
         $rawPath = $request.Url.AbsolutePath
         
+        # API Routes Handling for Local PowerShell Server
+        if ($rawPath.StartsWith('/api/')) {
+            $response.ContentType = 'application/json; charset=utf-8'
+            $apiResponse = '{"success":true,"data":null,"localFallback":true}'
+            $buffer = [System.Text.Encoding]::UTF8.GetBytes($apiResponse)
+            $response.ContentLength64 = $buffer.Length
+            $response.OutputStream.Write($buffer, 0, $buffer.Length)
+            $response.Close()
+            continue
+        }
+
         # Clean URLs route mapping
         if ($rawPath -eq '/' -or $rawPath -eq '') {
             $filePath = Join-Path $rootPath 'index.html'

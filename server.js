@@ -18,7 +18,44 @@ const MIME_TYPES = {
 };
 
 const server = http.createServer((req, res) => {
+  // Polyfill Express/Vercel helper methods on res
+  res.status = function(code) {
+    this.statusCode = code;
+    return this;
+  };
+  res.json = function(data) {
+    if (!this.getHeader('Content-Type')) {
+      this.setHeader('Content-Type', 'application/json; charset=utf-8');
+    }
+    this.end(JSON.stringify(data));
+    return this;
+  };
+
   let reqUrl = req.url.split('?')[0];
+
+  // Route API requests to Vercel Serverless Function handlers in /api/
+  if (reqUrl.startsWith('/api/')) {
+    const apiName = reqUrl.replace('/api/', '').replace(/\.js$/, '');
+    const apiFilePath = path.join(__dirname, 'api', `${apiName}.js`);
+
+    if (fs.existsSync(apiFilePath)) {
+      let bodyData = '';
+      req.on('data', chunk => { bodyData += chunk; });
+      req.on('end', async () => {
+        req.body = bodyData;
+        try {
+          // Clear require cache for hot-reload in dev
+          delete require.cache[require.resolve(apiFilePath)];
+          const handler = require(apiFilePath);
+          await handler(req, res);
+        } catch (err) {
+          console.error(`[API Error] ${reqUrl}:`, err);
+          res.status(500).json({ success: false, error: 'Internal Server Error' });
+        }
+      });
+      return;
+    }
+  }
 
   let filePath;
   if (reqUrl === '/' || reqUrl === '') {
@@ -57,3 +94,4 @@ server.listen(PORT, '127.0.0.1', () => {
   console.log(`   Orçamentos:    http://127.0.0.1:${PORT}/orcamento`);
   console.log(`==========================================================\n`);
 });
+
