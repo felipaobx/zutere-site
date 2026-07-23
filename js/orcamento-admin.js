@@ -342,12 +342,19 @@ document.addEventListener('DOMContentLoaded', () => {
   function getQuoteFormData() {
     const items = [];
     itemsTableBody.querySelectorAll('tr').forEach(tr => {
-      items.push({
-        desc: tr.querySelector('.item-desc').value,
-        qty: parseFloat(tr.querySelector('.item-qty').value) || 1,
-        price: parseFloat(tr.querySelector('.item-price').value) || 0,
-        subtotal: (parseFloat(tr.querySelector('.item-qty').value) || 1) * (parseFloat(tr.querySelector('.item-price').value) || 0)
-      });
+      const desc = tr.querySelector('.item-desc')?.value?.trim() || '';
+      const qty = parseFloat(tr.querySelector('.item-qty')?.value) || 0;
+      const price = parseFloat(tr.querySelector('.item-price')?.value) || 0;
+      
+      // Only include items with non-empty description
+      if (desc) {
+        items.push({
+          desc: desc,
+          qty: qty || 1,
+          price: price,
+          subtotal: (qty || 1) * price
+        });
+      }
     });
 
     const totals = calculateTotals();
@@ -528,14 +535,26 @@ document.addEventListener('DOMContentLoaded', () => {
     const issueFormatted = quote.issueDate ? new Date(quote.issueDate).toLocaleDateString('pt-BR') : new Date().toLocaleDateString('pt-BR');
     const comp = companyInfo || DEFAULT_COMPANY_INFO;
 
-    let itemsRowsHtml = quote.items.map((item, idx) => `
-      <tr style="border-bottom: 1px solid #E2E8F0; background: ${idx % 2 === 0 ? '#FFFFFF' : '#F8FAFC'};">
-        <td style="padding: 8px 12px; font-weight: 600; color: #0F172A; font-size: 0.85rem;">${item.desc}</td>
-        <td style="padding: 8px 12px; text-align: center; color: #334155; font-weight: 600; font-size: 0.85rem;">${item.qty}</td>
-        <td style="padding: 8px 12px; text-align: right; color: #334155; font-size: 0.85rem;">${formatBRL(item.price)}</td>
-        <td style="padding: 8px 12px; text-align: right; font-weight: 700; color: #FF5B00; font-size: 0.85rem;">${formatBRL(item.subtotal)}</td>
-      </tr>
-    `).join('');
+    // Filter out blank / empty items
+    const validItems = (quote.items || []).filter(item => item && item.desc && item.desc.trim() !== '');
+
+    let itemsRowsHtml = '';
+    if (validItems.length > 0) {
+      itemsRowsHtml = validItems.map((item, idx) => `
+        <tr style="border-bottom: 1px solid #E2E8F0; background: ${idx % 2 === 0 ? '#FFFFFF' : '#F8FAFC'};">
+          <td style="padding: 10px 14px; font-weight: 600; color: #0F172A; font-size: 0.88rem; line-height: 1.4;">${item.desc}</td>
+          <td style="padding: 10px 14px; text-align: center; color: #334155; font-weight: 600; font-size: 0.88rem;">${item.qty}</td>
+          <td style="padding: 10px 14px; text-align: right; color: #334155; font-size: 0.88rem;">${formatBRL(item.price)}</td>
+          <td style="padding: 10px 14px; text-align: right; font-weight: 700; color: #FF5B00; font-size: 0.88rem;">${formatBRL(item.subtotal)}</td>
+        </tr>
+      `).join('');
+    } else {
+      itemsRowsHtml = `
+        <tr style="border-bottom: 1px solid #E2E8F0; background: #FFFFFF;">
+          <td colspan="4" style="padding: 16px; text-align: center; color: #64748B; font-size: 0.85rem;">Nenhum serviço discriminado.</td>
+        </tr>
+      `;
+    }
 
     return `
       <div style="font-family: 'Inter', sans-serif; color: #0F172A; line-height: 1.4; max-width: 800px; margin: 0 auto;">
