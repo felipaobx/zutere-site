@@ -463,25 +463,55 @@ document.addEventListener('DOMContentLoaded', () => {
     if (document.getElementById('step4Desc')) document.getElementById('step4Desc').value = p.step4Desc || '';
   }
 
+  function readAboutForm() {
+    if (!document.getElementById('aboutBadge')) return;
+    siteData.about = {
+      badge: document.getElementById('aboutBadge').value,
+      title: document.getElementById('aboutTitle').value,
+      para1: document.getElementById('aboutPara1').value,
+      para2: document.getElementById('aboutPara2').value,
+      mainImage: document.getElementById('aboutMainImage').value,
+      expNum: document.getElementById('aboutExpNum').value,
+      expText: document.getElementById('aboutExpText').value,
+      highlight1Icon: document.getElementById('aboutHighlight1Icon').value,
+      highlight1Title: document.getElementById('aboutHighlight1Title').value,
+      highlight1Desc: document.getElementById('aboutHighlight1Desc').value,
+      highlight2Icon: document.getElementById('aboutHighlight2Icon').value,
+      highlight2Title: document.getElementById('aboutHighlight2Title').value,
+      highlight2Desc: document.getElementById('aboutHighlight2Desc').value
+    };
+  }
+
+  function readProcessForm() {
+    if (!document.getElementById('processBadge')) return;
+    siteData.process = {
+      badge: document.getElementById('processBadge').value,
+      title: document.getElementById('processTitle').value,
+      subtitle: document.getElementById('processSubtitle').value,
+      step1Num: document.getElementById('step1Num').value,
+      step1Icon: document.getElementById('step1Icon').value,
+      step1Title: document.getElementById('step1Title').value,
+      step1Desc: document.getElementById('step1Desc').value,
+      step2Num: document.getElementById('step2Num').value,
+      step2Icon: document.getElementById('step2Icon').value,
+      step2Title: document.getElementById('step2Title').value,
+      step2Desc: document.getElementById('step2Desc').value,
+      step3Num: document.getElementById('step3Num').value,
+      step3Icon: document.getElementById('step3Icon').value,
+      step3Title: document.getElementById('step3Title').value,
+      step3Desc: document.getElementById('step3Desc').value,
+      step4Num: document.getElementById('step4Num').value,
+      step4Icon: document.getElementById('step4Icon').value,
+      step4Title: document.getElementById('step4Title').value,
+      step4Desc: document.getElementById('step4Desc').value
+    };
+  }
+
   const formAbout = document.getElementById('formAboutSettings');
   if (formAbout) {
     formAbout.addEventListener('submit', (e) => {
       e.preventDefault();
-      siteData.about = {
-        badge: document.getElementById('aboutBadge').value,
-        title: document.getElementById('aboutTitle').value,
-        para1: document.getElementById('aboutPara1').value,
-        para2: document.getElementById('aboutPara2').value,
-        mainImage: document.getElementById('aboutMainImage').value,
-        expNum: document.getElementById('aboutExpNum').value,
-        expText: document.getElementById('aboutExpText').value,
-        highlight1Icon: document.getElementById('aboutHighlight1Icon').value,
-        highlight1Title: document.getElementById('aboutHighlight1Title').value,
-        highlight1Desc: document.getElementById('aboutHighlight1Desc').value,
-        highlight2Icon: document.getElementById('aboutHighlight2Icon').value,
-        highlight2Title: document.getElementById('aboutHighlight2Title').value,
-        highlight2Desc: document.getElementById('aboutHighlight2Desc').value
-      };
+      readAboutForm();
       saveData();
       showToast('Seção Sobre Nós salva com sucesso!', 'success');
     });
@@ -491,27 +521,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (formProcess) {
     formProcess.addEventListener('submit', (e) => {
       e.preventDefault();
-      siteData.process = {
-        badge: document.getElementById('processBadge').value,
-        title: document.getElementById('processTitle').value,
-        subtitle: document.getElementById('processSubtitle').value,
-        step1Num: document.getElementById('step1Num').value,
-        step1Icon: document.getElementById('step1Icon').value,
-        step1Title: document.getElementById('step1Title').value,
-        step1Desc: document.getElementById('step1Desc').value,
-        step2Num: document.getElementById('step2Num').value,
-        step2Icon: document.getElementById('step2Icon').value,
-        step2Title: document.getElementById('step2Title').value,
-        step2Desc: document.getElementById('step2Desc').value,
-        step3Num: document.getElementById('step3Num').value,
-        step3Icon: document.getElementById('step3Icon').value,
-        step3Title: document.getElementById('step3Title').value,
-        step3Desc: document.getElementById('step3Desc').value,
-        step4Num: document.getElementById('step4Num').value,
-        step4Icon: document.getElementById('step4Icon').value,
-        step4Title: document.getElementById('step4Title').value,
-        step4Desc: document.getElementById('step4Desc').value
-      };
+      readProcessForm();
       saveData();
       showToast('Seção Nosso Processo salva com sucesso!', 'success');
     });
@@ -536,6 +546,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function readSettingsForm() {
+    if (!document.getElementById('settingWhatsappNumber')) return;
     siteData.settings = {
       whatsappNumber: document.getElementById('settingWhatsappNumber').value,
       whatsappMessage: document.getElementById('settingWhatsappMessage').value,
@@ -552,7 +563,9 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // SAVE ALL HANDLER
-  document.getElementById('btnSaveAll').addEventListener('click', () => {
+  document.getElementById('btnSaveAll')?.addEventListener('click', () => {
+    readAboutForm();
+    readProcessForm();
     readSettingsForm();
     saveData();
   });

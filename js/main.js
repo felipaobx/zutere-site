@@ -251,9 +251,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const media = parseMediaUrl(proj.videoUrl || proj.thumbUrl);
       
-      // Auto use YouTube thumbnail if YouTube video is provided
       let thumb = proj.thumbUrl;
-      if (media.type === 'youtube') {
+      const thumbMedia = parseMediaUrl(thumb);
+      if (thumbMedia.type === 'youtube') {
+        thumb = thumbMedia.thumbUrl;
+      } else if (media.type === 'youtube' && (!thumb || thumb === proj.videoUrl || thumb.includes('youtube.com') || thumb.includes('youtu.be'))) {
         thumb = media.thumbUrl;
       }
       if (!thumb) {
@@ -280,6 +282,21 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
       grid.appendChild(card);
     });
+
+    // Re-apply active category filter
+    const activeFilterBtn = document.querySelector('.filter-btn.active');
+    if (activeFilterBtn) {
+      const filterValue = activeFilterBtn.dataset.filter;
+      grid.querySelectorAll('.project-card').forEach(card => {
+        if (filterValue === 'all' || card.dataset.category === filterValue) {
+          card.style.display = 'block';
+          card.style.opacity = '1';
+        } else {
+          card.style.display = 'none';
+          card.style.opacity = '0';
+        }
+      });
+    }
   }
 
   function renderDynamicAbout(about) {
