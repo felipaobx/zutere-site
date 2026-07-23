@@ -22,55 +22,6 @@ document.addEventListener('DOMContentLoaded', () => {
     return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(amount || 0);
   }
 
-  // LOCALSTORAGE & CLOUD DATABASE SYNC MANAGEMENT FOR QUOTES AND CATALOG
-  let quotesHistory = [];
-  let catalogServices = DEFAULT_CATALOG;
-  let companyInfo = DEFAULT_COMPANY_INFO;
-
-  async function syncQuotesFromCloud() {
-    try {
-      const res = await fetch('/api/quotes');
-      if (res.ok) {
-        const json = await res.json();
-        if (json && json.success && Array.isArray(json.data) && json.data.length > 0) {
-          quotesHistory = json.data;
-          localStorage.setItem('zutere_quotes_history', JSON.stringify(quotesHistory));
-          renderHistoryTable();
-          return;
-        }
-      }
-    } catch (e) {}
-
-    const saved = localStorage.getItem('zutere_quotes_history');
-    if (saved) {
-      try { quotesHistory = JSON.parse(saved); } catch (e) {}
-    }
-    renderHistoryTable();
-  }
-
-  async function syncCatalogFromCloud() {
-    try {
-      const res = await fetch('/api/catalog');
-      if (res.ok) {
-        const json = await res.json();
-        if (json && json.success && Array.isArray(json.data) && json.data.length > 0) {
-          catalogServices = json.data;
-          localStorage.setItem('zutere_catalog_services', JSON.stringify(catalogServices));
-          renderCatalog();
-          return;
-        }
-      }
-    } catch (e) {}
-
-    const saved = localStorage.getItem('zutere_catalog_services');
-    if (saved) {
-      try { catalogServices = JSON.parse(saved); } catch (e) {}
-    } else {
-      localStorage.setItem('zutere_catalog_services', JSON.stringify(DEFAULT_CATALOG));
-    }
-    renderCatalog();
-  }
-
   // DEFAULT COMPANY INFO (CNPJ, ADDRESS, FOOTER TERMS)
   const DEFAULT_COMPANY_INFO = {
     legalName: 'Felipe Ferreira Barbosa',
@@ -83,27 +34,115 @@ document.addEventListener('DOMContentLoaded', () => {
     footerTerms: '• Os direitos autorais e de veiculação das produções serão cedidos mediante quitação integral do projeto.\n• O orçamento possui validade pela quantidade de dias informada no cabeçalho.\n• Alterações adicionais no roteiro/montagem aprovados poderão acarretar custos extras de diária/edição.'
   };
 
+  // SYNCHRONOUS LOCALSTORAGE LOADERS (Ensures data is available immediately)
+  function loadQuotesHistorySync() {
+    const saved = localStorage.getItem('zutere_quotes_history');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) return parsed;
+      } catch (e) {}
+    }
+    return [];
+  }
+
+  function loadCatalogSync() {
+    const saved = localStorage.getItem('zutere_catalog_services');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      } catch (e) {}
+    }
+    localStorage.setItem('zutere_catalog_services', JSON.stringify(DEFAULT_CATALOG));
+    return DEFAULT_CATALOG;
+  }
+
+  function loadCompanyInfoSync() {
+    const saved = localStorage.getItem('zutere_company_info');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (parsed && typeof parsed === 'object') return parsed;
+      } catch (e) {}
+    }
+    localStorage.setItem('zutere_company_info', JSON.stringify(DEFAULT_COMPANY_INFO));
+    return DEFAULT_COMPANY_INFO;
+  }
+
+  let quotesHistory = loadQuotesHistorySync();
+  let catalogServices = loadCatalogSync();
+  let companyInfo = loadCompanyInfoSync();
+
+  // SMART CLOUD DATABASE SYNC (Merges cloud & local without wiping data)
+  async function syncQuotesFromCloud() {
+    try {
+      const res = await fetch('/api/quotes');
+      if (res.ok) {
+        const json = await res.json();
+        if (json && json.success && Array.isArray(json.data) && json.data.length > 0) {
+          const mergedMap = new Map();
+          quotesHistory.forEach(q => mergedMap.set(q.id, q));
+          json.data.forEach(q => {
+            if (!mergedMap.has(q.id)) mergedMap.set(q.id, q);
+          });
+          quotesHistory = Array.from(mergedMap.values());
+          localStorage.setItem('zutere_quotes_history', JSON.stringify(quotesHistory));
+          renderHistoryTable();
+        } else if (quotesHistory.length > 0) {
+          fetch('/api/quotes', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(quotesHistory)
+          }).catch(() => {});
+        }
+      }
+    } catch (e) {}
+  }
+
+  async function syncCatalogFromCloud() {
+    try {
+      const res = await fetch('/api/catalog');
+      if (res.ok) {
+        const json = await res.json();
+        if (json && json.success && Array.isArray(json.data) && json.data.length > 0) {
+          const mergedMap = new Map();
+          catalogServices.forEach(s => mergedMap.set(s.id, s));
+          json.data.forEach(s => {
+            if (!mergedMap.has(s.id)) mergedMap.set(s.id, s);
+          });
+          catalogServices = Array.from(mergedMap.values());
+          localStorage.setItem('zutere_catalog_services', JSON.stringify(catalogServices));
+          renderCatalog();
+        } else if (catalogServices.length > 0) {
+          fetch('/api/catalog', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(catalogServices)
+          }).catch(() => {});
+        }
+      }
+    } catch (e) {}
+  }
+
   async function syncCompanyFromCloud() {
     try {
       const res = await fetch('/api/company');
       if (res.ok) {
         const json = await res.json();
-        if (json && json.success && json.data) {
-          companyInfo = json.data;
+        if (json && json.success && json.data && typeof json.data === 'object' && json.data.legalName) {
+          companyInfo = { ...companyInfo, ...json.data };
           localStorage.setItem('zutere_company_info', JSON.stringify(companyInfo));
           populateCompanyForm();
-          return;
+        } else if (companyInfo) {
+          fetch('/api/company', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(companyInfo)
+          }).catch(() => {});
         }
       }
     } catch (e) {}
-
-    const saved = localStorage.getItem('zutere_company_info');
-    if (saved) {
-      try { companyInfo = JSON.parse(saved); } catch (e) {}
-    } else {
-      localStorage.setItem('zutere_company_info', JSON.stringify(DEFAULT_COMPANY_INFO));
-    }
-    populateCompanyForm();
   }
 
   function saveQuotesHistory() {
@@ -119,6 +158,9 @@ document.addEventListener('DOMContentLoaded', () => {
   function saveCatalog() {
     localStorage.setItem('zutere_catalog_services', JSON.stringify(catalogServices));
     renderCatalog();
+    if (typeof updateQuoteRowsCatalogDropdowns === 'function') {
+      updateQuoteRowsCatalogDropdowns();
+    }
     fetch('/api/catalog', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -398,9 +440,33 @@ document.addEventListener('DOMContentLoaded', () => {
   // Auto-save draft on input
   document.getElementById('formQuoteGenerator')?.addEventListener('input', saveDraft);
 
+  // REFRESH CATALOG DROPDOWNS IN ACTIVE QUOTE ROWS
+  function updateQuoteRowsCatalogDropdowns() {
+    itemsTableBody.querySelectorAll('tr').forEach(tr => {
+      const selectCat = tr.querySelector('.item-select-catalog');
+      const inputDesc = tr.querySelector('.item-desc');
+      if (selectCat) {
+        const currentVal = inputDesc ? inputDesc.value : selectCat.value;
+        let catalogOptions = catalogServices.map(srv => 
+          `<option value="${srv.name}" data-price="${srv.defaultPrice}" ${srv.name === currentVal ? 'selected' : ''}>${srv.name}</option>`
+        ).join('');
+        catalogOptions += `<option value="custom" ${currentVal && !catalogServices.some(s => s.name === currentVal) ? 'selected' : ''}>-- Digitar Outro Serviço --</option>`;
+        selectCat.innerHTML = catalogOptions;
+      }
+    });
+  }
+
   // SAVE QUOTE SUBMIT
   document.getElementById('formQuoteGenerator').addEventListener('submit', (e) => {
     e.preventDefault();
+
+    const clientNameInput = document.getElementById('clientName');
+    if (clientNameInput && !clientNameInput.value.trim()) {
+      showToast('Por favor, informe o nome do cliente antes de salvar.', 'error');
+      clientNameInput.focus();
+      return;
+    }
+
     const quote = getQuoteFormData();
 
     const existingIndex = quotesHistory.findIndex(q => q.id === quote.id);
@@ -434,9 +500,16 @@ document.addEventListener('DOMContentLoaded', () => {
     switchProposalTab('history');
   });
 
-  document.getElementById('btnQuickSaveQuote').addEventListener('click', () => {
-    document.getElementById('formQuoteGenerator').requestSubmit();
-  });
+  const btnQuickSave = document.getElementById('btnQuickSaveQuote');
+  if (btnQuickSave) {
+    btnQuickSave.addEventListener('click', (e) => {
+      e.preventDefault();
+      const form = document.getElementById('formQuoteGenerator');
+      if (form) {
+        form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+      }
+    });
+  }
 
   // ------------------------------------------------------------------------
   // PROPOSAL PREVIEW & PRINT (PDF)

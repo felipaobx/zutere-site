@@ -36,16 +36,16 @@
       </div>
 
       <nav class="admin-nav">
-        <button class="admin-nav-item active" data-tab="create">
+        <button type="button" class="admin-nav-item active" data-tab="create" onclick="switchProposalTab('create')">
           <i class="fa-solid fa-file-circle-plus"></i> Novo Orçamento
         </button>
-        <button class="admin-nav-item" data-tab="history">
+        <button type="button" class="admin-nav-item" data-tab="history" onclick="switchProposalTab('history')">
           <i class="fa-solid fa-clock-rotate-left"></i> Histórico de Propostas
         </button>
-        <button class="admin-nav-item" data-tab="catalog">
+        <button type="button" class="admin-nav-item" data-tab="catalog" onclick="switchProposalTab('catalog')">
           <i class="fa-solid fa-list-check"></i> Catálogo de Serviços
         </button>
-        <button class="admin-nav-item" data-tab="company">
+        <button type="button" class="admin-nav-item" data-tab="company" onclick="switchProposalTab('company')">
           <i class="fa-solid fa-building-user"></i> Empresa & Rodapé
         </button>
       </nav>
@@ -70,10 +70,10 @@
           <p id="proposalPageSubtitle">Crie propostas comerciais profissionais, calcule valores e envie diretamente ao cliente.</p>
         </div>
         <div class="admin-header-actions" style="display: flex; gap: 10px;">
-          <button class="btn-admin btn-admin-primary" id="btnQuickSaveQuote">
+          <button type="button" class="btn-admin btn-admin-primary" id="btnQuickSaveQuote">
             <i class="fa-solid fa-floppy-disk"></i> Salvar Proposta
           </button>
-          <button class="btn-admin btn-admin-danger" onclick="logoutAdmin()">
+          <button type="button" class="btn-admin btn-admin-danger" onclick="logoutAdmin()">
             <i class="fa-solid fa-right-from-bracket"></i> Sair
           </button>
         </div>
@@ -258,12 +258,11 @@
       </section>
 
       <!-- TAB 3: SERVICES CATALOG -->
-      <!-- TAB 3: SERVICES CATALOG -->
       <section class="admin-tab-panel" id="tab-catalog">
         <div class="admin-panel-card">
           <div class="admin-panel-header">
             <h2 class="admin-panel-title"><i class="fa-solid fa-list-check"></i> Catálogo de Serviços & Preços Padrão</h2>
-            <button class="btn-admin btn-admin-primary btn-admin-sm" id="btnAddCatalogItem">
+            <button type="button" class="btn-admin btn-admin-primary btn-admin-sm" id="btnAddCatalogItem" onclick="openCatalogModal(null)">
               <i class="fa-solid fa-plus"></i> Novo Serviço
             </button>
           </div>
