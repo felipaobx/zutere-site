@@ -1,4 +1,4 @@
-// Serverless Multi-Provider DB helper (Upstash Redis, Firebase, and Pre-configured Cloud DB)
+// Serverless Single/Multi-Provider DB helper
 
 const DEFAULT_BLOBS = {
   zutere_quotes_history: 'https://jsonblob.com/api/jsonBlob/019f8cb5-f28a-7ea2-bdfb-f68972229e44',
@@ -28,21 +28,7 @@ function getCredentials() {
 async function getKV(key) {
   const { url, token, firebaseUrl } = getCredentials();
 
-  // 1. Firebase Realtime DB (If configured)
-  if (firebaseUrl) {
-    try {
-      const cleanUrl = firebaseUrl.replace(/\/$/, '');
-      const res = await fetch(`${cleanUrl}/${key}.json`);
-      const data = await res.json();
-      if (data !== null && typeof data === 'object' && Object.keys(data).length > 0) {
-        return data;
-      }
-    } catch (e) {
-      console.error(`[Firebase DB] GET error for ${key}:`, e);
-    }
-  }
-
-  // 2. Upstash Redis / Vercel Redis (If configured)
+  // 1. Upstash Redis / Vercel Redis (If configured)
   if (url && token) {
     try {
       const res = await fetch(`${url}/get/${key}`, {
@@ -63,7 +49,21 @@ async function getKV(key) {
     }
   }
 
-  // 3. Pre-configured Persistent Cloud DB (Zero setup required)
+  // 2. Firebase Realtime DB (If configured)
+  if (firebaseUrl) {
+    try {
+      const cleanUrl = firebaseUrl.replace(/\/$/, '');
+      const res = await fetch(`${cleanUrl}/${key}.json`);
+      const data = await res.json();
+      if (data !== null && typeof data === 'object' && Object.keys(data).length > 0) {
+        return data;
+      }
+    } catch (e) {
+      console.error(`[Firebase DB] GET error for ${key}:`, e);
+    }
+  }
+
+  // 3. Persistent Cloud DB (JsonBlob)
   const blobUrl = DEFAULT_BLOBS[key];
   if (blobUrl) {
     try {
@@ -72,14 +72,12 @@ async function getKV(key) {
       });
       if (res.ok) {
         const data = await res.json();
-        if (data !== null && typeof data === 'object' && Object.keys(data).length > 0) {
-          // Asynchronously seed Redis / Firebase so next GET reads from Redis
-          setKV(key, data).catch(() => {});
+        if (data !== null && typeof data === 'object') {
           return data;
         }
       }
     } catch (e) {
-      console.error(`[Pre-configured Cloud DB] GET error for ${key}:`, e);
+      console.error(`[Persistent Cloud DB] GET error for ${key}:`, e);
     }
   }
 
@@ -90,7 +88,28 @@ async function setKV(key, value) {
   const { url, token, firebaseUrl } = getCredentials();
   let success = false;
 
-  // 1. Firebase Realtime DB
+  // 1. Upstash Redis / Vercel Redis
+  if (url && token) {
+    const strValue = typeof value === 'string' ? value : JSON.stringify(value);
+    try {
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(['SET', key, strValue])
+      });
+      const data = await res.json();
+      if (data && (data.result === 'OK' || data.result === 'ok' || data.result !== undefined)) {
+        success = true;
+      }
+    } catch (err) {
+      console.error(`[Redis DB] SET error for ${key}:`, err);
+    }
+  }
+
+  // 2. Firebase Realtime DB
   if (firebaseUrl) {
     try {
       const cleanUrl = firebaseUrl.replace(/\/$/, '');
@@ -105,42 +124,7 @@ async function setKV(key, value) {
     }
   }
 
-  // 2. Upstash Redis / Vercel Redis
-  if (url && token) {
-    const strValue = typeof value === 'string' ? value : JSON.stringify(value);
-    try {
-      let res = await fetch(url, {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(['SET', key, strValue])
-      });
-      let data = await res.json();
-
-      if (data && (data.result === 'OK' || data.result === 'ok' || data.result !== undefined)) {
-        success = true;
-      } else {
-        res = await fetch(`${url}/set/${key}`, {
-          method: 'POST',
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          },
-          body: strValue
-        });
-        data = await res.json();
-        if (data && (data.result === 'OK' || data.result === 'ok' || data.result !== undefined)) {
-          success = true;
-        }
-      }
-    } catch (err) {
-      console.error(`[Redis DB] SET error for ${key}:`, err);
-    }
-  }
-
-  // 3. Pre-configured Persistent Cloud DB (JsonBlob) - Always sync to JsonBlob as well!
+  // 3. Persistent Cloud DB (JsonBlob)
   const blobUrl = DEFAULT_BLOBS[key];
   if (blobUrl) {
     try {
@@ -154,7 +138,7 @@ async function setKV(key, value) {
       });
       if (res.ok) success = true;
     } catch (e) {
-      console.error(`[Pre-configured Cloud DB] SET error for ${key}:`, e);
+      console.error(`[Persistent Cloud DB] SET error for ${key}:`, e);
     }
   }
 
