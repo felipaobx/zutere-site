@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
         type: 'youtube',
         id: id,
         embedUrl: `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0`,
-        bgEmbedUrl: `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&mute=1&loop=1&playlist=${id}&controls=0&showinfo=0&rel=0&modestbranding=1`,
+        bgEmbedUrl: `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&mute=1&loop=1&playlist=${id}&controls=0&showinfo=0&rel=0&modestbranding=1&enablejsapi=1`,
         thumbUrl: `https://img.youtube.com/vi/${id}/hqdefault.jpg`,
         maxThumbUrl: `https://img.youtube.com/vi/${id}/maxresdefault.jpg`
       };
@@ -243,20 +243,12 @@ document.addEventListener('DOMContentLoaded', () => {
           const localTime = localData.lastUpdated || 0;
           const cloudTime = cloudData.lastUpdated || 0;
 
-          let mergedData;
-          if (cloudTime > localTime) {
-            mergedData = { ...DEFAULT_SITE_DATA, ...cloudData };
-          } else {
-            mergedData = { ...DEFAULT_SITE_DATA, ...cloudData, ...localData };
-            fetch('/api/site-data', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(mergedData)
-            }).catch(() => {});
+          // Read-only on index page: update local storage if cloud is newer or local is empty
+          if (cloudTime >= localTime || localTime === 0) {
+            const mergedData = { ...DEFAULT_SITE_DATA, ...cloudData };
+            localStorage.setItem('zutere_site_data', JSON.stringify(mergedData));
+            renderAllDynamic(mergedData);
           }
-
-          localStorage.setItem('zutere_site_data', JSON.stringify(mergedData));
-          renderAllDynamic(mergedData);
         }
       }
     } catch (e) {}

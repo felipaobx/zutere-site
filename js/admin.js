@@ -207,12 +207,13 @@ document.addEventListener('DOMContentLoaded', () => {
       const res = await fetch('/api/site-data');
       if (res.ok) {
         const json = await res.json();
-        if (json && json.success && json.data && typeof json.data === 'object' && Array.isArray(json.data.heroSlides) && json.data.heroSlides.length > 0) {
-          const cloudTime = json.data.lastUpdated || 0;
+        if (json && json.success && json.data && typeof json.data === 'object' && json.data !== null && Array.isArray(json.data.heroSlides) && json.data.heroSlides.length > 0) {
+          const cloudData = json.data;
+          const cloudTime = cloudData.lastUpdated || 0;
           const localTime = siteData.lastUpdated || 0;
 
           if (cloudTime > localTime) {
-            siteData = { ...DEFAULT_SITE_DATA, ...json.data, ...siteData };
+            siteData = { ...DEFAULT_SITE_DATA, ...cloudData };
             localStorage.setItem('zutere_site_data', JSON.stringify(siteData));
             initAdmin();
           } else if (siteData) {
@@ -797,6 +798,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('btnResetDefaults').addEventListener('click', () => {
     if (confirm('ATENÇÃO: Isso restaurará todos os vídeos e textos para a versão padrão inicial. Deseja continuar?')) {
       siteData = JSON.parse(JSON.stringify(DEFAULT_SITE_DATA));
+      siteData.lastUpdated = Date.now();
       saveData();
       initAdmin();
       showToast('Configurações redefinidas para o padrão!', 'success');
