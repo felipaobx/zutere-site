@@ -223,6 +223,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function saveData() {
+    siteData.lastUpdated = Date.now();
     localStorage.setItem('zutere_site_data', JSON.stringify(siteData));
     updateOverviewStats();
     showToast('Alterações salvas com sucesso!', 'success');

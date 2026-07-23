@@ -129,7 +129,19 @@ document.addEventListener('DOMContentLoaded', () => {
           const cloudData = json.data;
           const localData = getSiteData() || {};
 
-          // Smart merge local and cloud data to prevent wiping unsaved edits
+          const localTime = localData.lastUpdated || 0;
+          const cloudTime = cloudData.lastUpdated || 0;
+
+          // If localData has a newer edit timestamp, keep localData and sync up to cloud
+          if (localTime > cloudTime && localData.heroSlides && localData.heroSlides.length > 0) {
+            fetch('/api/site-data', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(localData)
+            }).catch(() => {});
+            return;
+          }
+
           const mergedData = {
             ...localData,
             ...cloudData
@@ -474,6 +486,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const iframe = slide.querySelector('iframe');
 
       if (idx === targetIndex) {
+        slide.classList.remove('active');
+        void slide.offsetWidth;
         slide.classList.add('active');
         slide.style.zIndex = '10';
         if (vid) {
