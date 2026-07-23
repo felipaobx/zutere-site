@@ -39,6 +39,46 @@ document.addEventListener('DOMContentLoaded', () => {
     subtitle: 'Produção Cinematográfica 4K/8K HDR'
   };
 
+  // DEFAULT HERO SLIDES FALLBACK
+  const DEFAULT_HERO_SLIDES = [
+    {
+      id: 'hero_1',
+      type: 'video',
+      mediaUrl: 'https://assets.mixkit.co/videos/preview/mixkit-camera-operator-filming-a-scene-in-a-studio-41481-large.mp4',
+      posterUrl: 'assets/images/hero_cinema_camera.png',
+      badge: 'Cinema & Publicidade',
+      title: 'Transformando Ideias em Narrativas Épicas',
+      description: 'Produtora audiovisual especialista em comerciais, filmes de alta definição, direção de fotografia e produções que encantam audiências.'
+    },
+    {
+      id: 'hero_2',
+      type: 'photo',
+      mediaUrl: 'assets/images/hero_concert_stage.png',
+      posterUrl: 'assets/images/hero_concert_stage.png',
+      badge: 'Eventos & Broadcast Live',
+      title: 'A Energia do Ao Vivo em Qualidade Broadcast',
+      description: 'Captação multi-câmera com estabilização avançada para festivais, shows e coberturas institucionais de grande porte.'
+    },
+    {
+      id: 'hero_3',
+      type: 'video',
+      mediaUrl: 'https://assets.mixkit.co/videos/preview/mixkit-car-driving-fast-at-night-42861-large.mp4',
+      posterUrl: 'assets/images/project_commercial_car.png',
+      badge: 'Comercial de Produtos & Automotivo',
+      title: 'Estética Cinematográfica que Vende',
+      description: 'Iluminação de estúdio meticulosa, rigs de câmera dinâmicos e color grading de nível Hollywood para sua marca.'
+    },
+    {
+      id: 'hero_4',
+      type: 'photo',
+      mediaUrl: 'assets/images/project_drone_aerial.png',
+      posterUrl: 'assets/images/project_drone_aerial.png',
+      badge: 'Imagens Aéreas 8K / FPV',
+      title: 'Perspectivas Sem Limites Acima das Nuvens',
+      description: 'Pilotos certificados de drones FPV e de cinema para tomadas aéreas contínuas, dinâmicas e impressionantes.'
+    }
+  ];
+
   // ------------------------------------------------------------------------
   // DATA LOADER FROM LOCALSTORAGE & CLOUD DB
   // ------------------------------------------------------------------------
@@ -46,7 +86,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const saved = localStorage.getItem('zutere_site_data');
     if (saved) {
       try {
-        return JSON.parse(saved);
+        const parsed = JSON.parse(saved);
+        if (parsed && typeof parsed === 'object') return parsed;
       } catch (e) {
         console.error('Error parsing site data:', e);
       }
@@ -54,15 +95,14 @@ document.addEventListener('DOMContentLoaded', () => {
     return null;
   }
 
-  const siteData = getSiteData();
+  const siteData = getSiteData() || {};
+  const initialHeroSlides = (siteData.heroSlides && siteData.heroSlides.length > 0) ? siteData.heroSlides : DEFAULT_HERO_SLIDES;
 
-  if (siteData) {
-    renderDynamicHero(siteData.heroSlides);
-    renderDynamicProjects(siteData.projects);
-    renderDynamicAbout(siteData.about);
-    renderDynamicProcess(siteData.process);
-    applyDynamicSettings(siteData.settings);
-  }
+  renderDynamicHero(initialHeroSlides);
+  if (siteData.projects) renderDynamicProjects(siteData.projects);
+  if (siteData.about) renderDynamicAbout(siteData.about);
+  if (siteData.process) renderDynamicProcess(siteData.process);
+  if (siteData.settings) applyDynamicSettings(siteData.settings);
 
   // Cloud sync update for main page
   async function loadCloudSiteData() {
@@ -70,14 +110,15 @@ document.addEventListener('DOMContentLoaded', () => {
       const res = await fetch('/api/site-data');
       if (res.ok) {
         const json = await res.json();
-        if (json && json.success && json.data) {
+        if (json && json.success && json.data && typeof json.data === 'object') {
           const cloudData = json.data;
-          localStorage.setItem('zutere_site_data', JSON.stringify(cloudData));
-          renderDynamicHero(cloudData.heroSlides);
-          renderDynamicProjects(cloudData.projects);
-          renderDynamicAbout(cloudData.about);
-          renderDynamicProcess(cloudData.process);
-          applyDynamicSettings(cloudData.settings);
+          const heroList = (cloudData.heroSlides && Array.isArray(cloudData.heroSlides) && cloudData.heroSlides.length > 0) ? cloudData.heroSlides : DEFAULT_HERO_SLIDES;
+          localStorage.setItem('zutere_site_data', JSON.stringify({ ...cloudData, heroSlides: heroList }));
+          renderDynamicHero(heroList);
+          if (cloudData.projects) renderDynamicProjects(cloudData.projects);
+          if (cloudData.about) renderDynamicAbout(cloudData.about);
+          if (cloudData.process) renderDynamicProcess(cloudData.process);
+          if (cloudData.settings) applyDynamicSettings(cloudData.settings);
         }
       }
     } catch (e) {}
@@ -107,7 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
         mediaHtml = `<iframe class="hero-video-bg hero-yt-iframe" src="${media.bgEmbedUrl}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen style="width:100%; height:100%; border:none; pointer-events:none; transform:scale(1.2);"></iframe>`;
       } else if (slide.type === 'video' || media.type === 'video') {
         mediaHtml = `
-          <video class="hero-video-bg" loop muted playsinline poster="${slide.posterUrl || slide.mediaUrl}">
+          <video class="hero-video-bg" autoplay loop muted playsinline poster="${slide.posterUrl || slide.mediaUrl}">
             <source src="${slide.mediaUrl}" type="video/mp4">
             <img src="${slide.posterUrl || slide.mediaUrl}" alt="${slide.title}">
           </video>`;
@@ -375,36 +416,37 @@ document.addEventListener('DOMContentLoaded', () => {
     const allTabs = document.querySelectorAll('#heroSliderControls .slider-tab');
     if (allSlides.length === 0) return;
 
-    // Deactivate all slides & pause videos
-    allSlides.forEach(slide => {
-      slide.classList.remove('active');
+    const targetIndex = (n + allSlides.length) % allSlides.length;
+    currentSlide = targetIndex;
+
+    allSlides.forEach((slide, idx) => {
       const vid = slide.querySelector('video');
-      if (vid) {
-        try { vid.pause(); } catch (e) {}
+      if (idx === targetIndex) {
+        slide.classList.add('active');
+        slide.style.zIndex = '10';
+        if (vid) {
+          try { vid.currentTime = 0; } catch (e) {}
+          const playPromise = vid.play();
+          if (playPromise !== undefined) {
+            playPromise.catch(err => console.log('Video autoplay error:', err));
+          }
+        }
+      } else {
+        slide.classList.remove('active');
+        slide.style.zIndex = '1';
+        if (vid) {
+          try { vid.pause(); } catch (e) {}
+        }
       }
     });
 
-    allTabs.forEach(tab => tab.classList.remove('active'));
-
-    currentSlide = (n + allSlides.length) % allSlides.length;
-
-    // Activate target slide
-    const activeSlide = allSlides[currentSlide];
-    activeSlide.classList.add('active');
-
-    if (allTabs[currentSlide]) {
-      allTabs[currentSlide].classList.add('active');
-    }
-
-    // Play video on newly activated slide
-    const activeVid = activeSlide.querySelector('video');
-    if (activeVid) {
-      activeVid.currentTime = 0;
-      const playPromise = activeVid.play();
-      if (playPromise !== undefined) {
-        playPromise.catch(err => console.log('Video autoplay error:', err));
+    allTabs.forEach((tab, idx) => {
+      if (idx === targetIndex) {
+        tab.classList.add('active');
+      } else {
+        tab.classList.remove('active');
       }
-    }
+    });
   }
 
   function nextSlide() {
