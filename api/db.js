@@ -34,7 +34,9 @@ async function getKV(key) {
       const cleanUrl = firebaseUrl.replace(/\/$/, '');
       const res = await fetch(`${cleanUrl}/${key}.json`);
       const data = await res.json();
-      return data !== null ? data : null;
+      if (data !== null && typeof data === 'object' && Object.keys(data).length > 0) {
+        return data;
+      }
     } catch (e) {
       console.error(`[Firebase DB] GET error for ${key}:`, e);
     }
@@ -48,10 +50,13 @@ async function getKV(key) {
       });
       const data = await res.json();
       if (data && data.result !== undefined && data.result !== null) {
-        if (typeof data.result === 'string') {
-          try { return JSON.parse(data.result); } catch (e) { return data.result; }
+        let resVal = data.result;
+        if (typeof resVal === 'string') {
+          try { resVal = JSON.parse(resVal); } catch (e) {}
         }
-        return data.result;
+        if (resVal && typeof resVal === 'object' && Object.keys(resVal).length > 0) {
+          return resVal;
+        }
       }
     } catch (err) {
       console.error(`[Redis DB] GET error for ${key}:`, err);
@@ -67,7 +72,11 @@ async function getKV(key) {
       });
       if (res.ok) {
         const data = await res.json();
-        return data !== null ? data : null;
+        if (data !== null && typeof data === 'object' && Object.keys(data).length > 0) {
+          // Asynchronously seed Redis / Firebase so next GET reads from Redis
+          setKV(key, data).catch(() => {});
+          return data;
+        }
       }
     } catch (e) {
       console.error(`[Pre-configured Cloud DB] GET error for ${key}:`, e);
@@ -79,6 +88,7 @@ async function getKV(key) {
 
 async function setKV(key, value) {
   const { url, token, firebaseUrl } = getCredentials();
+  let success = false;
 
   // 1. Firebase Realtime DB
   if (firebaseUrl) {
@@ -89,7 +99,7 @@ async function setKV(key, value) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(value)
       });
-      return res.ok;
+      if (res.ok) success = true;
     } catch (e) {
       console.error(`[Firebase DB] SET error for ${key}:`, e);
     }
@@ -99,21 +109,7 @@ async function setKV(key, value) {
   if (url && token) {
     const strValue = typeof value === 'string' ? value : JSON.stringify(value);
     try {
-      let res = await fetch(`${url}/set/${key}`, {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: strValue
-      });
-      let data = await res.json();
-
-      if (data && (data.result === 'OK' || data.result === 'ok')) {
-        return true;
-      }
-
-      res = await fetch(url, {
+      let res = await fetch(url, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -121,15 +117,30 @@ async function setKV(key, value) {
         },
         body: JSON.stringify(['SET', key, strValue])
       });
-      data = await res.json();
-      return data && (data.result === 'OK' || data.result === 'ok');
+      let data = await res.json();
 
+      if (data && (data.result === 'OK' || data.result === 'ok' || data.result !== undefined)) {
+        success = true;
+      } else {
+        res = await fetch(`${url}/set/${key}`, {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: strValue
+        });
+        data = await res.json();
+        if (data && (data.result === 'OK' || data.result === 'ok' || data.result !== undefined)) {
+          success = true;
+        }
+      }
     } catch (err) {
       console.error(`[Redis DB] SET error for ${key}:`, err);
     }
   }
 
-  // 3. Pre-configured Persistent Cloud DB (Zero setup required)
+  // 3. Pre-configured Persistent Cloud DB (JsonBlob) - Always sync to JsonBlob as well!
   const blobUrl = DEFAULT_BLOBS[key];
   if (blobUrl) {
     try {
@@ -141,13 +152,13 @@ async function setKV(key, value) {
         },
         body: JSON.stringify(value)
       });
-      return res.ok;
+      if (res.ok) success = true;
     } catch (e) {
       console.error(`[Pre-configured Cloud DB] SET error for ${key}:`, e);
     }
   }
 
-  return false;
+  return success;
 }
 
 module.exports = { getKV, setKV };
