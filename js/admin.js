@@ -208,15 +208,20 @@ document.addEventListener('DOMContentLoaded', () => {
       if (res.ok) {
         const json = await res.json();
         if (json && json.success && json.data && typeof json.data === 'object' && Array.isArray(json.data.heroSlides) && json.data.heroSlides.length > 0) {
-          siteData = { ...DEFAULT_SITE_DATA, ...json.data };
-          localStorage.setItem('zutere_site_data', JSON.stringify(siteData));
-          initAdmin();
-        } else if (siteData) {
-          fetch('/api/site-data', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(siteData)
-          }).catch(() => {});
+          const cloudTime = json.data.lastUpdated || 0;
+          const localTime = siteData.lastUpdated || 0;
+
+          if (cloudTime >= localTime) {
+            siteData = { ...DEFAULT_SITE_DATA, ...json.data };
+            localStorage.setItem('zutere_site_data', JSON.stringify(siteData));
+            initAdmin();
+          } else if (siteData) {
+            fetch('/api/site-data', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(siteData)
+            }).catch(() => {});
+          }
         }
       }
     } catch (e) {}
