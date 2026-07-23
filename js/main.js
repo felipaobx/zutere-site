@@ -87,11 +87,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ------------------------------------------------------------------------
   // DYNAMIC RENDER FUNCTIONS
-  // ------------------------------------------------------------------------
   function renderDynamicHero(heroSlides) {
     if (!heroSlides || heroSlides.length === 0) return;
+    const heroSection = document.getElementById('hero');
     const sliderWrapper = document.getElementById('heroSlider');
-    if (!sliderWrapper) return;
+    if (!sliderWrapper || !heroSection) return;
 
     sliderWrapper.innerHTML = '';
 
@@ -136,6 +136,64 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
       sliderWrapper.appendChild(slideDiv);
     });
+
+    // Create or update Hero Slider Controls Container
+    let controlsWrap = document.getElementById('heroSliderControls');
+    if (!controlsWrap) {
+      controlsWrap = document.createElement('div');
+      controlsWrap.id = 'heroSliderControls';
+      controlsWrap.className = 'slider-controls container';
+      heroSection.appendChild(controlsWrap);
+    }
+
+    let tabsHtml = heroSlides.map((slide, idx) => `
+      <div class="slider-tab ${idx === 0 ? 'active' : ''}" data-index="${idx}">
+        <span class="tab-number">0${idx + 1}</span>
+        <div class="tab-info">
+          <span class="tab-title">${slide.title}</span>
+          <span class="tab-type"><i class="fa-solid fa-${slide.type === 'video' ? 'video' : 'image'}"></i> ${slide.badge || slide.type}</span>
+        </div>
+      </div>
+    `).join('');
+
+    controlsWrap.innerHTML = `
+      <div class="slider-arrows">
+        <button type="button" class="slider-arrow hero-prev-btn" aria-label="Anterior"><i class="fa-solid fa-chevron-left"></i></button>
+        <button type="button" class="slider-toggle-play hero-play-btn" aria-label="Pausar/Play"><i class="fa-solid fa-pause"></i></button>
+        <button type="button" class="slider-arrow hero-next-btn" aria-label="Próximo"><i class="fa-solid fa-chevron-right"></i></button>
+      </div>
+      <div class="slider-tabs">
+        ${tabsHtml}
+      </div>
+    `;
+
+    // Event listeners for tabs & arrows
+    controlsWrap.querySelectorAll('.slider-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        const idx = parseInt(tab.dataset.index);
+        if (!isNaN(idx)) {
+          goToSlide(idx);
+          startAutoSlide();
+        }
+      });
+    });
+
+    controlsWrap.querySelector('.hero-prev-btn')?.addEventListener('click', () => {
+      prevSlide();
+      startAutoSlide();
+    });
+
+    controlsWrap.querySelector('.hero-next-btn')?.addEventListener('click', () => {
+      nextSlide();
+      startAutoSlide();
+    });
+
+    controlsWrap.querySelector('.hero-play-btn')?.addEventListener('click', () => {
+      toggleAutoSlide();
+    });
+
+    // Re-initialize slider engine with new DOM elements
+    initSlider();
   }
 
   function renderDynamicProjects(projects) {
@@ -305,24 +363,47 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ------------------------------------------------------------------------
-  // HERO SLIDER ENGINE
+  // HERO SLIDER ENGINE & DYNAMIC NAVIGATION CONTROLS
   // ------------------------------------------------------------------------
-  const slides = document.querySelectorAll('.slide');
   let currentSlide = 0;
   let slideInterval = null;
   let isPlaying = true;
+  const SLIDE_DURATION = 6500;
 
   function goToSlide(n) {
-    if (slides.length === 0) return;
-    slides[currentSlide].classList.remove('active');
-    currentSlide = (n + slides.length) % slides.length;
-    slides[currentSlide].classList.add('active');
+    const allSlides = document.querySelectorAll('#heroSlider .slide');
+    const allTabs = document.querySelectorAll('#heroSliderControls .slider-tab');
+    if (allSlides.length === 0) return;
 
-    const activeSlide = slides[currentSlide];
-    const video = activeSlide.querySelector('video');
-    if (video) {
-      video.currentTime = 0;
-      video.play().catch(e => console.log('Video play error:', e));
+    // Deactivate all slides & pause videos
+    allSlides.forEach(slide => {
+      slide.classList.remove('active');
+      const vid = slide.querySelector('video');
+      if (vid) {
+        try { vid.pause(); } catch (e) {}
+      }
+    });
+
+    allTabs.forEach(tab => tab.classList.remove('active'));
+
+    currentSlide = (n + allSlides.length) % allSlides.length;
+
+    // Activate target slide
+    const activeSlide = allSlides[currentSlide];
+    activeSlide.classList.add('active');
+
+    if (allTabs[currentSlide]) {
+      allTabs[currentSlide].classList.add('active');
+    }
+
+    // Play video on newly activated slide
+    const activeVid = activeSlide.querySelector('video');
+    if (activeVid) {
+      activeVid.currentTime = 0;
+      const playPromise = activeVid.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(err => console.log('Video autoplay error:', err));
+      }
     }
   }
 
@@ -330,13 +411,47 @@ document.addEventListener('DOMContentLoaded', () => {
     goToSlide(currentSlide + 1);
   }
 
+  function prevSlide() {
+    goToSlide(currentSlide - 1);
+  }
+
   function startAutoSlide() {
-    if (slideInterval) clearInterval(slideInterval);
-    slideInterval = setInterval(nextSlide, 7000);
+    stopAutoSlide();
+    isPlaying = true;
+    slideInterval = setInterval(nextSlide, SLIDE_DURATION);
+    updatePlayPauseIcon();
+  }
+
+  function stopAutoSlide() {
+    if (slideInterval) {
+      clearInterval(slideInterval);
+      slideInterval = null;
+    }
+    isPlaying = false;
+    updatePlayPauseIcon();
+  }
+
+  function toggleAutoSlide() {
+    if (isPlaying) {
+      stopAutoSlide();
+    } else {
+      startAutoSlide();
+    }
+  }
+
+  function updatePlayPauseIcon() {
+    const icon = document.querySelector('#heroSliderControls .hero-play-btn i');
+    if (icon) {
+      icon.className = `fa-solid ${isPlaying ? 'fa-pause' : 'fa-play'}`;
+    }
   }
 
   function initSlider() {
-    if (slides.length > 0) startAutoSlide();
+    const allSlides = document.querySelectorAll('#heroSlider .slide');
+    if (allSlides.length > 0) {
+      goToSlide(currentSlide);
+      startAutoSlide();
+    }
   }
 
   initSlider();
