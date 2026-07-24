@@ -275,7 +275,6 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="slide-overlay"></div>
         </div>
         <div class="slide-content container">
-          <span class="slide-badge"><i class="fa-solid fa-${slide.type === 'video' || media.type === 'youtube' ? 'film' : 'bolt'}"></i> ${slide.badge || 'Zutere Audiovisual'}</span>
           <h1 class="slide-title">${slide.title}</h1>
           <p class="slide-description">${slide.description}</p>
         </div>

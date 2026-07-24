@@ -351,6 +351,15 @@ button {
   object-fit: cover;
   transform: scale(1.08);
   transition: transform 8s ease-out;
+  pointer-events: none !important;
+  user-select: none;
+}
+
+.hero-video-bg::-webkit-media-controls,
+.hero-video-bg::-webkit-media-controls-enclosure,
+.hero-video-bg::-webkit-media-controls-panel {
+  display: none !important;
+  -webkit-appearance: none;
 }
 
 .slide.active .hero-video-bg,
