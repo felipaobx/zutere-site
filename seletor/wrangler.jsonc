@@ -16,5 +16,11 @@
   "observability": {
     "enabled": true
   },
-  "account_id": "f886926afb4c25beca82a054b6c9355a"
+  "account_id": "f886926afb4c25beca82a054b6c9355a",
+  "assets": {
+    "run_worker_first": [
+      "/fotos/api/*"
+    ],
+    "not_found_handling": "single-page-application"
+  }
 }

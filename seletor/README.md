@@ -39,3 +39,8 @@ O banco novo começa vazio. Dados e fotos do protótipo local não são enviados
 ## Armazenamento gratuito sem cartão
 
 Fotos otimizadas menores que 1 MB são armazenadas no D1. O espaço total das fotos fica limitado a 350 MiB por banco para manter margem abaixo do limite gratuito de 500 MB por banco. A quota é aplicada atomicamente por gatilho SQL, inclusive com uploads concorrentes. A exclusão devolve o espaço. Esta versão é voltada à seleção e não armazena originais maiores que 1 MB. Limites diários gratuitos de Workers/D1 também se aplicam; não há contratação automática de plano pago.
+
+## Carregamento das telas
+
+Em produção, as telas React são carregadas no navegador a partir dos arquivos estáticos de frontend/. Somente /fotos/api/* executa o Worker. Isso evita renderização de páginas no limite gratuito de CPU. Login, sessões, credenciais, galerias e imagens continuam sendo autorizados no servidor. Os nomes e os vínculos das galerias não fazem parte do HTML estático; são carregados pelas APIs depois da validação da sessão.
+

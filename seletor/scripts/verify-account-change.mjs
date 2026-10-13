@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { DatabaseSync } from 'node:sqlite';
 import { pbkdf2Sync, randomBytes, randomUUID } from 'node:crypto';
-const origin='http://localhost:3010',base=origin+'/fotos';
+const origin=process.env.VERIFY_ORIGIN??'http://localhost:3010',base=origin+'/fotos';
 const directory='.wrangler/state/v3/d1/miniflare-D1DatabaseObject';
 const file=fs.readdirSync(directory).find(name=>name.endsWith('.sqlite')&&name!=='metadata.sqlite');const db=new DatabaseSync(path.join(directory,file));
 db.exec('PRAGMA foreign_keys=ON; PRAGMA busy_timeout=5000');
@@ -38,3 +38,4 @@ try{
  await request('/api/clients');assert.equal(db.prepare('SELECT id FROM photographers WHERE email=?').get(nextEmail).id,id);
  console.log('PASS senha atual, validação, e-mail único, troca só de login, troca só de senha, novo acesso e revogação de todas as sessões');
 }finally{db.prepare('DELETE FROM photographers WHERE id IN (?,?)').run(id,otherId);db.close();console.log('PASS contas de teste removidas; acesso real preservado');}
+

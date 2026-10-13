@@ -17,7 +17,7 @@ export default function ClientAccess({ slug, title, projectType }: { slug: strin
     try {
       const response = await fetch('/fotos/api/client/login', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ slug, login, password }) });
       const result = await response.json().catch(() => null) as { clientName?: string; error?: string } | null;
-      if (response.ok) { setClientName(result?.clientName?.trim() || login); setAuthenticated(true); }
+      if (response.ok) { setClientName(result?.clientName?.trim() || login); setAuthenticated(true); window.location.reload(); }
       else setError(result?.error ?? 'Login ou senha incorretos. Confira a mensagem enviada pelo fotógrafo.');
     } catch { setError('Não foi possível entrar agora. Tente novamente.'); }
     setLoading(false);

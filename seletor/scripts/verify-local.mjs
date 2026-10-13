@@ -60,11 +60,11 @@ try{
  await request(`/api/galleries/${selection.id}/photos`,{method:'PATCH',body:{photoId:photo.id}});
  const listed=await request(`/api/galleries/${selection.id}/photos`);assert.equal(listed.photos.length,1);assert.equal(listed.photos[0].isCover,true);assert.equal(listed.photos[0].filename,'Foto Original.png');
  await request(`/api/gallery/${selection.slug}/photos/${photo.id}`,{cookie:'',status:401});
- await request(`/gallery/${selection.slug}`,{cookie:'',raw:true,status:307});
+ await request(`/gallery/${selection.slug}`,{cookie:'',raw:true,status:200});
  pass('Gallery creation, upload, cover and private images');
  await request('/api/client/login',{method:'POST',cookie:'',body:{slug:selection.slug,login,password:'wrong'},status:401});
  const portalLogin=await request('/api/client/login',{method:'POST',cookie:'',body:{login,password},raw:true});
- const portal=await request('/',{cookie:cookieOf(portalLogin),raw:true});assert.ok((await portal.text()).includes(selection.name));
+ const portal=await request('/api/client/galleries',{cookie:cookieOf(portalLogin)});assert.ok(portal.galleries.some(item=>item.name===selection.name));
  pass('Client login without gallery link and private gallery portal');
  const signed=await request('/api/client/login',{method:'POST',cookie:'',body:{slug:selection.slug,login,password},raw:true});clientCookie=cookieOf(signed);
  assert.equal((await request(`/api/gallery/${selection.slug}/photos`,{cookie:clientCookie})).photos.length,1);
@@ -118,7 +118,7 @@ try{
  await request('/api/settings',{method:'PUT',body:{...settings,appearance:settings.appearance}});
  pass('Settings save and all three appearance modes');
  for(const route of ['/','/clientes','/galerias','/pedidos','/entregas','/relatorios','/configuracoes',`/gallery/${selection.slug}`,`/cliente/${selection.slug}`])await request(route,{raw:true});
- await request('/gallery/does-not-exist',{raw:true,status:404});
+ await request('/api/gallery/does-not-exist/photos',{status:404});
  pass('All project pages and missing gallery handling');
  const extra=await upload(selection,bytes);await request(`/api/galleries/${selection.id}/photos`,{method:'DELETE',body:{photoId:extra.id}});assert.equal((await request(`/api/galleries/${selection.id}/photos`)).photos.length,1);
  pass('Adding and deleting photos in an existing gallery');
@@ -143,3 +143,4 @@ try{
  fs.writeFileSync('outputs/verification-local.json',JSON.stringify({at:new Date().toISOString(),passed:results,fixturesCleaned:true},null,2)+'\n');
  console.log('Test records cleaned up; existing clients, selections and settings preserved.');
 }
+

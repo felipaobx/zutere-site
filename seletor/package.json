@@ -7,7 +7,7 @@
   },
   "scripts": {
     "dev": "vinext dev",
-    "build": "vinext build && node scripts/mount-public.mjs",
+    "build": "vinext build && vite build --config vite.browser.config.ts && node scripts/mount-public.mjs",
     "start": "vinext start",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
     "db:generate": "drizzle-kit generate",

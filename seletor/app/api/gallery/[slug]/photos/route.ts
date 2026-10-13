@@ -15,5 +15,5 @@ export async function GET(_: Request, { params }: { params: Promise<{ slug: stri
   const items = await getDb().select({ id: photos.id, filename: photos.filename, isCover: photos.isCover })
     .from(photos).where(eq(photos.galleryId, gallery.id)).orderBy(asc(photos.sortOrder));
   const cover = items.find((photo) => photo.isCover) ?? items[0];
-  return NextResponse.json({ photos: items.map((photo) => ({ ...photo, src: `/fotos/api/gallery/${slug}/photos/${photo.id}` })), coverUrl: cover ? `/fotos/api/gallery/${slug}/photos/${cover.id}` : null, canDownload });
+  return NextResponse.json({ photos: items.map((photo) => ({ ...photo, src: `/fotos/api/gallery/${slug}/photos/${photo.id}` })), coverUrl: cover ? `/fotos/api/gallery/${slug}/photos/${cover.id}` : null, canDownload, gallery: { name: gallery.name, projectType: gallery.projectType, clientName: gallery.clientName, role: access.role } });
 }
