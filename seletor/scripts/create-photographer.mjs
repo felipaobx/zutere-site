@@ -6,7 +6,7 @@ const email=process.env.PHOTOGRAPHER_EMAIL;
 if(!email||!email.includes('@'))throw new Error('Defina PHOTOGRAPHER_EMAIL.');
 const password=process.env.PHOTOGRAPHER_PASSWORD??randomBytes(24).toString('base64url');
 if(password.length<12)throw new Error('Use uma senha com pelo menos 12 caracteres.');
-const salt=randomBytes(16).toString('base64url'),hash=pbkdf2Sync(password,salt,120000,32,'sha256').toString('base64url');
+const salt=randomBytes(16).toString('base64url'),hash=pbkdf2Sync(password,salt,100000,32,'sha256').toString('base64url');
 const quote=value=>"'"+String(value).replaceAll("'","''")+"'";
 fs.mkdirSync('.credentials',{recursive:true});const sqlFile='.credentials/account.sql';
 fs.writeFileSync(sqlFile,`INSERT INTO photographers (id,email,name,password_hash,salt,created_at) VALUES (${quote(randomUUID())},${quote(email.toLowerCase())},'Felipe',${quote(hash)},${quote(salt)},${Date.now()});`);

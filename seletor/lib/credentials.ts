@@ -10,7 +10,8 @@ export function temporaryPassword() { return `LUMEA-${randomToken(5).slice(0, 6)
 
 export async function hashPassword(password: string, salt = randomToken(16)) {
   const material = await crypto.subtle.importKey('raw', encoder.encode(password), 'PBKDF2', false, ['deriveBits']);
-  const bits = await crypto.subtle.deriveBits({ name: 'PBKDF2', salt: encoder.encode(salt), iterations: 120_000, hash: 'SHA-256' }, material, 256);
+  // Workers Web Crypto caps PBKDF2 at 100,000 iterations.
+  const bits = await crypto.subtle.deriveBits({ name: 'PBKDF2', salt: encoder.encode(salt), iterations: 100_000, hash: 'SHA-256' }, material, 256);
   return { hash: toBase64Url(new Uint8Array(bits)), salt };
 }
 
