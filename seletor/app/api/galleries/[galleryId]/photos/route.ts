@@ -1,5 +1,6 @@
 import { sameOrigin } from '@/lib/login-security';
-import { FILES, MAX_PHOTO_BYTES } from '@/lib/photo-storage';
+import { FILES, photoStorageLimits } from '@/lib/photo-storage';
+import { DriveError } from '@/lib/google-drive';
 import { and, asc, eq } from 'drizzle-orm';
 import { NextResponse } from 'next/server';
 import { getChatGPTUser } from '@/app/chatgpt-auth';
@@ -13,7 +14,7 @@ export async function GET(_: Request, { params }: { params: Promise<{ galleryId:
   const gallery = await getDb().select().from(galleries).where(and(eq(galleries.id, galleryId), eq(galleries.ownerId, user.userId))).get();
   if (!gallery) return NextResponse.json({ error: 'Galeria não encontrada.' }, { status: 404 });
   const files = await getDb().select({ id: photos.id, filename: photos.filename, isCover: photos.isCover, size: photos.size }).from(photos).where(eq(photos.galleryId, galleryId)).orderBy(asc(photos.sortOrder));
-  return NextResponse.json({ photos: files.map((photo) => ({ ...photo, src: `/fotos/api/gallery/${gallery.slug}/photos/${photo.id}` })) });
+  return NextResponse.json({ photos: files.map((photo) => ({ ...photo, src: `/fotos/api/gallery/${gallery.slug}/photos/${photo.id}` })), storage: await photoStorageLimits(user.userId) });
 }
 
 export async function POST(request: Request, { params }: { params: Promise<{ galleryId: string }> }) {
@@ -24,22 +25,24 @@ export async function POST(request: Request, { params }: { params: Promise<{ gal
   const gallery = await getDb().select().from(galleries).where(and(eq(galleries.id, galleryId), eq(galleries.ownerId, user.userId))).get();
   if (!gallery) return NextResponse.json({ error: 'Galeria não encontrada.' }, { status: 404 });
   try {
-    const maxBytes = MAX_PHOTO_BYTES;
-    if (Number(request.headers.get('content-length')) >= maxBytes && !request.headers.get('content-type')?.startsWith('multipart/form-data')) return NextResponse.json({ error: 'Use uma foto otimizada com menos de 1 MB no plano gratuito.' }, { status: 413 });
+    const storage = await photoStorageLimits(user.userId);
+    const maxBytes = storage.maxPhotoBytes;
+    const sizeError = storage.provider === 'drive' ? 'Use uma foto com menos de 20 MB.' : 'Use uma foto otimizada com menos de 1 MB ou conecte seu Google Drive.';
+    if (Number(request.headers.get('content-length')) >= maxBytes && !request.headers.get('content-type')?.startsWith('multipart/form-data')) return NextResponse.json({ error: sizeError }, { status: 413 });
     const multipart = request.headers.get('content-type')?.startsWith('multipart/form-data');
     const form = multipart ? await request.formData() : null;
     if (!multipart && !['image/jpeg', 'image/png', 'image/webp'].includes(request.headers.get('content-type') ?? '')) return NextResponse.json({ error: 'Envie uma imagem JPG, PNG ou WebP válida.' }, { status: 400 });
     const decodeFilename = (header: string, fallback: string) => { try { return decodeURIComponent(request.headers.get(header) ?? fallback); } catch { return fallback; } };
     const file = form ? form.get('photo') : new File([await request.blob()], decodeFilename('x-photo-filename', 'foto'), { type: request.headers.get('content-type') ?? '' });
     if (!(file instanceof File) || !['image/jpeg', 'image/png', 'image/webp'].includes(file.type) || !file.size) return NextResponse.json({ error: 'Envie uma imagem JPG, PNG ou WebP válida.' }, { status: 400 });
-    if (file.size >= maxBytes) return NextResponse.json({ error: 'Use uma foto otimizada com menos de 1 MB no plano gratuito.' }, { status: 413 });
+    if (file.size >= maxBytes) return NextResponse.json({ error: sizeError }, { status: 413 });
     const photoId = crypto.randomUUID();
     const requestedOriginalName = form ? form.get('originalName') : decodeFilename('x-original-filename', file.name);
     const originalName = (typeof requestedOriginalName === 'string' && requestedOriginalName.trim() ? requestedOriginalName : file.name).replace(/[\\/]/g, '-').slice(-255);
     const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '-').slice(-120);
     const storageKey = `${user.userId}/${galleryId}/${photoId}-${safeName}`;
     let isCover = false;
-    await FILES.put(storageKey, file.stream(), { httpMetadata: { contentType: file.type } });
+    await FILES.put(storageKey, file.stream(), { httpMetadata: { contentType: file.type }, filename: originalName, size: file.size });
     try {
       const db = getDb();
       const currentCover = await db.select({ id: photos.id }).from(photos).where(and(eq(photos.galleryId, galleryId), eq(photos.isCover, true))).get();
@@ -51,6 +54,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ gal
     console.info('[gallery-photo-upload] completed', { galleryId, photoId, filename: originalName, size: file.size });
     return NextResponse.json({ photo: { id: photoId, filename: originalName, isCover } }, { status: 201 });
   } catch (error) {
+    if (error instanceof DriveError) return NextResponse.json({ error: error.message }, { status: error.status });
     console.error('[gallery-photo-upload] failed', { galleryId, error: error instanceof Error ? error.message : String(error) });
     if (error instanceof Error && /CHECK constraint failed/.test(error.message)) return NextResponse.json({ error: 'O espaço gratuito de 350 MiB foi preenchido. Exclua fotos antigas para liberar espaço.' }, { status: 507 });
     return NextResponse.json({ error: 'O arquivo chegou ao sistema, mas não pôde ser armazenado. Tente novamente.' }, { status: 500 });

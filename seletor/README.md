@@ -38,7 +38,19 @@ O banco novo começa vazio. Dados e fotos do protótipo local não são enviados
 
 ## Armazenamento gratuito sem cartão
 
-Fotos otimizadas menores que 1 MB são armazenadas no D1. O espaço total das fotos fica limitado a 350 MiB por banco para manter margem abaixo do limite gratuito de 500 MB por banco. A quota é aplicada atomicamente por gatilho SQL, inclusive com uploads concorrentes. A exclusão devolve o espaço. Esta versão é voltada à seleção e não armazena originais maiores que 1 MB. Limites diários gratuitos de Workers/D1 também se aplicam; não há contratação automática de plano pago.
+Sem Drive conectado, fotos menores que 1 MB são armazenadas no D1. O espaço total das fotos fica limitado a 350 MiB por banco. A quota é aplicada atomicamente por gatilho SQL, inclusive com uploads concorrentes. A exclusão devolve o espaço. Limites gratuitos de Workers/D1 também se aplicam; não há contratação automática de plano pago.
+
+## Google Drive
+
+1. Aplicar a migração `0010_google_drive.sql` e executar `node scripts/setup-drive-encryption.mjs` antes da publicação. O script preserva a chave existente e configura o segredo do Worker sem imprimir seu conteúdo. Guardar a chave ignorada em `.credentials/drive-encryption-key`: trocar ou perder essa chave impede a leitura das conexões salvas.
+2. No projeto Google, ativar Google Drive API. Configurar o aplicativo OAuth externo e criar um cliente do tipo Aplicativo da Web. O retorno autorizado é `https://www.zutere.com.br/fotos/api/drive/callback`.
+3. Publicar o aplicativo OAuth em produção. No modo de teste, a autorização do Drive normalmente expira após sete dias. O aplicativo solicita apenas `drive.file`, `openid` e `email`.
+4. Em Configurações → Google Drive, informar ID, chave do cliente Google e senha atual do fotógrafo. Segredos são criptografados com AES-GCM, vinculados ao proprietário e nunca retornados ao navegador. Não enviar chaves pelo chat ou versionar arquivos de credenciais.
+5. Clicar Conectar Google Drive e autorizar a conta que possui o espaço. O aplicativo cria sua própria pasta privada; não publica os arquivos nem acessa arquivos alheios ao aplicativo.
+
+Novos arquivos usam o Drive após a conexão. Seleções continuam otimizadas; entregas aceitam arquivos menores que 20 MiB, enviados por stream. O banco mantém usuários, galerias, seleções e referências. A opção Mover fotos existentes envia cada arquivo, confirma e registra a cópia antes de liberar o armazenamento antigo. Uma falha preserva o original e permite retomar. Os links das fotos não mudam.
+
+Exclusões no seletor enviam os arquivos ou a pasta da galeria para a lixeira do Drive. Reconexão exige a mesma conta Google e o mesmo cliente OAuth para manter acesso aos arquivos existentes.
 
 ## Carregamento das telas
 

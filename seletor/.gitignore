@@ -39,4 +39,5 @@ next-env.d.ts
 
 /.credentials/
 /dev.vars
+/.dev.vars
 *.tsbuildinfo

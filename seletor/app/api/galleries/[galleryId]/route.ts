@@ -39,9 +39,8 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ g
   if (!user) return NextResponse.json({ error: 'Autenticação necessária.' }, { status: 401 });
   const { galleryId } = await params;
   if (!(await ownedGallery(galleryId, user.userId))) return NextResponse.json({ error: 'Galeria não encontrada.' }, { status: 404 });
-  const storedPhotos = await getDb().select({ storageKey: photos.storageKey }).from(photos).where(eq(photos.galleryId, galleryId));
+  await FILES.deleteGallery(user.userId, galleryId);
   await getDb().delete(galleries).where(and(eq(galleries.id, galleryId), eq(galleries.ownerId, user.userId)));
-  if (storedPhotos.length) await FILES.delete(storedPhotos.map((photo) => photo.storageKey));
   return NextResponse.json({ ok: true });
 }
 

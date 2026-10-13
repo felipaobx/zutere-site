@@ -1,4 +1,5 @@
 import { FILES } from '@/lib/photo-storage';
+import { DriveError } from '@/lib/google-drive';
 import { and, eq, sql } from 'drizzle-orm';
 import { NextResponse } from 'next/server';
 import { getDb } from '@/db';
@@ -20,7 +21,12 @@ export async function GET(request: Request, { params }: { params: Promise<{ slug
     if (!delivery || !['ready', 'delivered'].includes(delivery.status) || (delivery.expiresAt && delivery.expiresAt < new Date())) return NextResponse.json({ error: 'A entrega ainda não foi liberada ou o prazo expirou.' }, { status: 403 });
     if (delivery.downloadLimit !== null && delivery.downloadCount >= delivery.downloadLimit) return NextResponse.json({ error: 'O limite de downloads foi atingido.' }, { status: 403 });
   }
-  const object = await FILES.get(row.storageKey);
+  let object;
+  try { object = await FILES.get(row.storageKey); }
+  catch (error) {
+    if (error instanceof DriveError) return NextResponse.json({ error: error.message }, { status: error.status });
+    throw error;
+  }
   if (!object) return NextResponse.json({ error: 'Arquivo não encontrado.' }, { status: 404 });
   if (download && access.role !== 'owner') {
     const db = getDb();

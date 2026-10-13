@@ -5,6 +5,7 @@ import { FormEvent, type CSSProperties, useCallback, useEffect, useMemo, useStat
 import BrandLogo from './brand-logo';
 import PhotoManager from './photo-manager';
 import PhotographerCredentials from './photographer-credentials';
+import DriveSettings from './drive-settings';
 import { OrdersView, DeliveriesView, ReportsView, RecordModal } from './studio-views';
 import { money, type StudioOrder, type StudioDelivery } from '@/lib/studio-data';
 
@@ -355,11 +356,12 @@ function ClientsView({ clients: items, onSelect, saveError }: { clients: Client[
 
 function SettingsView({ settings, onSaved }: { settings: StudioSettings; onSaved: (settings: StudioSettings) => void }) {
   const [draft, setDraft] = useState(settings);
-  const [section, setSection] = useState<'appearance' | 'profile' | 'account' | 'plans'>('appearance');
+  const [section, setSection] = useState<'appearance' | 'profile' | 'account' | 'plans' | 'storage'>(() => typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('drive') ? 'storage' : 'appearance');
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState('');
   function update<K extends keyof StudioSettings>(key: K, value: StudioSettings[K]) { setDraft((current) => ({ ...current, [key]: value })); }
   async function save(event: FormEvent<HTMLFormElement>) {
+    if (section === 'storage') { event.preventDefault(); document.getElementById('drive-config-save')?.click(); return; }
     try {
 
     event.preventDefault(); setSaving(true); setMessage('');
@@ -383,14 +385,15 @@ function SettingsView({ settings, onSaved }: { settings: StudioSettings; onSaved
     } catch { setMessage('A conexão foi interrompida. Tente novamente.'); } finally { setSaving(false); }
 }
   return <form id="settings-form" className="settings-layout" onSubmit={save}>
-    <aside className="settings-nav"><p>CONFIGURAÇÕES</p><button type="button" className={section === 'appearance' ? 'active' : ''} onClick={() => setSection('appearance')}><span>◐</span><div><strong>Aparência</strong><small>Cores e tema</small></div></button><button type="button" className={section === 'profile' ? 'active' : ''} onClick={() => setSection('profile')}><span>◎</span><div><strong>Perfil</strong><small>Nome e estúdio</small></div></button><button type="button" className={section === 'account' ? 'active' : ''} onClick={() => setSection('account')}><span>♢</span><div><strong>Conta e login</strong><small>E-mail e segurança</small></div></button><button type="button" className={section === 'plans' ? 'active' : ''} onClick={() => setSection('plans')}><span>✦</span><div><strong>Recursos</strong><small>Ferramentas da conta</small></div></button></aside>
+    <aside className="settings-nav"><p>CONFIGURAÇÕES</p><button type="button" className={section === 'appearance' ? 'active' : ''} onClick={() => setSection('appearance')}><span>◐</span><div><strong>Aparência</strong><small>Cores e tema</small></div></button><button type="button" className={section === 'profile' ? 'active' : ''} onClick={() => setSection('profile')}><span>◎</span><div><strong>Perfil</strong><small>Nome e estúdio</small></div></button><button type="button" className={section === 'account' ? 'active' : ''} onClick={() => setSection('account')}><span>♢</span><div><strong>Conta e login</strong><small>E-mail e segurança</small></div></button><button type="button" className={section === 'storage' ? 'active' : ''} onClick={() => setSection('storage')}><span>☁</span><div><strong>Google Drive</strong><small>Armazenamento das fotos</small></div></button><button type="button" className={section === 'plans' ? 'active' : ''} onClick={() => setSection('plans')}><span>✦</span><div><strong>Recursos</strong><small>Ferramentas da conta</small></div></button></aside>
     <section className="settings-panel">
       {section === 'appearance' && <><div className="settings-title"><span>◐</span><div><h2>Aparência do site</h2><p>Escolha as cores usadas nos botões, destaques e elementos de seleção.</p></div></div><div className={`theme-preview theme-preview-${draft.appearance}`} style={{ '--preview-primary': draft.primaryColor, '--preview-foreground': foreground(draft.primaryColor), '--preview-accent': draft.accentColor, '--preview-accent-foreground': foreground(draft.accentColor) } as CSSProperties}><div><BrandLogo tone={draft.appearance === 'dark' ? 'light' : draft.appearance === 'system' ? 'system' : 'dark'} /><strong>{draft.studioName}</strong></div><h3>Sua galeria, com sua identidade.</h3><button type="button">Botão principal</button><i>Foto selecionada</i></div><div className="settings-fields color-fields"><label>Cor principal<div><input type="color" value={/^#[0-9a-f]{6}$/i.test(draft.primaryColor) ? draft.primaryColor : '#6f4cc3'} onChange={(event) => update('primaryColor', event.target.value)} /><input value={draft.primaryColor} onChange={(event) => update('primaryColor', event.target.value)} pattern="#[0-9a-fA-F]{6}" /></div></label><label>Cor de seleção<div><input type="color" value={/^#[0-9a-f]{6}$/i.test(draft.accentColor) ? draft.accentColor : '#a95072'} onChange={(event) => update('accentColor', event.target.value)} /><input value={draft.accentColor} onChange={(event) => update('accentColor', event.target.value)} pattern="#[0-9a-fA-F]{6}" /></div></label></div><fieldset className="appearance-options"><legend>Tema do painel</legend>{(['light','dark','system'] as const).map((value) => <label key={value} className={draft.appearance === value ? 'selected' : ''}><input type="radio" name="appearance" checked={draft.appearance === value} onChange={() => update('appearance', value)} /><span>{value === 'light' ? 'Claro' : value === 'dark' ? 'Escuro' : 'Automático'}</span><small>{value === 'system' ? 'Segue o computador' : `Interface em modo ${value === 'light' ? 'claro' : 'escuro'}`}</small></label>)}</fieldset></>}
       {section === 'profile' && <><div className="settings-title"><span>◎</span><div><h2>Perfil profissional</h2><p>Esses dados identificam você no painel e nas galerias.</p></div></div><div className="profile-editor"><div className="profile-photo-preview">{draft.displayName.split(/\s+/).slice(0,2).map((part) => part[0]).join('').toUpperCase()}</div><small>As iniciais acompanham o nome do perfil.</small></div><div className="settings-fields"><label>Seu nome<input value={draft.displayName} onChange={(event) => update('displayName', event.target.value)} required /></label><label>Nome do estúdio<input value={draft.studioName} onChange={(event) => update('studioName', event.target.value)} required /></label><label>E-mail de contato<input type="email" value={draft.loginEmail} onChange={(event) => update('loginEmail', event.target.value)} /></label></div></>}
       {section === 'account' && <PhotographerCredentials email={settings.authenticationEmail ?? ''} />}
+      {section === 'storage' && <DriveSettings />}
       {section === 'plans' && <><div className="settings-title"><span>✦</span><div><h2>Recursos da conta</h2><p>Galerias, seleção de fotografias, provas de álbum e entregas protegidas.</p></div></div><p className="modal-copy">Gerencie as galerias, clientes e arquivos pelo painel. Não há cobrança de assinatura configurada nesta instalação.</p></>}
 
-      <footer className="settings-footer"><span className={message.includes('sucesso') ? 'success' : ''}>{message}</span><button type="submit" className="primary-button" disabled={saving}>{saving ? 'Salvando…' : section === 'account' ? 'Salvar login e senha' : 'Salvar alterações'}</button></footer>
+      {section !== 'storage' && <footer className="settings-footer"><span className={message.includes('sucesso') ? 'success' : ''}>{message}</span><button type="submit" className="primary-button" disabled={saving}>{saving ? 'Salvando…' : section === 'account' ? 'Salvar login e senha' : 'Salvar alterações'}</button></footer>}
     </section>
   </form>;
 }

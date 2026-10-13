@@ -1,0 +1,10 @@
+import fs from 'node:fs';
+import { randomBytes } from 'node:crypto';
+import { spawnSync } from 'node:child_process';
+fs.mkdirSync('.credentials',{recursive:true});const file='.credentials/drive-encryption-key';
+const key=fs.existsSync(file)?fs.readFileSync(file,'utf8').trim():randomBytes(32).toString('base64');
+if(!fs.existsSync(file))fs.writeFileSync(file,key,{mode:0o600});
+const local=fs.existsSync('.dev.vars')?fs.readFileSync('.dev.vars','utf8'):'';
+if(!local.includes('DRIVE_ENCRYPTION_KEY='))fs.appendFileSync('.dev.vars','\nDRIVE_ENCRYPTION_KEY='+key+'\n');
+const result=spawnSync(process.execPath,['node_modules/wrangler/bin/wrangler.js','secret','put','DRIVE_ENCRYPTION_KEY'],{input:key+'\n',encoding:'utf8'});
+if(result.status!==0){console.error('Não foi possível configurar a chave na Cloudflare.');process.exitCode=1;}else console.log('Chave de proteção do Drive configurada sem exposição no código.');
