@@ -12,7 +12,7 @@ export async function GET() {
   const user = await getChatGPTUser();
   if (!user) return NextResponse.json({ error: 'Autenticação necessária.' }, { status: 401 });
   const saved = await getDb().select().from(accountSettings).where(eq(accountSettings.ownerId, user.userId)).get();
-  return NextResponse.json({ settings: saved ? { ...saved, loginEmail: saved.loginEmail ?? '' } : { ...defaults, ownerId: user.userId } });
+  return NextResponse.json({ settings: { ...(saved ? { ...saved, loginEmail: saved.loginEmail ?? '' } : { ...defaults, displayName: user.displayName, ownerId: user.userId }), authenticationEmail: user.email } });
 }
 
 export async function PUT(request: Request) {
@@ -35,5 +35,5 @@ export async function PUT(request: Request) {
     updatedAt: new Date(),
   };
   await getDb().insert(accountSettings).values(settings).onConflictDoUpdate({ target: accountSettings.ownerId, set: { ...settings } });
-  return NextResponse.json({ settings: { ...settings, loginEmail: settings.loginEmail ?? '' } });
+  return NextResponse.json({ settings: { ...settings, loginEmail: settings.loginEmail ?? '', authenticationEmail: user.email } });
 }

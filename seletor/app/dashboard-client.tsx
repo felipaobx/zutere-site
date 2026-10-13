@@ -4,6 +4,7 @@
 import { FormEvent, type CSSProperties, useCallback, useEffect, useMemo, useState } from 'react';
 import BrandLogo from './brand-logo';
 import PhotoManager from './photo-manager';
+import PhotographerCredentials from './photographer-credentials';
 import { OrdersView, DeliveriesView, ReportsView, RecordModal } from './studio-views';
 import { money, type StudioOrder, type StudioDelivery } from '@/lib/studio-data';
 
@@ -85,7 +86,7 @@ const titles: Record<DashboardView, { eyebrow: string; title: string; copy: stri
   settings: { eyebrow: 'PERSONALIZAÇÃO E CONTA', title: 'Configurações', copy: 'Ajuste a identidade do site e os dados do estúdio.', action: 'Salvar alterações' },
 };
 
-type StudioSettings = { displayName: string; studioName: string; loginEmail: string; primaryColor: string; accentColor: string; appearance: 'light' | 'dark' | 'system'; plan: 'essential' | 'studio' | 'pro' };
+type StudioSettings = { authenticationEmail?: string; displayName: string; studioName: string; loginEmail: string; primaryColor: string; accentColor: string; appearance: 'light' | 'dark' | 'system'; plan: 'essential' | 'studio' | 'pro' };
 const defaultSettings: StudioSettings = { displayName: 'Felipe Costa', studioName: 'Zutere', loginEmail: '', primaryColor: '#6f4cc3', accentColor: '#a95072', appearance: 'light', plan: 'studio' };
 
 export default function DashboardClient({ view }: { view: DashboardView }) {
@@ -362,6 +363,17 @@ function SettingsView({ settings, onSaved }: { settings: StudioSettings; onSaved
     try {
 
     event.preventDefault(); setSaving(true); setMessage('');
+    if (section === 'account') {
+      const form = new FormData(event.currentTarget);
+      const newPassword = String(form.get('newPassword') ?? '');
+      const confirmPassword = String(form.get('confirmPassword') ?? '');
+      if (newPassword !== confirmPassword) { setMessage('A nova senha e a confirmação precisam ser iguais.'); return; }
+      const response = await fetch('/fotos/api/photographer/credentials', { method: 'PUT', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ email: String(form.get('accountEmail') ?? ''), currentPassword: String(form.get('currentPassword') ?? ''), newPassword, confirmPassword }) });
+      const data = await response.json().catch(() => null) as { error?: string } | null;
+      if (response.ok) window.location.assign('/fotos/fotografo?alterado=1');
+      else setMessage(data?.error ?? 'Não foi possível atualizar o acesso.');
+      return;
+    }
     const response = await fetch('/fotos/api/settings', { method: 'PUT', headers: { 'content-type': 'application/json' }, body: JSON.stringify(draft) });
     const data = await response.json().catch(() => null) as { settings?: StudioSettings; error?: string } | null;
     if (response.ok && data?.settings) { onSaved(data.settings); setDraft(data.settings); setMessage('Configurações salvas com sucesso.'); }
@@ -374,11 +386,11 @@ function SettingsView({ settings, onSaved }: { settings: StudioSettings; onSaved
     <aside className="settings-nav"><p>CONFIGURAÇÕES</p><button type="button" className={section === 'appearance' ? 'active' : ''} onClick={() => setSection('appearance')}><span>◐</span><div><strong>Aparência</strong><small>Cores e tema</small></div></button><button type="button" className={section === 'profile' ? 'active' : ''} onClick={() => setSection('profile')}><span>◎</span><div><strong>Perfil</strong><small>Nome e estúdio</small></div></button><button type="button" className={section === 'account' ? 'active' : ''} onClick={() => setSection('account')}><span>♢</span><div><strong>Conta e login</strong><small>E-mail e segurança</small></div></button><button type="button" className={section === 'plans' ? 'active' : ''} onClick={() => setSection('plans')}><span>✦</span><div><strong>Recursos</strong><small>Ferramentas da conta</small></div></button></aside>
     <section className="settings-panel">
       {section === 'appearance' && <><div className="settings-title"><span>◐</span><div><h2>Aparência do site</h2><p>Escolha as cores usadas nos botões, destaques e elementos de seleção.</p></div></div><div className={`theme-preview theme-preview-${draft.appearance}`} style={{ '--preview-primary': draft.primaryColor, '--preview-foreground': foreground(draft.primaryColor), '--preview-accent': draft.accentColor, '--preview-accent-foreground': foreground(draft.accentColor) } as CSSProperties}><div><BrandLogo tone={draft.appearance === 'dark' ? 'light' : draft.appearance === 'system' ? 'system' : 'dark'} /><strong>{draft.studioName}</strong></div><h3>Sua galeria, com sua identidade.</h3><button type="button">Botão principal</button><i>Foto selecionada</i></div><div className="settings-fields color-fields"><label>Cor principal<div><input type="color" value={/^#[0-9a-f]{6}$/i.test(draft.primaryColor) ? draft.primaryColor : '#6f4cc3'} onChange={(event) => update('primaryColor', event.target.value)} /><input value={draft.primaryColor} onChange={(event) => update('primaryColor', event.target.value)} pattern="#[0-9a-fA-F]{6}" /></div></label><label>Cor de seleção<div><input type="color" value={/^#[0-9a-f]{6}$/i.test(draft.accentColor) ? draft.accentColor : '#a95072'} onChange={(event) => update('accentColor', event.target.value)} /><input value={draft.accentColor} onChange={(event) => update('accentColor', event.target.value)} pattern="#[0-9a-fA-F]{6}" /></div></label></div><fieldset className="appearance-options"><legend>Tema do painel</legend>{(['light','dark','system'] as const).map((value) => <label key={value} className={draft.appearance === value ? 'selected' : ''}><input type="radio" name="appearance" checked={draft.appearance === value} onChange={() => update('appearance', value)} /><span>{value === 'light' ? 'Claro' : value === 'dark' ? 'Escuro' : 'Automático'}</span><small>{value === 'system' ? 'Segue o computador' : `Interface em modo ${value === 'light' ? 'claro' : 'escuro'}`}</small></label>)}</fieldset></>}
-      {section === 'profile' && <><div className="settings-title"><span>◎</span><div><h2>Perfil profissional</h2><p>Esses dados identificam você no painel e nas galerias.</p></div></div><div className="profile-editor"><div className="profile-photo-preview">{draft.displayName.split(/\s+/).slice(0,2).map((part) => part[0]).join('').toUpperCase()}</div><small>As iniciais acompanham o nome do perfil.</small></div><div className="settings-fields"><label>Seu nome<input value={draft.displayName} onChange={(event) => update('displayName', event.target.value)} required /></label><label>Nome do estúdio<input value={draft.studioName} onChange={(event) => update('studioName', event.target.value)} required /></label></div></>}
-      {section === 'account' && <><div className="settings-title"><span>♢</span><div><h2>Conta e login</h2><p>Cadastre seu e-mail de contato profissional.</p></div></div><div className="settings-fields"><label>E-mail da conta<input type="email" value={draft.loginEmail} onChange={(event) => update('loginEmail', event.target.value)} placeholder="felipe@estudio.com" /></label><div className="account-security"><span>✓</span><div><strong>Acesso com sua conta</strong><small>A autenticação administrativa é gerenciada pela conta usada para entrar.</small><a className="inline-setting-button" href="/signout-with-chatgpt?return_to=/">Sair da conta</a></div></div></div><div className="account-security"><span>✓</span><div><strong>Sessão protegida</strong><small>O acesso administrativo continua vinculado à sua conta segura.</small></div></div></>}
+      {section === 'profile' && <><div className="settings-title"><span>◎</span><div><h2>Perfil profissional</h2><p>Esses dados identificam você no painel e nas galerias.</p></div></div><div className="profile-editor"><div className="profile-photo-preview">{draft.displayName.split(/\s+/).slice(0,2).map((part) => part[0]).join('').toUpperCase()}</div><small>As iniciais acompanham o nome do perfil.</small></div><div className="settings-fields"><label>Seu nome<input value={draft.displayName} onChange={(event) => update('displayName', event.target.value)} required /></label><label>Nome do estúdio<input value={draft.studioName} onChange={(event) => update('studioName', event.target.value)} required /></label><label>E-mail de contato<input type="email" value={draft.loginEmail} onChange={(event) => update('loginEmail', event.target.value)} /></label></div></>}
+      {section === 'account' && <PhotographerCredentials email={settings.authenticationEmail ?? ''} />}
       {section === 'plans' && <><div className="settings-title"><span>✦</span><div><h2>Recursos da conta</h2><p>Galerias, seleção de fotografias, provas de álbum e entregas protegidas.</p></div></div><p className="modal-copy">Gerencie as galerias, clientes e arquivos pelo painel. Não há cobrança de assinatura configurada nesta instalação.</p></>}
 
-      <footer className="settings-footer"><span className={message.includes('sucesso') ? 'success' : ''}>{message}</span><button type="submit" className="primary-button" disabled={saving}>{saving ? 'Salvando…' : 'Salvar alterações'}</button></footer>
+      <footer className="settings-footer"><span className={message.includes('sucesso') ? 'success' : ''}>{message}</span><button type="submit" className="primary-button" disabled={saving}>{saving ? 'Salvando…' : section === 'account' ? 'Salvar login e senha' : 'Salvar alterações'}</button></footer>
     </section>
   </form>;
 }
@@ -517,3 +529,4 @@ function OperationModal({ kind, galleries, onClose }: { kind: 'help' | 'notifica
   const content = kind === 'help' ? { title: 'Como começar', copy: 'Cadastre um cliente, configure seu acesso, crie uma galeria e envie as fotografias. Depois, compartilhe o link com o cliente.' } : kind === 'notifications' ? { title: 'Seleções recebidas', copy: completed.length ? completed.map((gallery) => gallery.client + ' finalizou ' + gallery.title + ' (' + gallery.selected + ' fotos)').join(' • ') : 'Nenhuma seleção finalizada até agora.' } : kind === 'report' ? { title: 'Relatório exportado', copy: 'O arquivo CSV contém os dados registrados na sua conta.' } : { title: 'Uso da conta', copy: galleries.reduce((sum, gallery) => sum + gallery.total, 0) + ' fotografias em ' + galleries.length + ' galerias.' };
   return <div className="modal-backdrop" onMouseDown={onClose}><section className="create-modal" role="dialog" aria-modal="true" onMouseDown={(event) => event.stopPropagation()}><button className="modal-close" aria-label="Fechar" onClick={onClose}>×</button><h2>{content.title}</h2><p className="modal-copy">{content.copy}</p><button className="primary-button" onClick={onClose}>Entendi</button></section></div>;
 }
+
