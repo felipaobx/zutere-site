@@ -1,0 +1,20 @@
+{
+  "name": "zutere-fotos",
+  "main": "vinext/server/app-router-entry",
+  "compatibility_date": "2026-05-15",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "zutere-fotos",
+      "database_id": "8fabc88f-43f8-491f-bb26-f693ff9d6e1d",
+      "migrations_dir": "drizzle"
+    }
+  ],
+  "observability": {
+    "enabled": true
+  },
+  "account_id": "f886926afb4c25beca82a054b6c9355a"
+}
