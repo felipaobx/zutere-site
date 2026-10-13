@@ -1,4 +1,18 @@
 {
   "cleanUrls": true,
-  "trailingSlash": false
+  "trailingSlash": false,
+  "rewrites": [
+    {
+      "source": "/fotografo",
+      "destination": "https://zutere-fotos.felipaobx-zutere.workers.dev/fotos/fotografo"
+    },
+    {
+      "source": "/fotos",
+      "destination": "https://zutere-fotos.felipaobx-zutere.workers.dev/fotos"
+    },
+    {
+      "source": "/fotos/:path*",
+      "destination": "https://zutere-fotos.felipaobx-zutere.workers.dev/fotos/:path*"
+    }
+  ]
 }
